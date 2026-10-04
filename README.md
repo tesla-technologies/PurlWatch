@@ -28,7 +28,7 @@ The code is licensed under Apache-2.0, see `LICENSE`. The documentation is CC BY
 
 ## Generative AI
 
-The project follows NLnet's policy on the use of generative AI. Code in this repository is written by its human contributors. A contribution generated with a language model is not accepted unless the commit names the model and version and explains how it was used, in which case the maintainers review it and may still decline it. The initial text of this README, of `CONTRIBUTING.md`, of `SECURITY.md` and of the files under `docs/` was drafted on 4 October 2026 with Claude Fable 5.1 from the maintainers' working notes; the maintainers reviewed it and keep it, and the facts in it cite their sources. The policy as the project applies it is in `docs/14-genai-policy.md`.
+The project follows NLnet's policy on the use of generative AI. Code in this repository is written by its human contributors. A contribution generated with a language model is not accepted unless the commit names the model and version and explains how it was used, in which case the maintainers review it and may still decline it. The initial text of this README, of `CONTRIBUTING.md`, of `SECURITY.md` and of the files under `docs/` was drafted on 4 October 2026 with Claude Fable 5.1 from the maintainers' working notes, and the diagrams and engineering notes added the same day were drafted with Claude Opus 5.5; the maintainers reviewed it and keep it, and the facts in it cite their sources. The policy as the project applies it is in `docs/14-genai-policy.md`.
 
 ## Security
 

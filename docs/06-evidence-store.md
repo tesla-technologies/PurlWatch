@@ -10,6 +10,17 @@ A snapshot is a content-addressed tar archive. Inside it, under a run identifier
 
 Raw bodies are stored first, as fetched, and derived facts are stored next to them with the derivation recorded, so that a replay can recompute the derived facts from the raw bodies and compare. E-mail addresses are replaced at ingestion by a fixed marker, with a flag in the index that one was present, while public handles are kept. Every finding references snapshot paths through ResourceDescriptors whose `uri` is the path inside the snapshot, whose `downloadLocation` is the archive and whose `digest` is the item's own SHA-256. Everything is serialised canonically, with sorted keys, UTF-8, newline line endings, integers without exponents, UTC timestamps ending in Z and floats with a fixed number of decimals, so that two runs on the same snapshot produce byte-identical findings. Replay is a test: continuous integration replays the recorded fixtures and fails if any finding differs.
 
+```mermaid
+flowchart LR
+    F["Recorded fixture snapshot"] --> R["Rules and explainer, offline"]
+    R --> O["Findings, canonical JSON"]
+    O --> C{"Byte-identical to the stored expectation?"}
+    C -- yes --> OK["Test passes"]
+    C -- no --> FAIL["Test fails: a rule, a baseline or the serialisation changed"]
+```
+
+When the test fails on purpose, because a rule version changed, the stored expectation is regenerated in the same pull request and the diff of the expectation is part of the review.
+
 ## Who stores snapshots
 
 A continuous-integration user stores its own snapshots, in the artifact storage of the run or in an object store it controls; the project never receives or publishes them, and the attestation carries only their digest and a download location the attesting party controls. For the validation protocol the project publishes the frozen snapshots used for the incident and control-set runs, so that others can re-run them; these reproduce public registry documents with e-mail addresses stripped. The data set pipeline keeps its snapshots for eighteen months after the release they belong to, long enough to answer disputes, and then deletes them; only the derived tables are published.

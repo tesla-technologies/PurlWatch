@@ -18,6 +18,39 @@ Baselines are computed on a time-split corpus of data before 2021, as of each ev
 
 ## The lead-time set
 
+```mermaid
+gantt
+    title xz-utils, what was visible and when
+    dateFormat YYYY-MM-DD
+    axisFormat %Y-%m
+    section Rights and releases
+    Newcomer added to the Tukaani organisation :milestone, 2022-10-28, 0d
+    Newcomer merging own commits :2023-01-01, 2023-03-18
+    Collin tags his last release 5.4.1 :milestone, 2023-01-11, 0d
+    Newcomer tags first release 5.4.2 :milestone, 2023-03-18, 0d
+    Newcomer tags every release :2023-03-18, 2024-03-09
+    section Attack and disclosure
+    Malicious 5.6.0 :milestone, 2024-02-24, 0d
+    Malicious 5.6.1 :milestone, 2024-03-09, 0d
+    Disclosure, CVE-2024-3094 :milestone, 2024-03-29, 0d
+```
+
+```mermaid
+gantt
+    title event-stream, seventy-two days from the handover release to the first report
+    dateFormat YYYY-MM-DD
+    axisFormat %Y-%m-%d
+    section Handover
+    New account in maintainers, publishes 3.3.5 :milestone, 2018-09-05, 0d
+    3.3.6 adds the flatmap-stream dependency :milestone, 2018-09-09, 0d
+    section Attack and disclosure
+    Malicious flatmap-stream 0.1.1 published :milestone, 2018-10-05, 0d
+    Issue opened :milestone, 2018-11-20, 0d
+    npm advisory :milestone, 2018-11-26, 0d
+```
+
+The freeze points of the protocol fall at thirty, ninety and one hundred and eighty days before each disclosure; on the xz timeline all three fall inside the fourteen months in which the newcomer was tagging every release, and on the event-stream timeline the thirty-day point falls after the handover and the ninety-day point before it, which is what makes that incident a test of the handover signal rather than of the dependency change.
+
 For xz-utils the facts to reconstruct are the organisation membership of 28 October 2022, Lasse Collin's last tagged release 5.4.1 on 11 January 2023, Jia Tan's first tagged release 5.4.2 on 18 March 2023 together with the fact that Jia Tan authored every GitHub release object from the first one on 13 December 2022, so that release-object authorship shows no change while the git tagger does, the malicious 5.6.0 on 24 February and 5.6.1 on 9 March 2024, the disclosure on 29 March 2024 and the build file that existed only in the tarball. The measurement runs on the repository path with the forge-asserted push and release actors from the ClickHouse GitHub events dataset, because the live GitHub API no longer reliably serves those release objects and organisation membership produces no event.
 
 For event-stream the facts are the new account's appearance in the maintainers field and its publication of 3.3.5 on 5 September 2018 and of 3.3.6 with the flatmap-stream dependency on 9 September, the malicious flatmap-stream 0.1.1 on 5 October, the issue of 20 November and the npm advisory of 26 November 2018, which gives seventy-two days from 3.3.6 to the first report. The removed versions come from Wayback captures of the packument, with the npm advisory and the Snyk post-mortem as secondary sources if no capture exists.

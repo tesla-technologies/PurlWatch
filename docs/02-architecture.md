@@ -2,6 +2,23 @@
 
 A run begins with an SBOM and ends with findings, optionally wrapped in a signed attestation. Between the two sit a parser, a resolver, the collectors, the rule engine and the explainer, all of them reading from and writing to one evidence store.
 
+```mermaid
+flowchart TD
+    SBOM["SBOM file, CycloneDX or SPDX"] --> P["Parse"]
+    P --> R["Resolve: PURL graph and package to repository mapping"]
+    R --> C["Collect from registries, forges, advisories and archives"]
+    C --> S[("Evidence snapshot, content addressed")]
+    S --> E["Rules: deterministic signals against baselines"]
+    E --> X["Explain: findings with evidence references"]
+    X --> O1["Report, JSON, SARIF, GitLab JSON"]
+    X --> A["Attest: in-toto Statement in a DSSE envelope, Sigstore"]
+    A --> V["verify: signature, trust root, replay"]
+    S --> V
+    R -. "same path over the whole corpus" .-> D["Data set pipeline: three tables, monthly release"]
+```
+
+The arrows above are the only data flows there are. Nothing to the right of the snapshot talks to the network, and the data set pipeline is the same code run over a list of packages instead of one SBOM.
+
 ## From SBOM to findings
 
 Parsing comes first. CycloneDX 1.5 to 1.7 is read with cyclonedx-python-lib and SPDX 2.2 and 2.3 with spdx-tools; SPDX 3.0.1 waits for a mature Python parser. What comes out is a list of components with their declared Package URLs and the dependency edges between them.
@@ -31,6 +48,24 @@ Three things consume the result: the continuous-integration report with its warn
 | Data set | dataset | the corpus list | three tables, catalogue metadata, a release |
 
 The snapshot format and the collector interfaces are defined in `core`, so `collectors` depends on `core` and `signals` depends on `core` alone, never on live clients. `attest` depends only on the output types of `signals`. The command in `cli` wires everything together and `dataset` reuses its entry points over the corpus.
+
+```mermaid
+flowchart LR
+    core --> collectors
+    core --> signals
+    signals --> attest
+    core --> cli
+    collectors --> cli
+    signals --> cli
+    attest --> cli
+    cli --> dataset
+```
+
+An import that goes against an arrow is a bug, and the test suite checks the package graph with a small import-linter rule so that it cannot drift.
+
+## What happens in a run, step by step
+
+The command opens the SBOM and hands it to the parser, which raises an input error (exit code 2) if the format or the schema version is not supported. The resolver normalises each component's Package URL, builds the graph and asks the mapping layer for a repository per package; a package with no resolvable repository is kept with confidence none and is still evaluated on the registry side. The collectors run next, in parallel per host with the rate limits described in `05-collectors.md`, and every response is written to the snapshot before anything derives from it, so that a crash in a later stage leaves a complete snapshot behind. When all collectors have finished or given up, the manifest is written and the snapshot digest is fixed. The rule engine then loads the snapshot, the rule set and the baselines, evaluates every signal for every component and returns states; the explainer turns states into findings and renders them. Attestation, if asked for, is the last step and the only one that needs the artefact digests. Every stage logs one line per component at debug level and one summary line at info level, with the run identifier on every line, so that a run can be followed in CI logs without reading the snapshot.
 
 ## Invariants
 

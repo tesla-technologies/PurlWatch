@@ -50,4 +50,8 @@ A release starts with a signed tag `vX.Y.Z` on `main`. Continuous integration bu
 
 ## Running it
 
+## Conventions that save time later
+
+Configuration comes from environment variables and from a single optional TOML file, never from both for the same key, and the command prints the effective configuration at debug level. Errors are typed: input errors, offline misses and network failures are distinct exception classes mapped to the exit codes in `08-outputs.md`, and a collector never catches an exception it cannot turn into a recorded fact. Logging is structured, one JSON object per line when `--log-json` is given, always with the run identifier, and nothing that could be a handle or an e-mail address is logged above debug level. Time is always UTC and always ISO 8601 with a trailing Z; the only place a local time appears is the terminal report, and only when the user asks for it. Every public function in `core` and `signals` has a docstring that states what it reads from the snapshot and what it never reads, because that boundary is the project's main correctness argument. Fixtures are small: a packument fixture is trimmed to the versions the test needs, with a comment saying which ones were removed.
+
 The prototype offers one command, `auratrace resolve --sbom examples/node-app.cdx.json`, with `--json` for machine output and `--offline snapshots/<id>.tar` for replay. The funded project adds `scan`, which produces findings and their renderings, `attest`, which signs them for a given subject, and `verify`, which checks a bundle against a trust root and optionally replays its snapshot. The command name changes with the project name.

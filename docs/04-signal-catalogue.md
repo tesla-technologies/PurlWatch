@@ -12,6 +12,30 @@ A rights grant, written A below, is the date on which an identity obtained publi
 
 S1 fires when a new identity gains publish or merge rights and one of two branches holds for the previous maintainers. In the drop branch, their share in W2 minus their share in W1 is more negative than the ninetieth percentile of such drops across all rights-grant anchors in the calibration corpus, and both windows contain at least the commit floor. In the floor branch, W2 contains fewer non-bot commits than the floor and the previous maintainers are inactive in it. The state persists for twenty-four months from A, with a decay that lowers the level from warn to info after twelve months, a reset when the previous maintainers return above their W1 share for six months, and hysteresis so that single-month noise does not flip it.
 
+```mermaid
+flowchart TD
+    A["A new identity gains publish or merge rights at date A"] --> W["Take the previous maintainers and the two windows W1 and W2 before A"]
+    W --> F{"Fewer non-bot commits than the floor in W2?"}
+    F -- yes --> I{"Previous maintainers inactive in W2?"}
+    I -- yes --> FIRE["S1 fires, floor branch"]
+    I -- no --> NO["S1 does not fire"]
+    F -- no --> D{"Share in W2 minus share in W1 more negative than the corpus p90 of drops?"}
+    D -- yes --> FIRE2["S1 fires, drop branch"]
+    D -- no --> NO
+```
+
+```mermaid
+stateDiagram-v2
+    [*] --> Quiet
+    Quiet --> Warn: branch holds at A
+    Warn --> Info: twelve months after A, decay
+    Info --> Quiet: twenty four months after A, expiry
+    Warn --> Quiet: previous maintainers back above their W1 share for six months, reset
+    Info --> Quiet: same reset
+```
+
+The flowchart is the decision at the moment of the rights grant; the state diagram is what happens afterwards. Hysteresis means that the reset condition must hold for six consecutive months, so a single busy month by the old maintainer does not switch the state off and on.
+
 The evidence comes from the npm `_npmUser` and `maintainers` fields per version, from the crates.io `published_by` field per version and the current owners in the dump, from git authors and committers, and from the forge-asserted actors of push and release events in the ClickHouse public GitHub events dataset, which derives from GH Archive.
 
 In xz-utils the organisation membership dates from 28 October 2022; Collin's last tagged release was 5.4.1 on 11 January 2023 and Jia Tan's first was 5.4.2 on 18 March 2023. Jia Tan also authored every GitHub release object from the first one on 13 December 2022, so release-object authorship shows no change and the tagger does. In event-stream the new account published 3.3.5 on 5 September 2018 and the previous maintainer had no commits in the twelve months before, which is the floor branch.
@@ -55,5 +79,9 @@ E3 records the presence of a security policy and an OpenSSF Security Insights fi
 Per default signal the target is at most two per cent of packages warned on a matched control set, reported with confidence intervals. Per SBOM, which is the binding target, at most three per cent of components may carry any default warning on the three reference SBOMs named in M1, a Node web application, a Rust command-line tool and a Node command-line tool; defaults are demoted in order of their contribution until the aggregate holds. Warn rate is defined per package at the snapshot date and, for a pinned version, also at that version's publish date, which is what was knowable then, and both are reported.
 
 ## Research the definitions draw on
+
+## Adding or changing a signal
+
+A signal is three artefacts that move together: its entry in the specification under `spec/`, which states the definition, the evidence it needs, the threshold idea and its known limits; its rule in `packages/signals`, a pure function from snapshot facts and baselines to a state; and its fixture, a recorded snapshot of a package on which the rule is expected to fire and one on which it is expected to stay quiet. The specification entry comes first and goes through the issue and comment process described in `CONTRIBUTING.md`, because a reviewer or a maintainer of an affected package must be able to read what the rule does without reading code. The rule then implements that entry and nothing more, and it records in every finding the rule version it belongs to. A threshold change bumps the minor version, a definition change the major version, and either one invalidates the control-set result of the previous version, so the warn rate is measured again before the new version ships as a default. Experimental signals follow the same path but skip the control-set gate until someone proposes promoting them.
 
 Zimmermann and colleagues (USENIX Security 2019) on the risks of the npm ecosystem; Zahan and colleagues (ICSE-SEIP 2022) on weak links in npm; Coelho and Valente (FSE 2017) on why modern open source projects fail; Avelino and colleagues (ICPC 2016 and 2019) on truck factor and abandonment; Ladisa and colleagues (IEEE S&P 2023) for the attack taxonomy; Ohm and colleagues (DIMVA 2020) and Duan and colleagues (NDSS 2021) for malicious-package corpora; Vu and colleagues, LastPyMile (FSE 2021), for source-artefact mismatch; Coelho and colleagues (ESEM 2018) on unmaintained projects; Pinckney and colleagues, npm-follower (FSE 2023), for historical packuments; and the CHAOSS metric definitions.

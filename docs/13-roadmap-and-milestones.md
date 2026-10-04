@@ -14,6 +14,25 @@ The project runs for ten months with two engineers in parallel and part-time doc
 | M6, validation | 8 to 10 | 100 | the validation report with frozen snapshots and the prospective register |
 | M7, GitLab template, documentation and release | 9 to 10 | 60 | the GitLab template, the documentation, the response to the security review, the PyPI package, the container image and version 1.0 |
 
+```mermaid
+gantt
+    title Milestones, assuming a start on 1 April 2027
+    dateFormat YYYY-MM-DD
+    axisFormat %b %Y
+    section Specification
+    M1 specification and catalogue :m1, 2027-04-01, 60d
+    section Engineering
+    M2 ingestion and temporal store :m2, 2027-05-01, 120d
+    M3 engine, baselines, data set v0 :m3, 2027-07-01, 90d
+    M4 signed assessment, threat model :m4, 2027-09-01, 60d
+    M5 data set v1, GitHub Action :m5, 2027-09-01, 120d
+    section Validation and release
+    M6 validation :m6, 2027-11-01, 90d
+    M7 GitLab template, docs, v1.0 :m7, 2027-12-01, 60d
+```
+
+The start date is an assumption; NLnet's decision is expected in March or April 2027 and the Memorandum of Understanding fixes the real calendar. The overlaps are deliberate: the researcher's milestones (M1, M3, M6) and the engineer's (M2, M4, M5) run side by side, and M3 cannot finish before M2 has delivered the collectors it needs.
+
 The lead engineer owns M2, M4, M5 and the CI template and packaging part of M7, which is four hundred and fifty hours. The security researcher owns M1, M3 and M6, which is three hundred and thirty hours. Documentation takes the remaining twenty hours in M7. By activity, engineering is five hundred and ninety hours, specification and documentation one hundred and ten, and validation one hundred.
 
 If time runs short, scope is reduced in a fixed order: the container image goes first, the GitLab template second, and the crates.io coverage of the data set third, with npm staying.

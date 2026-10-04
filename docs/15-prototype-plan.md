@@ -4,11 +4,46 @@ The prototype exists to give the application public evidence that the team can e
 
 ## What done looks like
 
+```mermaid
+flowchart LR
+    S["examples/node-app.cdx.json"] --> P["core: parse, PURL graph"]
+    P --> M["core: map package to repository, confidence"]
+    P --> N["collectors: npm packument"]
+    P --> Cr["collectors: crates.io versions and owners"]
+    M --> E["core: ecosyste.ms repository link"]
+    N --> Snap[("snapshot")]
+    Cr --> Snap
+    E --> Snap
+    Snap --> H["core: keyed hashes of handles"]
+    H --> Out["cli resolve: text or JSON rows"]
+```
+
 Running `auratrace resolve --sbom examples/node-app.cdx.json` prints one block per component. For an npm package the block shows the Package URL, the resolved repository and its confidence, and then one line per version with its publication date, the keyed hash of the publishing account, whether that account was a person or a trusted publisher, and the keyed hashes of the maintainers field at that version. For a crates.io package it shows the same, with the owners marked as current only. For a Package URL without a registry, such as `pkg:generic/xz@5.6.1`, it shows the declared repository with medium confidence and notes that only the repository path applies.
 
 The command works on the three example SBOMs committed under `examples/`, a Node web application, a Rust command-line tool and a Node command-line tool, and on the project's own SBOM along the repository path. With `--offline` and a snapshot it reproduces the same output without the network; the offline mode against the published data set comes later, in M5. With `--json` it emits the mapping and publisher-history rows defined in `03-data-model.md`, validated against the schemas in `schemas/`. No e-mail address appears in output, fixtures or snapshots; handles appear only inside snapshots and keyed hashes in the output. Continuous integration runs ruff, mypy, pytest with recorded fixtures, schema validation, the replay test and the sign-off check, and it is green on `main`.
 
 ## The week
+
+```mermaid
+gantt
+    title The prototype week
+    dateFormat YYYY-MM-DD
+    axisFormat %a
+    section Both
+    Workspace, CI, sign-off check, new name :2026-10-05, 1d
+    Snapshot writer and reader, offline, replay test :2026-10-08, 2d
+    Schemas, contract tests, README usage, tag :2026-10-09, 1d
+    section Engineer A
+    SBOM parsing and PURL normalisation :2026-10-05, 2d
+    Package to repository mapping :2026-10-07, 2d
+    Keyed hash identifiers :2026-10-08, 1d
+    section Engineer B
+    npm packument collector :2026-10-06, 2d
+    crates.io collector :2026-10-07, 1d
+    resolve command and renderers :2026-10-09, 1d
+```
+
+The dates assume the week of Monday 5 October 2026 so that the tag exists on Friday 9 October, the date the application calendar needs.
 
 | Day | Who | Work |
 | --- | --- | --- |

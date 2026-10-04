@@ -32,6 +32,42 @@ The subject is the set of release artefacts; the SBOM is an input referenced by 
 
 ## Signing modes
 
+```mermaid
+sequenceDiagram
+    participant CI as CI job on a public repository
+    participant Tool as tool attest
+    participant Act as actions/attest or sigstore-python
+    participant Ful as Fulcio
+    participant Rek as Rekor
+    CI->>Tool: findings, artefact digests, snapshot digest
+    Tool->>Tool: build in-toto Statement, canonical JSON
+    Tool->>Act: sign DSSE envelope, keyless
+    Act->>Ful: OIDC identity, short-lived certificate
+    Ful-->>Act: certificate
+    Act->>Rek: upload entry
+    Rek-->>Act: inclusion proof with integrated time
+    Act-->>Tool: Sigstore bundle
+    Tool-->>CI: attestation.sigstore.json
+```
+
+```mermaid
+sequenceDiagram
+    participant Aud as Auditor
+    participant Ver as tool verify
+    participant TR as trust root, public good or GitHub
+    participant Snap as snapshot from the attesting party
+    Aud->>Ver: bundle, trust root choice, snapshot
+    Ver->>TR: check certificate chain and log entry or timestamp
+    TR-->>Ver: valid, signing time
+    Ver->>Ver: compare input digests with SBOM, rule set, baselines, snapshot
+    Ver->>Snap: replay rules offline
+    Snap-->>Ver: findings
+    Ver->>Ver: compare bytes with the attested findings
+    Ver-->>Aud: verdict and which guarantees the mode gives
+```
+
+The first diagram is the public keyless path; on a private repository the Fulcio and Rekor roles are played by GitHub's own instance and the inclusion proof is replaced by a signed timestamp. The second diagram is the same for every mode and is what an auditor runs years later.
+
 For a public repository on GitHub, actions/attest signs the statement with the Sigstore public-good instance and records it in Rekor, whose entry gives the signing time; actions/attest accepts a custom predicate type and predicate path. Outside GitHub the sigstore-python library does the same through its API, because the `sigstore attest` command accepts only SLSA predicate types. Verification runs offline with sigstore-python against the public-good trust root, using its offline and trust-configuration options.
 
 For a private repository, which requires GitHub Enterprise Cloud, actions/attest uses GitHub's own Sigstore instance, which according to GitHub's documentation has no transparency log and federates only with GitHub Actions, and which according to Sigstore's documentation embeds a signed timestamp from GitHub's timestamp authority. Verification then runs against an exported GitHub trust root.
