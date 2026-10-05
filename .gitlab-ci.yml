@@ -1,0 +1,53 @@
+default:
+  image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
+variables:
+  UV_CACHE_DIR: "$CI_PROJECT_DIR/.uv_cache"
+
+cache:
+  key:
+    files:
+      - uv.lock
+      - .pre-commit-config.yaml
+  paths:
+    - .uv_cache/
+
+stages:
+  - lint
+  - test
+  - release
+
+.rules-push-and-mr:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.rules-tag-only:
+  rules:
+    - if: $CI_COMMIT_TAG
+
+pre-commit:
+  stage: lint
+  extends: .rules-push-and-mr
+  before_script:
+    - apt-get update && apt-get install -y git
+    - uv sync --frozen
+  script:
+    - uv run pre-commit run --all-files
+
+test:
+  stage: test
+  extends: .rules-push-and-mr
+  scripts:
+    - uv run pytest --record-mode=none
+
+tags:
+  stage: release
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - uv build --all-packages
+  artifacts:
+    paths:
+      - dist/
+      - packages/*/dist/

@@ -1,0 +1,52 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "publisher-history",
+    "title": "",
+    "description": "",
+    "type": "object",
+    "additionalProperties": true,
+    "required": ["purl", "published_at", "publisher_kind", 
+    "maintainers_hids", "owners_current_only", "source", "observed_at", "release"],
+    "properties": {
+        "purl": {
+            "description": "",
+            "type": "string"
+        },
+        "published_at": {
+            "description": "",
+            "type": "string",
+            "format": "date-time"
+        },
+        "published_hid": {
+            "description": "",
+            "type": "string"
+        },
+        "publisher_kind": {
+            "description": "",
+            "type": "string",
+            "enum": ["account", "trusted_published", "unknown"]
+        },
+        "maintainers_hids": {
+            "description": "",
+            "type": "array"
+        },
+        "owners_current_only": {
+            "description": "",
+            "type": "boolean"
+        },
+        "source": {
+            "description": "",
+            "type": "string",
+            "enum": ["live", "wayback", "dump"]
+        },
+        "observed_at": {
+            "description": "",
+            "type": "string",
+            "format": "date-time"
+        },
+        "release": {
+            "description": "",
+            "type": "string"
+        }
+    }
+}
