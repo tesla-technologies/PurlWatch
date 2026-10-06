@@ -1,10 +1,14 @@
 import json
 import sys
 from collections import defaultdict
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
 from cyclonedx.model.bom import Bom
+from cyclonedx.model.component import (
+    Component as CycloneDXComponent,
+)
 from spdx_tools.spdx.parser.parse_anything import parse_file
 
 
@@ -62,12 +66,23 @@ def cyclone_parser(sbom: Path) -> list[Component]:
 
             deps_map[origen_ref] = lista_destinos
 
-    for component in bom.components:
+        parsed_list = cyclone_recursive_list(bom.components, deps_map)
+
+    return parsed_list
+
+
+def cyclone_recursive_list(
+    components_list: Iterable[CycloneDXComponent], deps_map: dict[str, list[str]]
+) -> list[Component]:
+    parsed_list = []
+    for component in components_list:
         name = component.name
         purl = str(component.purl) if component.purl else ""
-        dep_edges = DepEdges(
-            component.bom_ref.value, deps_map.get(component.bom_ref.value, [])
-        )
+        bom_ref = component.bom_ref.value or ""
+        dep_edges = DepEdges(bom_ref, deps_map.get(bom_ref, []))
+
+        if component.components:
+            parsed_list.extend(cyclone_recursive_list(component.components, deps_map))
 
         parsed_list.append(Component(name, purl, dep_edges))
 
