@@ -1,8 +1,7 @@
 [project]
 name = "auratrace-cli"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "Cli..."
 requires-python = ">=3.12"
 authors = [{ name = "Tesla Technologies & Software S.L." }]
 
@@ -10,6 +9,9 @@ dependencies = [
     "auratrace-core",
     "auratrace-collectors"
 ]
+
+[project.scripts]
+auratrace = "auratrace_cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.23,<0.13.0"]

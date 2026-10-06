@@ -14,7 +14,16 @@ members = [
     "auratrace-core",
     "auratrace-dataset",
     "auratrace-signals",
-    "code-supply",
+]
+
+[manifest.dependency-groups]
+dev = [
+    { name = "hypothesis", specifier = ">=6.168.4" },
+    { name = "mypy", specifier = ">=2.4.0" },
+    { name = "pre-commit", specifier = ">=4.6.2" },
+    { name = "pytest", specifier = ">=9.1.1" },
+    { name = "pytest-recording", specifier = ">=0.14.0" },
+    { name = "ruff", specifier = ">=0.16.10" },
 ]
 
 [[package]]
@@ -137,9 +146,9 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cyclonedx-python-lib", specifier = "==11" },
+    { name = "cyclonedx-python-lib", specifier = ">=11.4,<12" },
     { name = "packageurl-python", specifier = ">=0.17.6" },
-    { name = "spdx-tools", specifier = "==0.8" },
+    { name = "spdx-tools", specifier = ">=0.8.5,<0.9" },
 ]
 
 [[package]]
@@ -198,33 +207,6 @@ wheels = [
 ]
 
 [[package]]
-name = "code-supply"
-version = "0.1.0"
-source = { editable = "." }
-
-[package.dev-dependencies]
-dev = [
-    { name = "hypothesis" },
-    { name = "mypy" },
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pytest-recording" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "hypothesis", specifier = ">=6.168.4" },
-    { name = "mypy", specifier = ">=2.4.0" },
-    { name = "pre-commit", specifier = ">=4.6.2" },
-    { name = "pytest", specifier = ">=9.1.1" },
-    { name = "pytest-recording", specifier = ">=0.14.0" },
-    { name = "ruff", specifier = ">=0.16.10" },
-]
-
-[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -235,7 +217,7 @@ wheels = [
 
 [[package]]
 name = "cyclonedx-python-lib"
-version = "11.0.0"
+version = "11.12.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "license-expression" },
@@ -244,9 +226,9 @@ dependencies = [
     { name = "sortedcontainers" },
     { name = "typing-extensions", marker = "python_full_version < '3.13'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/86/62/c279a8470746be835c0860152737b61b9b7237df59b6c5c009a8d2ae6e40/cyclonedx_python_lib-11.0.0.tar.gz", hash = "sha256:d51d456c01cfc42378a2282ef35858fc809162ef13d8cce2af6c4d16f788217e", size = 1041433, upload-time = "2025-07-21T10:53:49.353Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/17/40/6509e6cfd7f2f3255501690f46375fdd224949e21fd1e96f4f4c8a9041b1/cyclonedx_python_lib-11.12.0.tar.gz", hash = "sha256:16767c4039de90c04e9f03348f8f0ed4b8ff842eaa7eefcad3a95685f970dacf", size = 1445378, upload-time = "2026-08-13T07:52:18.675Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/41/59/b9887a55047a11eda49fa4f643ada302b8d757520810972ed5544f6a251b/cyclonedx_python_lib-11.0.0-py3-none-any.whl", hash = "sha256:4bcaebf381daf63c8a9badc7a7132704ed461b6822c4cc513beeb28ff95d7858", size = 381983, upload-time = "2025-07-21T10:53:47.443Z" },
+    { url = "https://files.pythonhosted.org/packages/cf/f0/b2cb999244f2f4194df63ecff6939228178fa63a33be809c412684ca8db7/cyclonedx_python_lib-11.12.0-py3-none-any.whl", hash = "sha256:0e807521a921a5c3cb8ce1153f8a61d29eedfe76a46aac2796b7c6b573391a54", size = 529453, upload-time = "2026-08-13T07:52:16.836Z" },
 ]
 
 [[package]]
@@ -845,7 +827,7 @@ wheels = [
 
 [[package]]
 name = "spdx-tools"
-version = "0.8.0"
+version = "0.8.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "beartype" },
@@ -858,9 +840,9 @@ dependencies = [
     { name = "uritools" },
     { name = "xmltodict" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f4/88/eaf9d0174a55f71349851a3da7b76e0c7fe6c88c510e7c860616346e721e/spdx-tools-0.8.0.tar.gz", hash = "sha256:66809bf78783b47147dcaf69a63bb9d561eb45e6b2ec15c2e8fe1550e24ae1cd", size = 496135, upload-time = "2023-07-25T07:32:44.315Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2f/99/33383f587b59cbd191cc1c0fd5408e550b9275e0090d32561cbddc973fdc/spdx_tools-0.8.5.tar.gz", hash = "sha256:be600beb2f762f0116025e05490d399e724f668bef84025a7c421bb266688bdb", size = 696323, upload-time = "2026-03-13T09:29:23.155Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/21/02/60d95c27ceca35ce4a7c91620229db4cb131cacd3ae202984cfe320b2adf/spdx_tools-0.8.0-py3-none-any.whl", hash = "sha256:d57669c2e66f3ba2bfe253a3d9952e8761858e1af4084cd5bec43994099eda9d", size = 283918, upload-time = "2023-07-25T07:32:41.883Z" },
+    { url = "https://files.pythonhosted.org/packages/88/f5/1ac402e1f8d253fa60ac167c4a1fb7eeb0f29a04942788e2d43c984cd749/spdx_tools-0.8.5-py3-none-any.whl", hash = "sha256:7c2d5865941be9d2e898f5b084e8d5422dd298dc5a29320ddb198fec304f59c4", size = 286573, upload-time = "2026-03-13T09:29:20.907Z" },
 ]
 
 [[package]]

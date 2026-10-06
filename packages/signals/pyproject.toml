@@ -1,17 +1,13 @@
 [project]
 name = "auratrace-signals"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "Signals..."
 requires-python = ">=3.12"
 authors = [{ name = "Tesla Technologies & Software S.L." }]
 
 dependencies = [
 
 ]
-
-[project.scripts]
-code-supply = "code_supply:main"
 
 [build-system]
 requires = ["uv_build>=0.12.23,<0.13.0"]
