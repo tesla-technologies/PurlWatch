@@ -3,6 +3,7 @@ default:
 
 variables:
   UV_CACHE_DIR: "$CI_PROJECT_DIR/.uv_cache"
+  PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
 
 cache:
   key:
@@ -11,6 +12,7 @@ cache:
       - .pre-commit-config.yaml
   paths:
     - .uv_cache/
+    - PRE_COMMIT_HOME
 
 stages:
   - lint
@@ -38,11 +40,24 @@ pre-commit:
 test:
   stage: test
   extends: .rules-push-and-mr
-  scripts:
+  script:
+    - uv sync --all-packages --frozen
     - uv run pytest --record-mode=none
 
-tags:
+check-signoff:
+  stage: lint
+  variables:
+    GIT_DEPTH: 0
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  before_script:
+    - apt-get update && apt-get install -y git
+  script:
+    - python scripts/check_signoff.py
+
+build:
   stage: release
+  extends: .rules-tag-only
   rules:
     - if: $CI_COMMIT_TAG
   script:

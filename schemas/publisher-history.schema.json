@@ -4,27 +4,28 @@
     "title": "",
     "description": "",
     "type": "object",
-    "additionalProperties": true,
+    "additionalProperties": false,
     "required": ["purl", "published_at", "publisher_kind", 
     "maintainers_hids", "owners_current_only", "source", "observed_at", "release"],
     "properties": {
         "purl": {
             "description": "",
-            "type": "string"
+            "type": "string",
+            "pattern": "^pkg*"
         },
         "published_at": {
             "description": "",
             "type": "string",
             "format": "date-time"
         },
-        "published_hid": {
+        "publisher_hid": {
             "description": "",
-            "type": "string"
+            "type": ["string", "null"]
         },
         "publisher_kind": {
             "description": "",
             "type": "string",
-            "enum": ["account", "trusted_published", "unknown"]
+            "enum": ["account", "trusted_publisher", "unknown"]
         },
         "maintainers_hids": {
             "description": "",
