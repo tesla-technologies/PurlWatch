@@ -26,7 +26,7 @@ repos:
       entry: uv run python scripts/email-scan.py
       language: system
       files: \.(py|md|json|toml|yml|yaml)$
-      exclude: ^(CODE_OF_CONDUCT\.md|SECURITY\.md)$
+      exclude: ^(CODE_OF_CONDUCT\.md|SECURITY\.md|packages/core/tests/fixtures/sbom/[^/]+\.json)$
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.10
     hooks:
