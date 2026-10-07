@@ -8,6 +8,7 @@ from cyclonedx.model.bom import Bom
 from cyclonedx.model.component import (
     Component as CycloneDXComponent,
 )
+from packageurl import PackageURL
 from spdx_tools.spdx.parser.parse_anything import parse_file
 
 
@@ -57,9 +58,10 @@ def parse_sbom(sbom: Path) -> parsedSBOM:
             elif "spdxVersion" in raw_json and raw_json["spdxVersion"] in spdx_versions:
                 return spdx_parser(sbom)
             else:
-                raise UnsupportedFormatError("Format not supported")
-    except (json.JSONDecodeError, KeyError, TypeError, ValueError) as err:
-        raise InvalidStructureError("JSON format it´s not valid") from err
+                raise UnsupportedFormatError("Format or version not supported")
+    except UnsupportedFormatError as err:
+        print(f"Error: {err}", file=sys.stderr)
+        sys.exit(2)
 
 
 def cyclone_parser(sbom: Path) -> parsedSBOM:
@@ -73,7 +75,7 @@ def cyclone_parser(sbom: Path) -> parsedSBOM:
             root_component.name,
             root_component.version,
             root_component.bom_ref.value or None,
-            str(root_component.purl) or None,
+            parse_purl(root_component.purl) or None,
         )
 
     parsed_sbom = parsedSBOM(
@@ -106,7 +108,7 @@ def cyclone_recursive_list(
     for component in components_list:
         name = component.name
         version = component.version
-        purl = str(component.purl) if component.purl else None
+        purl = parse_purl(component.purl)
         bom_ref = component.bom_ref.value or None
 
         if component.components:
@@ -155,7 +157,7 @@ def spdx_parser(sbom: Path) -> parsedSBOM:
         for ref in external_refs:
             ref_type = ref.reference_type
             if ref_type == "purl":
-                purl = ref.locator
+                purl = parse_purl(ref.locator)
                 break
 
         if described_ids[0] and pkg.spdx_id == described_ids[0]:
@@ -164,6 +166,18 @@ def spdx_parser(sbom: Path) -> parsedSBOM:
             parsed_sbom.comp_list.append(Component(name, version, pkg.spdx_id, purl))
 
     return parsed_sbom
+
+
+def parse_purl(purl: PackageURL | str | None) -> str | None:
+    if not purl:
+        return None
+
+    if isinstance(purl, str):
+        purl_obj = PackageURL.from_string(purl)
+    else:
+        purl_obj = purl
+
+    return PackageURL.to_string(purl_obj)
 
 
 def main() -> None:

@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from auratrace_core.parser import UnsupportedFormatError, parse_sbom
+from auratrace_core.parser import parse_sbom
 
 TEST_DIR = Path(__file__).parent
 
@@ -36,5 +36,6 @@ def test_sbom_parser_content(
 
 
 def test_sbom_invalid_version_error() -> None:
-    with pytest.raises(UnsupportedFormatError):
+    with pytest.raises(SystemExit) as exc_info:
         parse_sbom(Path(f"{TEST_DIR}/fixtures/sbom/wrong-version.cdx.json"))
+    assert exc_info.value.code == 2
