@@ -22,6 +22,7 @@ class Version:
 class Fact:
     name: str
     current_owners: list[str] | None
+    repository: str | None
     versions: dict[str, Version]
     owners_current_only: bool
 
@@ -59,7 +60,11 @@ def parse_fact(raw_json: dict[str, Any]) -> Fact:
         dict_versions[v_key] = version
 
     return Fact(
-        raw_json.get("name", ""), raw_json.get("maintainers", []), dict_versions, False
+        raw_json.get("name", ""),
+        raw_json.get("maintainers", []),
+        raw_json.get("repository", {}).get("url", None),
+        dict_versions,
+        False,
     )
 
 

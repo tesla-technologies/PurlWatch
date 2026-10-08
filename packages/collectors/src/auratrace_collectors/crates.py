@@ -28,8 +28,9 @@ class Version:
 
 @dataclass(frozen=True)
 class Fact:
-    name: str
+    name: str | None
     current_owners: list[str] | None
+    repository: str | None
     versions: dict[str, Version]
     owners_current_only: bool
 
@@ -56,8 +57,9 @@ def parse_fact(versions: dict[str, Any], owners: dict[str, Any]) -> Fact:
         dict_versions[v_data.get("num", "")] = Version(time, publisher, [], yanked)
 
     return Fact(
-        versions.get("crate", {}).get("name", ""),
+        versions.get("crate", {}).get("name", None),
         owners.get("users"),
+        versions.get("repository", None),
         dict_versions,
         True,
     )
