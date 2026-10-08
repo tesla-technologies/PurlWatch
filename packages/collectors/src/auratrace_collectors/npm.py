@@ -13,7 +13,7 @@ import httpx
 @dataclass(frozen=True)
 class Version:
     time: str
-    _npmUser: str | None
+    publisher: str | None
     maintainers: list[str]
     trusted_publishing: bool
 
@@ -21,6 +21,7 @@ class Version:
 @dataclass(frozen=True)
 class Fact:
     name: str
+    current_owners: list[str] | None
     versions: dict[str, Version]
     owners_current_only: bool
 
@@ -57,7 +58,9 @@ def parse_fact(raw_json: dict[str, Any]) -> Fact:
         version = Version(time, npm_user, maintainers, is_trusted_publishing)
         dict_versions[v_key] = version
 
-    return Fact(raw_json.get("name", ""), dict_versions, False)
+    return Fact(
+        raw_json.get("name", ""), raw_json.get("maintainers", []), dict_versions, False
+    )
 
 
 def replay(data: Path) -> Fact:
@@ -67,7 +70,7 @@ def replay(data: Path) -> Fact:
     return parse_fact(raw_json)
 
 
-def collect(name: str, client: httpx.Client) -> Fact:
+def collect(name: str, client: httpx.Client) -> tuple[Fact, Record]:
     headers = {"User-Agent": "auratrace/0.1.0"}
     encoded_name = quote(name, safe="")
     url = f"https://registry.npmjs.org/{encoded_name}"
@@ -86,9 +89,8 @@ def collect(name: str, client: httpx.Client) -> Fact:
         time = datetime.now(timezone.utc).isoformat()
 
         record = Record(url, time, response.status_code, headers, digest)
-        print(f"[RECORD]:\n{record}")
 
-        return parse_fact(json.loads(sanitized_text))
+        return parse_fact(json.loads(sanitized_text)), record
     except httpx.HTTPStatusError as err:
         if err.response.status_code == 404:
             raise PackageNotFound(f"Package '{name}' was not found") from err
