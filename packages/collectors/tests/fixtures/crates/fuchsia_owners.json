@@ -1,0 +1,40 @@
+{
+  "users": [
+    {
+      "kind": "user",
+      "id": 9,
+      "login": "erickt",
+      "url": "https://github.com/erickt",
+      "name": "Erick Tryzelaar",
+      "avatar": "https://avatars.githubusercontent.com/u/84711?v=4",
+      "github_username_matches": true
+    },
+    {
+      "kind": "user",
+      "id": 5149,
+      "login": "cramertj",
+      "url": "https://github.com/cramertj",
+      "name": "Taylor Cramer",
+      "avatar": "https://avatars.githubusercontent.com/u/5963049?v=4",
+      "github_username_matches": true
+    },
+    {
+      "kind": "user",
+      "id": 9728,
+      "login": "raggi",
+      "url": "https://github.com/raggi",
+      "name": "James Tucker",
+      "avatar": "https://avatars.githubusercontent.com/u/348?v=4",
+      "github_username_matches": true
+    },
+    {
+      "kind": "user",
+      "id": 104949,
+      "login": "djkoloski",
+      "url": "https://github.com/djkoloski",
+      "name": "David Koloski",
+      "avatar": "https://avatars.githubusercontent.com/u/7554649?v=4",
+      "github_username_matches": true
+    }
+  ]
+}
