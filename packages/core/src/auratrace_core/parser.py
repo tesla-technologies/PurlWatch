@@ -112,9 +112,7 @@ def cyclone_recursive_list(
         bom_ref = component.bom_ref.value or None
 
         if component.components:
-            parsed_sbom.comp_list.extend(
-                cyclone_recursive_list(component.components, parsed_sbom).comp_list
-            )
+            cyclone_recursive_list(component.components, parsed_sbom)
 
         parsed_sbom.comp_list.append(Component(name, version, bom_ref, purl))
 
