@@ -27,7 +27,7 @@ class Component:
 
 
 @dataclass(frozen=True)
-class parsedSBOM:
+class ParsedSBOM:
     format: str
     version: str
     root_comp: Component | None
@@ -36,14 +36,14 @@ class parsedSBOM:
 
 
 class UnsupportedFormatError(Exception):
-    """Se lanza cuando el formato o versión del archivo no está soportado."""
+    """Raised when file format or version it´s not supported."""
 
 
 class InvalidStructureError(Exception):
-    """Se lanza cuando el contenido del archivo no cumple la estructura esperada."""
+    """Raised when file structure it´s not the expected one"""
 
 
-def parse_sbom(sbom: Path) -> parsedSBOM:
+def parse_sbom(sbom: Path) -> ParsedSBOM:
     if not sbom.exists():
         raise FileNotFoundError("Not SBOM was added")
 
@@ -64,7 +64,7 @@ def parse_sbom(sbom: Path) -> parsedSBOM:
         sys.exit(2)
 
 
-def cyclone_parser(sbom: Path) -> parsedSBOM:
+def cyclone_parser(sbom: Path) -> ParsedSBOM:
     json_data = json.loads(sbom.read_text(encoding="utf-8"))
     bom: Bom = Bom.from_json(data=json_data)  # type: ignore[attr-defined]
 
@@ -78,7 +78,7 @@ def cyclone_parser(sbom: Path) -> parsedSBOM:
             parse_purl(root_component.purl) or None,
         )
 
-    parsed_sbom = parsedSBOM(
+    parsed_sbom = ParsedSBOM(
         "CycloneDX",
         json_data.get("specVersion", ""),
         parsed_root or None,
@@ -102,8 +102,8 @@ def cyclone_parser(sbom: Path) -> parsedSBOM:
 
 
 def cyclone_recursive_list(
-    components_list: Iterable[CycloneDXComponent], parsed_sbom: parsedSBOM
-) -> parsedSBOM:
+    components_list: Iterable[CycloneDXComponent], parsed_sbom: ParsedSBOM
+) -> ParsedSBOM:
 
     for component in components_list:
         name = component.name
@@ -121,11 +121,11 @@ def cyclone_recursive_list(
     return parsed_sbom
 
 
-def spdx_parser(sbom: Path) -> parsedSBOM:
+def spdx_parser(sbom: Path) -> ParsedSBOM:
     """Accepted rel_types are DEPENDS_ON, CONTAINS and DYNAMIC_LINK"""
     doc = parse_file(str(sbom))
 
-    parsed_sbom = parsedSBOM(
+    parsed_sbom = ParsedSBOM(
         "SPDX",
         doc.creation_info.spdx_version,
         root_comp=None,
@@ -178,20 +178,3 @@ def parse_purl(purl: PackageURL | str | None) -> str | None:
         purl_obj = purl
 
     return PackageURL.to_string(purl_obj)
-
-
-def main() -> None:
-    target_path = Path(sys.argv[1]).expanduser().resolve()
-    if not target_path.exists():
-        print(f"Error: File does not exist: {target_path}")
-        return
-
-    if not target_path.is_file():
-        print(f"Error: Path {target_path} it´s not a file.")
-        return
-
-    print(parse_sbom(target_path))
-
-
-if __name__ == "__main__":
-    main()
