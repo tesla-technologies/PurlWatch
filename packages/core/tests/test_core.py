@@ -12,6 +12,7 @@ TEST_DIR = Path(__file__).parent
         (f"{TEST_DIR}/fixtures/sbom/no-purl.cdx.json", 3, 0, 3, 2),
         (f"{TEST_DIR}/fixtures/sbom/spdx.json", 4, 1, 3, 7),
         (f"{TEST_DIR}/fixtures/sbom/purl.cdx.json", 3, 3, 0, 1),
+        (f"{TEST_DIR}/fixtures/sbom/nested.cdx.json", 6, 0, 6, 0),
     ],
 )
 def test_sbom_parser_content(
