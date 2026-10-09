@@ -144,11 +144,11 @@ def spdx_parser(sbom: Path) -> ParsedSBOM:
             target = str(rel.related_spdx_element_id)
             parsed_sbom.dependencies.append(Dependency(source, target))
         elif rel_type == "DESCRIBES":
-            described_ids.append(rel.spdx_element_id)
+            described_ids.append(rel.related_spdx_element_id)
 
     for pkg in doc.packages:
         name = pkg.name
-        version = getattr(pkg, "version_info", None)
+        version = getattr(pkg, "version", None)
 
         purl = None
         external_refs = pkg.external_references
@@ -158,8 +158,10 @@ def spdx_parser(sbom: Path) -> ParsedSBOM:
                 purl = parse_purl(ref.locator)
                 break
 
-        if described_ids[0] and pkg.spdx_id == described_ids[0]:
-            replace(parsed_sbom, root_comp=Component(name, version, pkg.spdx_id, purl))
+        if len(described_ids) > 0 and pkg.spdx_id == described_ids[0]:
+            parsed_sbom = replace(
+                parsed_sbom, root_comp=Component(name, version, pkg.spdx_id, purl)
+            )
         else:
             parsed_sbom.comp_list.append(Component(name, version, pkg.spdx_id, purl))
 
