@@ -1,9 +1,9 @@
 import json
-import sys
 from collections.abc import Iterable
 from dataclasses import dataclass, replace
 from pathlib import Path
 
+from cyclonedx.exception import CycloneDxException
 from cyclonedx.model.bom import Bom
 from cyclonedx.model.component import (
     Component as CycloneDXComponent,
@@ -59,9 +59,10 @@ def parse_sbom(sbom: Path) -> ParsedSBOM:
                 return spdx_parser(sbom)
             else:
                 raise UnsupportedFormatError("Format or version not supported")
-    except UnsupportedFormatError as err:
-        print(f"Error: {err}", file=sys.stderr)
-        sys.exit(2)
+    except UnsupportedFormatError:
+        raise UnsupportedFormatError("Format or version not supported")
+    except (CycloneDxException, KeyError) as err:
+        raise InvalidStructureError(f"File structure it´s not valid: {err}")
 
 
 def cyclone_parser(sbom: Path) -> ParsedSBOM:
