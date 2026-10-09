@@ -96,7 +96,7 @@ def cyclone_parser(sbom: Path) -> ParsedSBOM:
             else:
                 parsed_sbom.dependencies.append(Dependency(source, None))
 
-        parsed_sbom = cyclone_recursive_list(bom.components, parsed_sbom)
+    parsed_sbom = cyclone_recursive_list(bom.components, parsed_sbom)
 
     return parsed_sbom
 
