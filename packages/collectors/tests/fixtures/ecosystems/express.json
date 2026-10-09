@@ -1,0 +1,21 @@
+{
+  "id": 842109,
+  "name": "express",
+  "ecosystem": "npm",
+  "purl": "pkg:npm/express",
+  "description": "Fast, unopinionated, minimalist web framework",
+  "homepage": "https://expressjs.com",
+  "repository_url": "https://github.com/expressjs/express",
+  "normalized_licenses": [
+    "MIT"
+  ],
+  "status": null,
+  "latest_release_number": "4.18.2",
+  "latest_release_published_at": "2022-10-08T18:00:00.000Z",
+  "repo_metadata": {
+    "full_name": "expressjs/express",
+    "forks_count": 12500,
+    "stargazers_count": 62000,
+    "host_type": "GitHub"
+  }
+}
