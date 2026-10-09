@@ -51,7 +51,7 @@ def parse_fact(versions: dict[str, Any], owners: dict[str, Any]) -> Fact:
 
     for v_data in versions_json:
         time = v_data.get("created_at", "")
-        publisher = v_data.get("published_by", None)
+        publisher = (v_data.get("published_by", {}) or {}).get("login", None)
         yanked = v_data.get("yanked", False)
 
         dict_versions[v_data.get("num", "")] = Version(time, publisher, [], yanked)
@@ -59,7 +59,7 @@ def parse_fact(versions: dict[str, Any], owners: dict[str, Any]) -> Fact:
     return Fact(
         versions.get("crate", {}).get("name", None),
         owners.get("users"),
-        versions.get("repository", None),
+        versions.get("crate", {}).get("repository", None),
         dict_versions,
         True,
     )
