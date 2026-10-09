@@ -54,15 +54,26 @@ def parse_fact(raw_json: dict[str, Any]) -> Fact:
         time = json_time.get(v_key, "")
         npm_user = (v_data.get("_npmUser") or {}).get("name")
         maintainers = v_data.get("maintainers", [])
-        is_trusted_publishing = "attestations" in v_data.get("dist", {})
+        is_trusted_publishing = npm_user == "GitHub Actions" and bool(
+            v_data.get("trustedPublisher")
+        )
 
         version = Version(time, npm_user, maintainers, is_trusted_publishing)
         dict_versions[v_key] = version
 
+    repo_data = raw_json.get("repository")
+    repository = None
+    if isinstance(repo_data, dict):
+        repository = repo_data.get("url")
+    elif isinstance(repo_data, str):
+        repository = repo_data
+    else:
+        repository = None
+
     return Fact(
         raw_json.get("name", ""),
         raw_json.get("maintainers", []),
-        raw_json.get("repository", {}).get("url", None),
+        repository,
         dict_versions,
         False,
     )
