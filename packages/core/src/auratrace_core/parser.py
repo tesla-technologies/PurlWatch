@@ -132,6 +132,7 @@ def spdx_parser(sbom: Path) -> ParsedSBOM:
         dependencies=[],
     )
     rel_types = ["DEPENDS_ON", "CONTAINS", "DYNAMIC_LINK"]
+    reverse_rel_types = ["DEPENDENCY_OF", "DEV_DEPENDENCY_OF"]
 
     described_ids = []
     for rel in doc.relationships:
@@ -143,6 +144,10 @@ def spdx_parser(sbom: Path) -> ParsedSBOM:
         if rel_type in rel_types:
             source = rel.spdx_element_id
             target = str(rel.related_spdx_element_id)
+            parsed_sbom.dependencies.append(Dependency(source, target))
+        elif rel_type in reverse_rel_types:
+            source = str(rel.related_spdx_element_id)
+            target = rel.spdx_element_id
             parsed_sbom.dependencies.append(Dependency(source, target))
         elif rel_type == "DESCRIBES":
             described_ids.append(rel.related_spdx_element_id)
