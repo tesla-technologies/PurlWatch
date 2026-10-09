@@ -1,6 +1,6 @@
 import json
 from collections.abc import Iterable
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from pathlib import Path
 
 from cyclonedx.exception import CycloneDxException
@@ -79,32 +79,32 @@ def cyclone_parser(sbom: Path) -> ParsedSBOM:
             parse_purl(root_component.purl) or None,
         )
 
-    parsed_sbom = ParsedSBOM(
-        "CycloneDX",
-        json_data.get("specVersion", ""),
-        parsed_root or None,
-        comp_list=[],
-        dependencies=[],
-    )
-
+    dependencies = []
+    comp_list: list[Component] = []
     if bom.dependencies:
         for dependency in bom.dependencies:
             source = dependency.ref.value
             depends_list = [child.ref.value for child in dependency.dependencies]
             if len(depends_list) > 0:
                 for target in depends_list:
-                    parsed_sbom.dependencies.append(Dependency(source, target))
+                    dependencies.append(Dependency(source, target))
             else:
-                parsed_sbom.dependencies.append(Dependency(source, None))
+                dependencies.append(Dependency(source, None))
 
-    parsed_sbom = cyclone_recursive_list(bom.components, parsed_sbom)
+    comp_list = cyclone_recursive_list(bom.components, comp_list)
 
-    return parsed_sbom
+    return ParsedSBOM(
+        "CycloneDX",
+        json_data.get("specVersion", ""),
+        parsed_root,
+        comp_list,
+        dependencies,
+    )
 
 
 def cyclone_recursive_list(
-    components_list: Iterable[CycloneDXComponent], parsed_sbom: ParsedSBOM
-) -> ParsedSBOM:
+    components_list: Iterable[CycloneDXComponent], sbom_list: list[Component]
+) -> list[Component]:
 
     for component in components_list:
         name = component.name
@@ -113,27 +113,21 @@ def cyclone_recursive_list(
         bom_ref = component.bom_ref.value or None
 
         if component.components:
-            cyclone_recursive_list(component.components, parsed_sbom)
+            cyclone_recursive_list(component.components, sbom_list)
 
-        parsed_sbom.comp_list.append(Component(name, version, bom_ref, purl))
+        sbom_list.append(Component(name, version, bom_ref, purl))
 
-    return parsed_sbom
+    return sbom_list
 
 
 def spdx_parser(sbom: Path) -> ParsedSBOM:
     """Accepted rel_types are DEPENDS_ON, CONTAINS and DYNAMIC_LINK"""
     doc = parse_file(str(sbom))
 
-    parsed_sbom = ParsedSBOM(
-        "SPDX",
-        doc.creation_info.spdx_version,
-        root_comp=None,
-        comp_list=[],
-        dependencies=[],
-    )
     rel_types = ["DEPENDS_ON", "CONTAINS", "DYNAMIC_LINK"]
     reverse_rel_types = ["DEPENDENCY_OF", "DEV_DEPENDENCY_OF"]
 
+    dependencies = []
     described_ids = []
     for rel in doc.relationships:
         rel_type = (
@@ -144,14 +138,16 @@ def spdx_parser(sbom: Path) -> ParsedSBOM:
         if rel_type in rel_types:
             source = rel.spdx_element_id
             target = str(rel.related_spdx_element_id)
-            parsed_sbom.dependencies.append(Dependency(source, target))
+            dependencies.append(Dependency(source, target))
         elif rel_type in reverse_rel_types:
             source = str(rel.related_spdx_element_id)
             target = rel.spdx_element_id
-            parsed_sbom.dependencies.append(Dependency(source, target))
+            dependencies.append(Dependency(source, target))
         elif rel_type == "DESCRIBES":
             described_ids.append(rel.related_spdx_element_id)
 
+    root_comp = None
+    comp_list = []
     for pkg in doc.packages:
         name = pkg.name
         version = getattr(pkg, "version", None)
@@ -165,13 +161,13 @@ def spdx_parser(sbom: Path) -> ParsedSBOM:
                 break
 
         if len(described_ids) > 0 and pkg.spdx_id == described_ids[0]:
-            parsed_sbom = replace(
-                parsed_sbom, root_comp=Component(name, version, pkg.spdx_id, purl)
-            )
+            root_comp = Component(name, version, pkg.spdx_id, purl)
         else:
-            parsed_sbom.comp_list.append(Component(name, version, pkg.spdx_id, purl))
+            comp_list.append(Component(name, version, pkg.spdx_id, purl))
 
-    return parsed_sbom
+    return ParsedSBOM(
+        "SPDX", doc.creation_info.spdx_version, root_comp, comp_list, dependencies
+    )
 
 
 def parse_purl(purl: PackageURL | str | None) -> str | None:
