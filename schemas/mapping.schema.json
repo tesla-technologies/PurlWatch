@@ -1,0 +1,50 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "mapping",
+    "title": "",
+    "description": "",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["purl", "forge", 
+    "confidence", "sources_agreeing", "sources", "observed_at", "release"],
+    "properties": {
+        "purl": {
+            "description": "",
+            "type": "string",
+            "pattern": "^pkg*"
+        },
+        "repository": {
+            "description": "",
+            "type": ["string", "null"]
+        },
+        "forge": {
+            "description": "",
+            "type": "string",
+            "enum": ["github", "gitlab", "codeberg", "sourcehut", "gitea", "other", "unknown"]
+        },
+        "confidence": {
+            "description": "",
+            "type": "string",
+            "enum": ["high", "medium", "low", "none"]
+        },
+        "sources_agreeing": {
+            "description": "",
+            "type": "integer",
+            "minimum": 0 
+        },
+        "sources": {
+            "description": "",
+            "type": "array",
+            "enum": ["registry", "ecosystems", "depsdev", "provenance"]
+        },
+        "observed_at": {
+            "description": "",
+            "type": "string",
+            "format": "date-time"
+        },
+        "release": {
+            "description": "",
+            "type": "string"
+        }
+    }
+}

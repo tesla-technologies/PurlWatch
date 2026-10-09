@@ -1,0 +1,23 @@
+[dependency-groups]
+dev = [
+    "hypothesis>=6.168.4",
+    "mypy>=2.4.0",
+    "pre-commit>=4.6.2",
+    "pytest>=9.1.1",
+    "pytest-recording>=0.14.0",
+    "ruff>=0.16.10",
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+    "packages/*/tests"
+]
+addopts = "--record-mode=once"
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.mypy]
+strict = true
+files = ["packages"]

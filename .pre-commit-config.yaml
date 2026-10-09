@@ -1,0 +1,34 @@
+default_install_hook_types:
+  - pre-commit
+  - commit-msg
+
+repos:
+-   repo: local
+    hooks:
+    - id: mypy
+      name: Mypy
+      entry: uv run mypy
+      language: system
+      types: [python]
+      require_serial: true
+      pass_filenames: false
+
+    - id: check-signoff
+      name: Verificar Sign-off en el commit
+      entry: 'Signed-off-by:'
+      language: pygrep
+      args: [--negate]
+      stages: [commit-msg]
+
+    - id: email-scan
+      name: Scan for email addresses
+      description: This hooks scans commited files searching for email addresses.
+      entry: uv run python scripts/email-scan.py
+      language: system
+      files: \.(py|md|json|toml|yml|yaml)$
+      exclude: ^(CODE_OF_CONDUCT\.md|SECURITY\.md)$
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.10
+    hooks:
+    - id: ruff-check
+    - id: ruff-format
