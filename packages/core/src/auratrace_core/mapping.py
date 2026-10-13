@@ -1,6 +1,7 @@
 import re
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
 from urllib.parse import urlparse
@@ -50,7 +51,6 @@ def normalize_url(url: str) -> str | None:
 
     final_url = f"https://{forge}/{owner}/{repo}"
 
-    print(final_url)
     return final_url
 
 
@@ -75,9 +75,9 @@ def extract_map_fields(candidates: list[tuple[str, str]]) -> dict[str, Any]:
     if len(candidates) == 1:
         return {
             "repository": candidates[0][1],
-            "forge": urlparse(repository).netloc,
+            "forge": urlparse(candidates[0][1]).netloc,
             "confidence": Confidence.MEDIUM
-            if candidates[0][0] == "provenance"
+            if candidates[0][0] != "provenance"
             else Confidence.HIGH,
             "sources_agreeing": 1,
             "sources": sources,
@@ -112,3 +112,16 @@ def extract_map_fields(candidates: list[tuple[str, str]]) -> dict[str, Any]:
         "sources_agreeing": sources_agreeing,
         "sources": sources,
     }
+
+
+def map_to_repo(purl: str, fields: dict[str, Any], release: str) -> Map:
+    return Map(
+        purl=purl,
+        repository=fields["repository"],
+        forge=fields["forge"],
+        confidence=fields["confidence"],
+        sources_agreeing=fields["sources_agreeing"],
+        sources=fields["sources"],
+        observed_at=datetime.now(timezone.utc).isoformat(),
+        release=release,
+    )
