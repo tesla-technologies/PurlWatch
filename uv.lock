@@ -128,11 +128,15 @@ name = "auratrace-collectors"
 version = "0.1.0"
 source = { editable = "packages/collectors" }
 dependencies = [
+    { name = "auratrace-core" },
     { name = "httpx" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "httpx", specifier = ">=0.28.1" }]
+requires-dist = [
+    { name = "auratrace-core", editable = "packages/core" },
+    { name = "httpx", specifier = ">=0.28.1" },
+]
 
 [[package]]
 name = "auratrace-core"

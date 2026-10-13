@@ -6,9 +6,13 @@ requires-python = ">=3.12"
 authors = [{ name = "Tesla Technologies & Software S.L." }]
 
 dependencies = [
+    "auratrace-core",
     "httpx>=0.28.1",
 ]
 
 [build-system]
 requires = ["uv_build>=0.12.23,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.uv.sources]
+auratrace-core = { workspace = true }
