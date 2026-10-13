@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from auratrace_core.mapping import normalize_url
+from auratrace_core.mapping import extract_map_fields, normalize_url
 from auratrace_core.parser import UnsupportedFormatError, parse_sbom
 
 TEST_DIR = Path(__file__).parent
@@ -57,3 +57,60 @@ def test_normalized_url(url: str, normalized: str) -> None:
     result = normalize_url(url)
 
     assert result == normalized
+
+
+@pytest.mark.parametrize(
+    ("candidates", "confidence"),
+    [
+        ([], "none"),
+        (
+            [
+                ("ecosystems", "https://github.com/nuevo-org/repo"),
+                ("depsdev", "https://github.com/nuevo-org/repo"),
+                ("registry", "https://github.com/viejo-org/repo"),
+            ],
+            "low",
+        ),
+        (
+            [
+                ("ecosystems", "https://github.com/candidato-a/repo"),
+                ("depsdev", "https://bitbucket.org/candidato-b/repo"),
+            ],
+            "low",
+        ),
+        (
+            [
+                ("ecosystems", "https://github.com/candidato-a/repo"),
+            ],
+            "medium",
+        ),
+        (
+            [
+                ("ecosystems", "https://github.com/nuevo-org/repo"),
+                ("depsdev", "https://github.com/nuevo-org/repo"),
+                ("registry", "https://github.com/nuevo-org/repo"),
+            ],
+            "high",
+        ),
+        (
+            [
+                ("ecosystems", "https://github.com/nuevo-org/repo"),
+                ("depsdev", "https://github.com/nuevo-org/repo"),
+                ("provenance", "https://github.com/viejo-org/repo"),
+            ],
+            "high",
+        ),
+        (
+            [
+                ("provenance", "https://github.com/candidato-a/repo"),
+            ],
+            "high",
+        ),
+    ],
+)
+def test_confidence_from_candidates(
+    candidates: list[tuple[str, str]], confidence: str
+) -> None:
+    result = extract_map_fields(candidates)["confidence"]
+
+    assert result.value == confidence
