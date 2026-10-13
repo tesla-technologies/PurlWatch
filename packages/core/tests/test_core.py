@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from auratrace_core.mapping import normalize_url
 from auratrace_core.parser import UnsupportedFormatError, parse_sbom
 
 TEST_DIR = Path(__file__).parent
@@ -39,3 +40,20 @@ def test_sbom_parser_content(
 def test_sbom_invalid_version_error() -> None:
     with pytest.raises(UnsupportedFormatError):
         parse_sbom(Path(f"{TEST_DIR}/fixtures/sbom/wrong-version.cdx.json"))
+
+
+@pytest.mark.parametrize(
+    ("url", "normalized"),
+    [
+        (
+            "git+https://github.com/dcousens/is-sorted.git",
+            "https://github/dcousens/is-sorted",
+        ),
+        ("git://github.com/isaacs/inherits.git", "https://github/isaacs/inherits"),
+        ("https://github.com/reem/rust-void.git", "https://github/reem/rust-void"),
+    ],
+)
+def test_normalized_url(url: str, normalized: str) -> None:
+    result = normalize_url(url)
+
+    assert result == normalized
