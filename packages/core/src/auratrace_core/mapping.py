@@ -1,6 +1,9 @@
 import re
+from collections import defaultdict
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any
+from urllib.parse import urlparse
 
 
 class Forge(Enum):
@@ -49,3 +52,63 @@ def normalize_url(url: str) -> str | None:
 
     print(final_url)
     return final_url
+
+
+def extract_map_fields(candidates: list[tuple[str, str]]) -> dict[str, Any]:
+    """In case of low confidence the repository is decided through votes.
+    If there is a draw, the registry source has priority deciding the source"""
+    repository = None
+    forge = None
+    confidence = Confidence.NONE
+    sources_agreeing = 0
+    sources = [source for source, _ in candidates]
+
+    if not candidates:
+        return {
+            "repository": repository,
+            "forge": forge,
+            "confidence": Confidence.NONE,
+            "sources_agreeing": sources_agreeing,
+            "sources": sources,
+        }
+
+    if len(candidates) == 1:
+        return {
+            "repository": candidates[0][1],
+            "forge": urlparse(repository).netloc,
+            "confidence": Confidence.MEDIUM
+            if candidates[0][0] == "provenance"
+            else Confidence.HIGH,
+            "sources_agreeing": 1,
+            "sources": sources,
+        }
+
+    confidence_dict: defaultdict[str, list[str]] = defaultdict(list)
+    for src, url in candidates:
+        confidence_dict[url].append(src)
+
+    for url, source in confidence_dict.items():
+        if ("provenance" in source) or ("registry" in source and len(source) > 1):
+            confidence = Confidence.HIGH
+            repository = url
+            sources_agreeing = len(source)
+            break
+
+    if confidence != Confidence.HIGH:
+        confidence = Confidence.LOW
+        repository = max(
+            confidence_dict,
+            key=lambda url: (
+                len(confidence_dict[url]),
+                "registry" in confidence_dict[url],
+            ),
+        )
+        sources_agreeing = len(confidence_dict[repository])
+
+    return {
+        "repository": repository,
+        "forge": urlparse(repository).netloc,
+        "confidence": confidence,
+        "sources_agreeing": sources_agreeing,
+        "sources": sources,
+    }
