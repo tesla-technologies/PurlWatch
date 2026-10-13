@@ -75,7 +75,7 @@ def extract_map_fields(candidates: list[tuple[str, str]]) -> dict[str, Any]:
     if len(candidates) == 1:
         return {
             "repository": candidates[0][1],
-            "forge": urlparse(candidates[0][1]).netloc,
+            "forge": extract_forge(candidates[0][1]),
             "confidence": Confidence.MEDIUM
             if candidates[0][0] != "provenance"
             else Confidence.HIGH,
@@ -107,11 +107,23 @@ def extract_map_fields(candidates: list[tuple[str, str]]) -> dict[str, Any]:
 
     return {
         "repository": repository,
-        "forge": urlparse(repository).netloc,
+        "forge": extract_forge(repository),
         "confidence": confidence,
         "sources_agreeing": sources_agreeing,
         "sources": sources,
     }
+
+
+def extract_forge(url: str | None) -> Forge:
+    if url is None:
+        return Forge.UNKNOWN
+
+    str_forge = urlparse(url).netloc
+    forge = Forge.UNKNOWN
+    if str_forge in {item.value for item in Forge}:
+        forge = Forge(str_forge)
+
+    return forge
 
 
 def map_to_repo(purl: str, fields: dict[str, Any], release: str) -> Map:
