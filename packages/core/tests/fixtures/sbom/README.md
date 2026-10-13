@@ -1,0 +1,1 @@
+This SBOM files are from the CycloneDX usercontent github of the `cyclonedx-python-lib` and the github of the `spdx-tools`.
