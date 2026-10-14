@@ -139,7 +139,7 @@ class SnapshotReader:
             )
         index_list = json.load(index_file)
 
-        self._index = {entry["key"]: entry for entry in index_list}
+        self._index = {entry["path"]: entry for entry in index_list}
 
     def get_document(self, key: str) -> tuple[dict[str, Any], dict[str, Any]]:
         if key not in self._index:
@@ -154,7 +154,7 @@ class SnapshotReader:
         body = body_file.read()
         body_json = json.loads(body)
 
-        if hashlib.sha256(body).hexdigest() != entry["digest"]:
+        if hashlib.sha256(body).hexdigest() != entry["sha256"]:
             raise ValueError(f"Digest mismatch for: {key}")
 
         return body_json, entry
