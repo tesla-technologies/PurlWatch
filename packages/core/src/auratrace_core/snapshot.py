@@ -141,7 +141,7 @@ class SnapshotReader:
 
         self._index = {entry["key"]: entry for entry in index_list}
 
-    def get_document(self, key: str) -> tuple[bytes, dict[str, Any]]:
+    def get_document(self, key: str) -> tuple[dict[str, Any], dict[str, Any]]:
         if key not in self._index:
             raise ReaderFileNotFoundError(f"Data was not found for: {key}")
 
@@ -152,11 +152,12 @@ class SnapshotReader:
             raise ReaderFileNotFoundError(f"File missing in archive for key: {key}")
 
         body = body_file.read()
+        body_json = json.loads(body)
 
         if hashlib.sha256(body).hexdigest() != entry["digest"]:
             raise ValueError(f"Digest mismatch for: {key}")
 
-        return body, entry
+        return body_json, entry
 
     def close(self) -> None:
         self.tar.close()
