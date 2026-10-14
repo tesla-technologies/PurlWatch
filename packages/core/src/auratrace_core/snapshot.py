@@ -5,6 +5,11 @@ import tarfile
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
+
+
+class ReaderFileNotFoundError(Exception):
+    """Raises when a file it´s not found by it´s key in a Snapshot"""
 
 
 @dataclass(frozen=True)
@@ -108,3 +113,50 @@ class SnapshotWriter:
         ti.uname = ""
         ti.gname = ""
         return ti
+
+
+class SnapshotReader:
+    def __init__(self, tar: str, sbom: Path):
+        self.tar = tarfile.open(tar, "r")  # noqa: SIM115
+
+        manifest_file = self.tar.extractfile("manifest.json")
+        if not manifest_file:
+            raise ReaderFileNotFoundError(
+                f"File manifest.json was not found for tar {tar}"
+            )
+        self.manifest = json.load(manifest_file)
+        with open(sbom, "rb") as s:
+            if (
+                hashlib.file_digest(s, hashlib.sha256).hexdigest()
+                != self.manifest["sbom_digest"]
+            ):
+                raise ValueError("Digest mismatch for SBOM")
+
+        index_file = self.tar.extractfile("index.json")
+        if not index_file:
+            raise ReaderFileNotFoundError(
+                f"File index.json was not found for tar {tar}"
+            )
+        index_list = json.load(index_file)
+
+        self._index = {entry["key"]: entry for entry in index_list}
+
+    def get_document(self, key: str) -> tuple[bytes, dict[str, Any]]:
+        if key not in self._index:
+            raise ReaderFileNotFoundError(f"Data was not found for: {key}")
+
+        entry = self._index[key]
+
+        body_file = self.tar.extractfile(entry["path"])
+        if body_file is None:
+            raise ReaderFileNotFoundError(f"File missing in archive for key: {key}")
+
+        body = body_file.read()
+
+        if hashlib.sha256(body).hexdigest() != entry["digest"]:
+            raise ValueError(f"Digest mismatch for: {key}")
+
+        return body, entry
+
+    def close(self) -> None:
+        self.tar.close()
