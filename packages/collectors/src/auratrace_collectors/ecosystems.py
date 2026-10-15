@@ -23,7 +23,10 @@ def replay(reader: SnapshotReader, key: str) -> str | None:
     response, _ = reader.get_document(key)
     parsed_response = json.loads(response)
 
-    return parse_fact(parsed_response)
+    if not parsed_response:
+        return None
+
+    return parse_fact(parsed_response[0])
 
 
 def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> str | None:
@@ -52,7 +55,10 @@ def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> str | No
             sanitized_text,
         )
 
-        return parse_fact(json.loads(sanitized_text))
+        sanitized_data = json.loads(sanitized_text)
+        if not sanitized_data:
+            return None
+        return parse_fact(sanitized_data[0])
     except httpx.HTTPStatusError as err:
         if err.response.status_code == 404:
             raise PackageNotFound(f"Package '{name}' was not found") from err
