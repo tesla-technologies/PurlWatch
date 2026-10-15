@@ -27,11 +27,12 @@ class Snapshot:
 
 
 class SnapshotWriter:
-    def __init__(self, execution_id: str):
+    def __init__(self, execution_id: str, base_path: Path, out_path: Path):
         self.execution_id: str = execution_id + "atwriter"
         self.start_time = datetime.now(timezone.utc).isoformat()
         self._index: list[Snapshot] = []
-        self._base_path: Path = Path("tmp/auratrace/")
+        self._base_path: Path = base_path or Path("tmp/auratrace/")
+        self._out_path: Path = out_path or Path("snapshots")
 
     def add_document(
         self,
@@ -89,7 +90,7 @@ class SnapshotWriter:
             files, key=lambda path: path.relative_to(self._base_path).as_posix()
         )
 
-        snapshots_dir = Path("snapshots")
+        snapshots_dir = self._out_path
         snapshots_dir.mkdir(exist_ok=True)
         tar_path = snapshots_dir / f"{self.execution_id}.tar"
         with tarfile.open(tar_path, "w") as tar:
@@ -116,7 +117,7 @@ class SnapshotWriter:
 
 
 class SnapshotReader:
-    def __init__(self, tar: str, sbom: Path):
+    def __init__(self, tar: Path, sbom: Path):
         self.tar = tarfile.open(tar, "r")  # noqa: SIM115
 
         manifest_file = self.tar.extractfile("manifest.json")

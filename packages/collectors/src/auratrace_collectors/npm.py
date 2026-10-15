@@ -1,13 +1,11 @@
 import json
 import re
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from hashlib import sha256
-from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
 import httpx
+from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
 
 
 @dataclass(frozen=True)
@@ -25,15 +23,6 @@ class Fact:
     repository: str | None
     versions: dict[str, Version]
     owners_current_only: bool
-
-
-@dataclass(frozen=True)
-class Record:
-    url: str
-    time: str
-    status: int
-    headers: dict[str, str]
-    digest: str
 
 
 class PackageNotFound(Exception):
@@ -79,14 +68,13 @@ def parse_fact(raw_json: dict[str, Any]) -> Fact:
     )
 
 
-def replay(data: Path) -> Fact:
-    with open(data, "r", encoding="utf-8") as s:
-        raw_json = json.load(s)
+def replay(reader: SnapshotReader, key: str) -> Fact:
+    response = reader.get_document(key)
 
-    return parse_fact(raw_json)
+    return parse_fact(response[0])
 
 
-def collect(name: str, client: httpx.Client) -> tuple[Fact, Record]:
+def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> Fact:
     headers = {"User-Agent": "auratrace/0.1.0"}
     encoded_name = quote(name, safe="")
     url = f"https://registry.npmjs.org/{encoded_name}"
@@ -101,12 +89,17 @@ def collect(name: str, client: httpx.Client) -> tuple[Fact, Record]:
             r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "<EMAIL>", text
         )
 
-        digest = sha256(sanitized_text.encode("utf-8")).hexdigest()
-        time = datetime.now(timezone.utc).isoformat()
+        writer.add_document(
+            "npm",
+            "0.1.0",
+            f"npm/{encoded_name}/packument.json",
+            url,
+            response.status_code,
+            headers,
+            sanitized_text,
+        )
 
-        record = Record(url, time, response.status_code, headers, digest)
-
-        return parse_fact(json.loads(sanitized_text)), record
+        return parse_fact(json.loads(sanitized_text))
     except httpx.HTTPStatusError as err:
         if err.response.status_code == 404:
             raise PackageNotFound(f"Package '{name}' was not found") from err
