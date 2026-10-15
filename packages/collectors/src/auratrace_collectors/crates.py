@@ -1,13 +1,11 @@
 import json
 import re
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from hashlib import sha256
-from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
 import httpx
+from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
 
 
 class PackageNotFound(Exception):
@@ -35,15 +33,6 @@ class Fact:
     owners_current_only: bool
 
 
-@dataclass(frozen=True)
-class Record:
-    url: str
-    time: str
-    status: int
-    headers: dict[str, str]
-    digest: str
-
-
 def parse_fact(versions: dict[str, Any], owners: dict[str, Any]) -> Fact:
     versions_json = versions.get("versions", {})
 
@@ -65,16 +54,17 @@ def parse_fact(versions: dict[str, Any], owners: dict[str, Any]) -> Fact:
     )
 
 
-def replay(versions: Path, owners: Path) -> Fact:
-    with open(versions, "r", encoding="utf-8") as v:
-        versions_json = json.load(v)
-    with open(owners, "r", encoding="utf-8") as o:
-        owners_json = json.load(o)
+def replay(reader: SnapshotReader, key_v: str, key_o: str) -> Fact:
+    response_v, _ = reader.get_document(key_v)
+    response_o, _ = reader.get_document(key_o)
 
-    return parse_fact(versions_json, owners_json)
+    parsed_response_v = json.loads(response_v)
+    parsed_response_o = json.loads(response_o)
+
+    return parse_fact(parsed_response_v, parsed_response_o)
 
 
-def collect(name: str, client: httpx.Client) -> tuple[Fact, list[Record]]:
+def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> Fact:
     headers = {"User-Agent": "auratrace/0.1.0"}
     encoded_name = quote(name, safe="")
     url = f"https://crates.io/api/v1/crates/{encoded_name}"
@@ -85,14 +75,20 @@ def collect(name: str, client: httpx.Client) -> tuple[Fact, list[Record]]:
         v_response.raise_for_status()
 
         text = v_response.text
-        v_sanitized_text = re.sub(
+        v_sanitized_text, v_count = re.subn(
             r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "<EMAIL>", text
         )
 
-        digest = sha256(v_sanitized_text.encode("utf-8")).hexdigest()
-        time = datetime.now(timezone.utc).isoformat()
-
-        v_record = Record(url, time, v_response.status_code, headers, digest)
+        writer.add_document(
+            "crates.io",
+            "0.1.0",
+            f"cargo/{encoded_name}/versions_crate.json",
+            url,
+            v_response.status_code,
+            dict(v_response.headers),
+            v_count > 0,
+            v_sanitized_text,
+        )
 
     except httpx.HTTPStatusError as err:
         if err.response.status_code == 404:
@@ -111,15 +107,19 @@ def collect(name: str, client: httpx.Client) -> tuple[Fact, list[Record]]:
         o_response.raise_for_status()
 
         text = o_response.text
-        o_sanitized_text = re.sub(
+        o_sanitized_text, o_count = re.subn(
             r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "<EMAIL>", text
         )
 
-        digest = sha256(o_sanitized_text.encode("utf-8")).hexdigest()
-        time = datetime.now(timezone.utc).isoformat()
-
-        o_record = Record(
-            url + "/owners", time, o_response.status_code, headers, digest
+        writer.add_document(
+            "crates.io",
+            "0.1.0",
+            f"cargo/{encoded_name}/owners_crate.json",
+            url,
+            o_response.status_code,
+            dict(o_response.headers),
+            o_count > 0,
+            o_sanitized_text,
         )
 
     except httpx.HTTPStatusError as err:
@@ -133,7 +133,4 @@ def collect(name: str, client: httpx.Client) -> tuple[Fact, list[Record]]:
             f"Request failed trying to connect to crates.io server: {err}"
         ) from err
 
-    return parse_fact(json.loads(v_sanitized_text), json.loads(o_sanitized_text)), [
-        v_record,
-        o_record,
-    ]
+    return parse_fact(json.loads(v_sanitized_text), json.loads(o_sanitized_text))

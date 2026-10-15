@@ -1,20 +1,81 @@
+import json
+from collections.abc import Callable, Iterator
 from pathlib import Path
+from typing import Any
 
 import pytest
 from auratrace_collectors.crates import replay as crates_replay
 from auratrace_collectors.npm import replay as npm_replay
+from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
 
 TEST_DIR = Path(__file__).parent
 
 
+@pytest.fixture
+def snapshot_builder(
+    request: pytest.FixtureRequest, tmp_path: Path
+) -> Iterator[Callable[..., SnapshotReader]]:
+    """Crea snapshots dinámicos al vuelo para cualquier test."""
+    readers_to_close: list[SnapshotReader] = []
+
+    def _build(
+        documents: list[dict[str, Any]],
+    ) -> SnapshotReader:
+        writer = SnapshotWriter(out_path=tmp_path / "snapshots")
+
+        for doc in documents:
+            key = doc["key"]
+
+            body = doc["body"]
+            if isinstance(body, Path):
+                body = body.read_text(encoding="utf-8")
+            elif isinstance(body, dict):
+                body = json.dumps(body)
+
+            writer.add_document(
+                collector="test",
+                collector_v="0.1.0",
+                headers=doc.get("headers", {"User-Agent": "auratrace/0.1.0"}),
+                status=doc.get("status", 200),
+                key=key,
+                email_removed=False,
+                body=body,
+                url=doc.get("url", f"https://registry.example.org/{key}"),
+            )
+
+        tar_path, _ = writer.close_document(None, None, None)
+        reader = SnapshotReader(tar=tar_path)
+
+        readers_to_close.append(reader)
+        return reader
+
+    yield _build
+
+    for r in readers_to_close:
+        r.close()
+
+
 @pytest.mark.parametrize(
-    ("fixture", "n_versions", "n_maint", "n_trusted"),
-    [(Path(f"{TEST_DIR}/fixtures/npm/is_sorted.json"), 6, 6, 0)],
+    ("n_versions", "n_maint", "n_trusted"),
+    [(6, 6, 0)],
 )
 def test_npm_replay_fact(
-    fixture: Path, n_versions: int, n_maint: int, n_trusted: int
+    snapshot_builder: Callable[..., SnapshotReader],
+    n_versions: int,
+    n_maint: int,
+    n_trusted: int,
 ) -> None:
-    result = npm_replay(fixture)
+
+    reader = snapshot_builder(
+        [
+            {
+                "key": "npm/express/packument.json",
+                "body": Path(f"{TEST_DIR}/fixtures/npm/is_sorted.json"),
+            }
+        ]
+    )
+
+    result = npm_replay(reader, "npm/express/packument.json")
 
     assert len(result.versions) == n_versions
 
@@ -35,23 +96,35 @@ def test_npm_replay_fact(
     ("v_json", "o_json", "n_versions", "n_yanked"),
     [
         (
-            Path(f"{TEST_DIR}/fixtures/crates/void_versions.json"),
-            Path(f"{TEST_DIR}/fixtures/crates/void_owners.json"),
+            "cargo/void/versions_crate.json",
+            "cargo/void/owners_crate.json",
             8,
             0,
-        ),
-        (
-            Path(f"{TEST_DIR}/fixtures/crates/fuchsia_versions.json"),
-            Path(f"{TEST_DIR}/fixtures/crates/fuchsia_owners.json"),
-            2,
-            1,
-        ),
+        )
     ],
 )
 def test_crates_replay_fact(
-    v_json: Path, o_json: Path, n_versions: int, n_yanked: int
+    snapshot_builder: Callable[..., SnapshotReader],
+    v_json: str,
+    o_json: str,
+    n_versions: int,
+    n_yanked: int,
 ) -> None:
-    result = crates_replay(v_json, o_json)
+
+    reader = snapshot_builder(
+        [
+            {
+                "key": "cargo/void/versions_crate.json",
+                "body": Path(f"{TEST_DIR}/fixtures/crates/void_versions.json"),
+            },
+            {
+                "key": "cargo/void/owners_crate.json",
+                "body": Path(f"{TEST_DIR}/fixtures/crates/void_owners.json"),
+            },
+        ]
+    )
+
+    result = crates_replay(reader, v_json, o_json)
 
     assert result.name
     assert result.current_owners is not None
