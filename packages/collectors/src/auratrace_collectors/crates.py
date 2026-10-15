@@ -55,10 +55,13 @@ def parse_fact(versions: dict[str, Any], owners: dict[str, Any]) -> Fact:
 
 
 def replay(reader: SnapshotReader, key_v: str, key_o: str) -> Fact:
-    response_v = reader.get_document(key_v)
-    response_o = reader.get_document(key_o)
+    response_v, _ = reader.get_document(key_v)
+    response_o, _ = reader.get_document(key_o)
 
-    return parse_fact(response_v[0], response_o[0])
+    parsed_response_v = json.loads(response_v)
+    parsed_response_o = json.loads(response_o)
+
+    return parse_fact(parsed_response_v, parsed_response_o)
 
 
 def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> Fact:
@@ -72,7 +75,7 @@ def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> Fact:
         v_response.raise_for_status()
 
         text = v_response.text
-        v_sanitized_text = re.sub(
+        v_sanitized_text, v_count = re.subn(
             r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "<EMAIL>", text
         )
 
@@ -82,7 +85,8 @@ def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> Fact:
             f"cargo/{encoded_name}/versions_crate.json",
             url,
             v_response.status_code,
-            headers,
+            dict(v_response.headers),
+            v_count > 0,
             v_sanitized_text,
         )
 
@@ -103,7 +107,7 @@ def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> Fact:
         o_response.raise_for_status()
 
         text = o_response.text
-        o_sanitized_text = re.sub(
+        o_sanitized_text, o_count = re.subn(
             r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "<EMAIL>", text
         )
 
@@ -113,7 +117,8 @@ def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> Fact:
             f"cargo/{encoded_name}/owners_crate.json",
             url,
             o_response.status_code,
-            headers,
+            dict(o_response.headers),
+            o_count > 0,
             o_sanitized_text,
         )
 

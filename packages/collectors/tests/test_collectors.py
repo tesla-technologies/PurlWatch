@@ -1,7 +1,5 @@
-import hashlib
 import json
 from collections.abc import Callable, Iterator
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -22,15 +20,8 @@ def snapshot_builder(
 
     def _build(
         documents: list[dict[str, Any]],
-        sbom_path: Path = Path(f"{TEST_DIR}/fixtures/test_sbom.json"),
     ) -> SnapshotReader:
-        with open(sbom_path, "rb") as f:
-            sbom_digest = hashlib.file_digest(f, hashlib.sha256).hexdigest()
-
-        exec_id = datetime.now(timezone.utc).isoformat()
-        writer = SnapshotWriter(
-            execution_id=exec_id, base_path=tmp_path, out_path=tmp_path / "snapshots"
-        )
+        writer = SnapshotWriter(out_path=tmp_path / "snapshots")
 
         for doc in documents:
             key = doc["key"]
@@ -47,12 +38,13 @@ def snapshot_builder(
                 headers=doc.get("headers", {"User-Agent": "auratrace/0.1.0"}),
                 status=doc.get("status", 200),
                 key=key,
+                email_removed=False,
                 body=body,
                 url=doc.get("url", f"https://registry.example.org/{key}"),
             )
 
-        tar_path, _ = writer.close_document("test", sbom_digest, "test-ruleset")
-        reader = SnapshotReader(tar=tar_path, sbom=sbom_path)
+        tar_path, _ = writer.close_document(None, None, None)
+        reader = SnapshotReader(tar=tar_path)
 
         readers_to_close.append(reader)
         return reader

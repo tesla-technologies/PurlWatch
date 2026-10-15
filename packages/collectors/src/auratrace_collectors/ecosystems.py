@@ -20,9 +20,10 @@ def parse_fact(raw_json: dict[str, Any]) -> str | None:
 
 
 def replay(reader: SnapshotReader, key: str) -> str | None:
-    response = reader.get_document(key)
+    response, _ = reader.get_document(key)
+    parsed_response = json.loads(response)
 
-    return parse_fact(response[0])
+    return parse_fact(parsed_response)
 
 
 def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> str | None:
@@ -36,7 +37,7 @@ def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> str | No
         response.raise_for_status()
 
         text = response.text
-        sanitized_text = re.sub(
+        sanitized_text, count = re.subn(
             r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "<EMAIL>", text
         )
 
@@ -46,7 +47,8 @@ def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> str | No
             f"ecosystems/{encoded_name}/metadata.json",
             url,
             response.status_code,
-            headers,
+            dict(response.headers),
+            count > 0,
             sanitized_text,
         )
 
