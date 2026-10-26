@@ -1,0 +1,134 @@
+interactions:
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      host:
+      - crates.io
+      user-agent:
+      - auratrace/0.1.0
+    method: GET
+    uri: https://crates.io/api/v1/crates/void
+  response:
+    body:
+      string: '{"categories":[],"crate":{"badges":[],"categories":[],"created_at":"2015-02-10T08:54:09.482359Z","default_version":"1.0.2","description":"The
+        uninhabited void type for use in statically impossible cases.","documentation":null,"downloads":130130581,"exact_match":false,"homepage":null,"id":"void","keywords":[],"links":{"owner_team":"/api/v1/crates/void/owner_team","owner_user":"/api/v1/crates/void/owner_user","owners":"/api/v1/crates/void/owners","reverse_dependencies":"/api/v1/crates/void/reverse_dependencies","version_downloads":"/api/v1/crates/void/downloads","versions":null},"max_stable_version":"1.0.2","max_version":"1.0.2","name":"void","newest_version":"1.0.2","num_versions":8,"recent_downloads":13596626,"repository":"https://github.com/reem/rust-void.git","trustpub_only":false,"updated_at":"2016-04-18T07:21:21.674123Z","versions":[25788,22467,22440,13183,11205,6933,4812,4811],"yanked":false},"keywords":[],"versions":[{"audit_actions":[],"bin_names":[],"checksum":"6a02e4885ed3bc0f2de90ea6dd45ebcbb66dacffe03547fadbb0eeae2770887d","crate":"void","crate_size":2356,"created_at":"2016-04-18T07:21:21.674123Z","description":"The
+        uninhabited void type for use in statically impossible cases.","dl_path":"/api/v1/crates/void/1.0.2/download","documentation":null,"downloads":129821153,"edition":null,"features":{"default":["std"],"std":[]},"has_lib":true,"homepage":null,"id":25788,"lib_links":null,"license":"MIT","linecounts":{"languages":{"Rust":{"code_lines":76,"comment_lines":0,"files":1}},"total_code_lines":76,"total_comment_lines":0},"links":{"authors":"/api/v1/crates/void/1.0.2/authors","dependencies":"/api/v1/crates/void/1.0.2/dependencies","version_downloads":"/api/v1/crates/void/1.0.2/downloads"},"num":"1.0.2","published_by":null,"readme_path":"/api/v1/crates/void/1.0.2/readme","repository":"https://github.com/reem/rust-void.git","rust_version":null,"trustpub_data":null,"updated_at":"2017-11-30T03:16:00.047553Z","yank_message":null,"yanked":false},{"audit_actions":[],"bin_names":[],"checksum":"bf1a31caf5a37d644b05946ac69108e2b39917aa5c203fd33eaf5b99adf8d2d2","crate":"void","crate_size":2259,"created_at":"2016-02-16T07:18:51.300886Z","description":"The
+        uninhabited void type for use in statically impossible cases.","dl_path":"/api/v1/crates/void/1.0.1/download","documentation":null,"downloads":49177,"edition":null,"features":{"default":["std"],"std":[]},"has_lib":true,"homepage":null,"id":22467,"lib_links":null,"license":"MIT","linecounts":{"languages":{"Rust":{"code_lines":71,"comment_lines":0,"files":1}},"total_code_lines":71,"total_comment_lines":0},"links":{"authors":"/api/v1/crates/void/1.0.1/authors","dependencies":"/api/v1/crates/void/1.0.1/dependencies","version_downloads":"/api/v1/crates/void/1.0.1/downloads"},"num":"1.0.1","published_by":null,"readme_path":"/api/v1/crates/void/1.0.1/readme","repository":"https://github.com/reem/rust-void.git","rust_version":null,"trustpub_data":null,"updated_at":"2017-11-30T03:56:43.042102Z","yank_message":null,"yanked":false},{"audit_actions":[],"bin_names":[],"checksum":"9190d4fdcc6b93d290236afff590896050a971233ec853958c0e52d42bdeb72c","crate":"void","crate_size":2257,"created_at":"2016-02-15T20:49:50.698165Z","description":"The
+        uninhabited void type for use in statically impossible cases.","dl_path":"/api/v1/crates/void/1.0.0/download","documentation":null,"downloads":81515,"edition":null,"features":{"default":["std"],"std":[]},"has_lib":true,"homepage":null,"id":22440,"lib_links":null,"license":"MIT","linecounts":{"languages":{"Rust":{"code_lines":70,"comment_lines":0,"files":1}},"total_code_lines":70,"total_comment_lines":0},"links":{"authors":"/api/v1/crates/void/1.0.0/authors","dependencies":"/api/v1/crates/void/1.0.0/dependencies","version_downloads":"/api/v1/crates/void/1.0.0/downloads"},"num":"1.0.0","published_by":null,"readme_path":"/api/v1/crates/void/1.0.0/readme","repository":"https://github.com/reem/rust-void.git","rust_version":null,"trustpub_data":null,"updated_at":"2017-11-30T03:37:04.382811Z","yank_message":null,"yanked":false},{"audit_actions":[],"bin_names":[],"checksum":"c6b6cda9ed9afc732c2cd0a818e43881f46e364715a5c2947b111e97cf17800a","crate":"void","crate_size":2141,"created_at":"2015-07-15T07:56:12.687848Z","description":"The
+        uninhabited void type for use in statically impossible cases.","dl_path":"/api/v1/crates/void/0.0.5/download","documentation":null,"downloads":68555,"edition":null,"features":{},"has_lib":true,"homepage":null,"id":13183,"lib_links":null,"license":"MIT","linecounts":{"languages":{"Rust":{"code_lines":66,"comment_lines":0,"files":1}},"total_code_lines":66,"total_comment_lines":0},"links":{"authors":"/api/v1/crates/void/0.0.5/authors","dependencies":"/api/v1/crates/void/0.0.5/dependencies","version_downloads":"/api/v1/crates/void/0.0.5/downloads"},"num":"0.0.5","published_by":null,"readme_path":"/api/v1/crates/void/0.0.5/readme","repository":"https://github.com/reem/rust-void.git","rust_version":null,"trustpub_data":null,"updated_at":"2017-11-30T03:07:51.329396Z","yank_message":null,"yanked":false},{"audit_actions":[],"bin_names":[],"checksum":"dd718bda4cf8ab80946de6570920f5388b113a61fef7acdeac2b1db7b2044413","crate":"void","crate_size":2091,"created_at":"2015-06-02T21:53:26.317849Z","description":"The
+        uninhabited void type for use in statically impossible cases.","dl_path":"/api/v1/crates/void/0.0.4/download","documentation":null,"downloads":3600,"edition":null,"features":{},"has_lib":true,"homepage":null,"id":11205,"lib_links":null,"license":"MIT","linecounts":{"languages":{"Rust":{"code_lines":58,"comment_lines":0,"files":1}},"total_code_lines":58,"total_comment_lines":0},"links":{"authors":"/api/v1/crates/void/0.0.4/authors","dependencies":"/api/v1/crates/void/0.0.4/dependencies","version_downloads":"/api/v1/crates/void/0.0.4/downloads"},"num":"0.0.4","published_by":null,"readme_path":"/api/v1/crates/void/0.0.4/readme","repository":"https://github.com/reem/rust-void.git","rust_version":null,"trustpub_data":null,"updated_at":"2017-11-30T03:27:06.050413Z","yank_message":null,"yanked":false},{"audit_actions":[],"bin_names":[],"checksum":"f7808e2024d932911acf529288c1671ddf13a190286d3b99896168d2e7b9f750","crate":"void","crate_size":2022,"created_at":"2015-03-24T04:06:17.784647Z","description":"The
+        uninhabited void type for use in statically impossible cases.","dl_path":"/api/v1/crates/void/0.0.3/download","documentation":null,"downloads":3430,"edition":null,"features":{},"has_lib":true,"homepage":null,"id":6933,"lib_links":null,"license":"MIT","linecounts":{"languages":{"Rust":{"code_lines":60,"comment_lines":0,"files":1}},"total_code_lines":60,"total_comment_lines":0},"links":{"authors":"/api/v1/crates/void/0.0.3/authors","dependencies":"/api/v1/crates/void/0.0.3/dependencies","version_downloads":"/api/v1/crates/void/0.0.3/downloads"},"num":"0.0.3","published_by":null,"readme_path":"/api/v1/crates/void/0.0.3/readme","repository":"https://github.com/reem/rust-void.git","rust_version":null,"trustpub_data":null,"updated_at":"2017-11-30T03:35:30.910355Z","yank_message":null,"yanked":false},{"audit_actions":[],"bin_names":[],"checksum":"9299419223eacae05310018eeb1b931167dd2b43c5f4d89affd789740a49da94","crate":"void","crate_size":2027,"created_at":"2015-02-10T09:09:52.765515Z","description":"The
+        uninhabited void type for use in statically impossible cases.","dl_path":"/api/v1/crates/void/0.0.2/download","documentation":null,"downloads":3257,"edition":null,"features":{},"has_lib":true,"homepage":null,"id":4812,"lib_links":null,"license":"MIT","linecounts":{"languages":{"Rust":{"code_lines":60,"comment_lines":0,"files":1}},"total_code_lines":60,"total_comment_lines":0},"links":{"authors":"/api/v1/crates/void/0.0.2/authors","dependencies":"/api/v1/crates/void/0.0.2/dependencies","version_downloads":"/api/v1/crates/void/0.0.2/downloads"},"num":"0.0.2","published_by":null,"readme_path":"/api/v1/crates/void/0.0.2/readme","repository":"https://github.com/reem/rust-void.git","rust_version":null,"trustpub_data":null,"updated_at":"2017-11-30T03:35:18.226374Z","yank_message":null,"yanked":false},{"audit_actions":[],"bin_names":[],"checksum":"564f159cd7f3b48207796b0728f550beb0f15368eb6e5317e51051a1b40707e6","crate":"void","crate_size":1837,"created_at":"2015-02-10T08:54:09.508843Z","description":"The
+        uninhabited void type for use in statically impossible cases.","dl_path":"/api/v1/crates/void/0.0.1/download","documentation":null,"downloads":5407,"edition":null,"features":{},"has_lib":true,"homepage":null,"id":4811,"lib_links":null,"license":"MIT","linecounts":{"languages":{"Rust":{"code_lines":27,"comment_lines":0,"files":1}},"total_code_lines":27,"total_comment_lines":0},"links":{"authors":"/api/v1/crates/void/0.0.1/authors","dependencies":"/api/v1/crates/void/0.0.1/dependencies","version_downloads":"/api/v1/crates/void/0.0.1/downloads"},"num":"0.0.1","published_by":null,"readme_path":"/api/v1/crates/void/0.0.1/readme","repository":"https://github.com/reem/rust-void.git","rust_version":null,"trustpub_data":null,"updated_at":"2017-11-30T03:25:09.976545Z","yank_message":null,"yanked":false}]}'
+    headers:
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      connection:
+      - keep-alive
+      content-length:
+      - '9133'
+      content-type:
+      - application/json
+      date:
+      - Mon, 26 Oct 2026 15:28:00 GMT
+      nel:
+      - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+      report-to:
+      - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=5EjCDV%2FZBbLZYcmG2kwCH%2BIs%2BpdbIG3qEj%2FO7Puj1qk%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1793028480"}],"max_age":3600}'
+      reporting-endpoints:
+      - heroku-nel="https://nel.heroku.com/reports?s=5EjCDV%2FZBbLZYcmG2kwCH%2BIs%2BpdbIG3qEj%2FO7Puj1qk%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1793028480"
+      server:
+      - Heroku
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - accept-encoding
+      via:
+      - 1.1 heroku-router, 1.1 varnish
+      x-cache:
+      - MISS
+      x-cache-hits:
+      - '0'
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - SAMEORIGIN
+      x-served-by:
+      - cache-mad2200090-MAD
+      x-xss-protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      host:
+      - crates.io
+      user-agent:
+      - auratrace/0.1.0
+    method: GET
+    uri: https://crates.io/api/v1/crates/void/owners
+  response:
+    body:
+      string: '{"users":[{"avatar":"https://avatars.githubusercontent.com/u/4745181?v=4","github_username_matches":true,"id":4,"kind":"user","login":"reem","name":"Jonathan
+        Reem","url":"https://github.com/reem"}]}'
+    headers:
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      connection:
+      - keep-alive
+      content-length:
+      - '198'
+      content-type:
+      - application/json
+      date:
+      - Mon, 26 Oct 2026 15:28:00 GMT
+      nel:
+      - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+      report-to:
+      - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=5EjCDV%2FZBbLZYcmG2kwCH%2BIs%2BpdbIG3qEj%2FO7Puj1qk%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1793028480"}],"max_age":3600}'
+      reporting-endpoints:
+      - heroku-nel="https://nel.heroku.com/reports?s=5EjCDV%2FZBbLZYcmG2kwCH%2BIs%2BpdbIG3qEj%2FO7Puj1qk%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1793028480"
+      server:
+      - Heroku
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - accept-encoding
+      via:
+      - 1.1 heroku-router, 1.1 varnish
+      x-cache:
+      - MISS
+      x-cache-hits:
+      - '0'
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - SAMEORIGIN
+      x-served-by:
+      - cache-mad2200090-MAD
+      x-xss-protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1
