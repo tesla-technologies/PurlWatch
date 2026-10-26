@@ -26,7 +26,7 @@
     "authors": [
       {
         "name": "Samantha Wright",
-        "email": "samantha.wright@example.com",
+        "email": "EMAIL",
         "phone": "800-555-1212"
       }
     ],
@@ -54,7 +54,7 @@
       "contact": [
         {
           "name": "Acme Professional Services",
-          "email": "professional.services@example.com"
+          "email": "EMAIL"
         }
       ]
     },
@@ -66,7 +66,7 @@
       "contact": [
         {
           "name": "Acme Distribution",
-          "email": "distribution@example.com"
+          "email": "EMAIL"
         }
       ]
     }
@@ -141,12 +141,12 @@
             "author": {
               "timestamp": "2018-11-13T20:20:39+00:00",
               "name": "John Doe",
-              "email": "john.doe@example.com"
+              "email": "EMAIL"
             },
             "committer": {
               "timestamp": "2018-11-07T22:01:45Z",
               "name": "Jane Doe",
-              "email": "jane.doe@example.com"
+              "email": "EMAIL"
             },
             "message": "Initial commit"
           }
@@ -166,12 +166,12 @@
         "contact": [
           {
             "name": "Example Support AMER",
-            "email": "support@example.com",
+            "email": "EMAIL",
             "phone": "800-555-1212"
           },
           {
             "name": "Example Support APAC",
-            "email": "support@apac.example.com"
+            "email": "EMAIL"
           }
         ]
       },
@@ -182,7 +182,7 @@
         ],
         "contact": [
           {
-            "email": "support@example.org"
+            "email": "EMAIL"
           }
         ]
       },
@@ -190,11 +190,11 @@
         {
           "name": "Anthony Edward Stark",
           "phone": "555-212-970-4133",
-          "email": "ironman@example.org"
+          "email": "EMAIL"
         },
         {
           "name": "Peter Benjamin Parker",
-          "email": "spiderman@example.org"
+          "email": "EMAIL"
         }
       ],
       "group": "org.example",

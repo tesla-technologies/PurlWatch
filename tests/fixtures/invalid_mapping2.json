@@ -1,0 +1,13 @@
+{
+    "purl": "pk:npm/accepts",
+    "repository": "https://github.com/jshttp/accepts.git",
+    "forge": "github",
+    "confidence": "high",
+    "sources_agreeing": 2,
+    "sources": [
+        "registry",
+        "ecosystems"
+    ],
+    "observed_at": "2026-10-19T09:07:00Z",
+    "release": "0.1.0"
+}

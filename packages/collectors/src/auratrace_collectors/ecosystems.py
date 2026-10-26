@@ -1,18 +1,10 @@
 import json
-import re
 from typing import Any
-from urllib.parse import quote
 
 import httpx
 from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
 
-
-class PackageNotFound(Exception):
-    """Se lanza cuando el paquete no se encuentra en npm"""
-
-
-class ResponseException(Exception):
-    """Se lanza cuando hay un error en la petición"""
+from auratrace_collectors import common
 
 
 def parse_fact(raw_json: dict[str, Any]) -> str | None:
@@ -20,52 +12,27 @@ def parse_fact(raw_json: dict[str, Any]) -> str | None:
 
 
 def replay(reader: SnapshotReader, key: str) -> str | None:
-    response, _ = reader.get_document(key)
+    response, entry = reader.get_document(key)
+    if entry["status"] == 404:
+        return None
     parsed_response = json.loads(response)
 
     if not parsed_response:
         return None
 
-    return parse_fact(parsed_response[0])
+    return parse_fact(parsed_response)
 
 
-def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> str | None:
-    headers = {"User-Agent": "auratrace/0.1.0"}
-    encoded_name = quote(name, safe="")
-    url = f"https://packages.ecosyste.ms/api/v1/packages/lookup?purl={encoded_name}"
+def collect(purl: str, client: httpx.Client, writer: SnapshotWriter) -> str | None:
+    result = common.collect(
+        client=client,
+        writer=writer,
+        url=f"https://packages.ecosyste.ms/api/v1/packages/lookup?purl={purl}",
+        headers={"User-Agent": "auratrace/0.1.0"},
+        key=f"ecosystems/{purl}/metadata.json",
+        collector="ecosyste.ms",
+    )
 
-    try:
-        response = client.get(url, headers=headers)
-
-        response.raise_for_status()
-
-        text = response.text
-        sanitized_text, count = re.subn(
-            r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "<EMAIL>", text
-        )
-
-        writer.add_document(
-            "ecosyste.ms",
-            "0.1.0",
-            f"ecosystems/{encoded_name}/metadata.json",
-            url,
-            response.status_code,
-            dict(response.headers),
-            count > 0,
-            sanitized_text,
-        )
-
-        sanitized_data = json.loads(sanitized_text)
-        if not sanitized_data:
-            return None
-        return parse_fact(sanitized_data[0])
-    except httpx.HTTPStatusError as err:
-        if err.response.status_code == 404:
-            raise PackageNotFound(f"Package '{name}' was not found") from err
-        raise ResponseException(
-            f"HTTP error {err.response.status_code} received from registry"
-        ) from err
-    except httpx.RequestError as err:
-        raise ResponseException(
-            f"Request failed trying to connect to ecosyste.ms server: {err}"
-        ) from err
+    if not result:
+        return None
+    return parse_fact(result)

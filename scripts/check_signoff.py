@@ -4,13 +4,13 @@ import sys
 
 
 def check_signoff() -> int:
-    base_sha = os.getenv("CI_MERGE_REQUEST_DIFF_BASE_SHA")
+    base_sha = os.getenv("CI_COMMIT_BEFORE_SHA")
     if not base_sha:
-        print(
-            "[ERROR] Variable CI_MERGE_REQUEST_DIFF_BASE_SHA no encontrada. "
-            "Este script debe ejecutarse en pipelines de Merge Request."
-        )
+        print("[ERROR] Variable CI_COMMIT_BEFORE_SHA no encontrada. ")
         return 1
+
+    if base_sha == "0" * 40:
+        base_sha = "origin/main"
 
     result = subprocess.run(
         ["git", "rev-list", f"{base_sha}..HEAD"],

@@ -24,6 +24,7 @@ class Component:
     version: str | None
     bom_ref: str | None
     purl: str | None
+    external_ref: str | None
 
 
 @dataclass(frozen=True)
@@ -59,10 +60,10 @@ def parse_sbom(sbom: Path) -> ParsedSBOM:
                 return spdx_parser(sbom)
             else:
                 raise UnsupportedFormatError("Format or version not supported")
-    except UnsupportedFormatError:
-        raise UnsupportedFormatError("Format or version not supported")
     except (CycloneDxException, KeyError) as err:
-        raise InvalidStructureError(f"File structure it´s not valid: {err}")
+        raise InvalidStructureError(f"File structure it's not valid: {err}")
+    except json.JSONDecodeError as err:
+        raise InvalidStructureError(f"File it's not a valid JSON: {err}")
 
 
 def cyclone_parser(sbom: Path) -> ParsedSBOM:
@@ -72,11 +73,20 @@ def cyclone_parser(sbom: Path) -> ParsedSBOM:
     parsed_root = None
     if bom.metadata.component:
         root_component = bom.metadata.component
+
+        root_external_ref = None
+        if root_component.external_references:
+            for ref in root_component.external_references:
+                if ref.type == "vcs":
+                    root_external_ref = str(ref.url)
+                    break
+
         parsed_root = Component(
             root_component.name,
             root_component.version,
             root_component.bom_ref.value or None,
             parse_purl(root_component.purl) or None,
+            root_external_ref,
         )
 
     dependencies = []
@@ -112,10 +122,17 @@ def cyclone_recursive_list(
         purl = parse_purl(component.purl)
         bom_ref = component.bom_ref.value or None
 
+        external_ref = None
+        if component.external_references:
+            for ref in component.external_references:
+                if ref.type == "vcs":
+                    external_ref = str(ref.url)
+                    break
+
         if component.components:
             cyclone_recursive_list(component.components, sbom_list)
 
-        sbom_list.append(Component(name, version, bom_ref, purl))
+        sbom_list.append(Component(name, version, bom_ref, purl, external_ref))
 
     return sbom_list
 
@@ -153,6 +170,7 @@ def spdx_parser(sbom: Path) -> ParsedSBOM:
         version = getattr(pkg, "version", None)
 
         purl = None
+        external_ref = None
         external_refs = pkg.external_references
         for ref in external_refs:
             ref_type = ref.reference_type
@@ -160,10 +178,13 @@ def spdx_parser(sbom: Path) -> ParsedSBOM:
                 purl = parse_purl(ref.locator)
                 break
 
+            if ref_type == "vcs":
+                external_ref = ref.locator
+
         if len(described_ids) > 0 and pkg.spdx_id == described_ids[0]:
-            root_comp = Component(name, version, pkg.spdx_id, purl)
+            root_comp = Component(name, version, pkg.spdx_id, purl, external_ref)
         else:
-            comp_list.append(Component(name, version, pkg.spdx_id, purl))
+            comp_list.append(Component(name, version, pkg.spdx_id, purl, external_ref))
 
     return ParsedSBOM(
         "SPDX", doc.creation_info.spdx_version, root_comp, comp_list, dependencies
@@ -180,3 +201,58 @@ def parse_purl(purl: PackageURL | str | None) -> str | None:
         purl_obj = purl
 
     return PackageURL.to_string(purl_obj)
+
+
+def build_direct_graph(sbom: ParsedSBOM) -> dict[str, set[str]]:
+    ref_dict: dict[str, str] = {}
+    graph: dict[str, set[str]] = {}
+
+    for comp in sbom.comp_list:
+        if comp.purl:
+            ref_dict[comp.purl] = comp.purl
+            if comp.bom_ref:
+                ref_dict[comp.bom_ref] = comp.purl
+
+            if comp.purl not in graph:
+                graph[comp.purl] = set()
+
+    for dep in sbom.dependencies:
+        src = ref_dict.get(dep.source) if dep.source else None
+        if not src:
+            continue
+
+        if src not in graph:
+            graph[src] = set()
+
+        tgt = ref_dict.get(dep.target) if dep.target else None
+        if tgt:
+            graph[src].add(tgt)
+
+    return graph
+
+
+def build_transitive_graph(graph: dict[str, set[str]]) -> dict[str, set[str]]:
+    transitive_graph: dict[str, set[str]] = {}
+
+    for key, children in graph.items():
+        if not children:
+            transitive_graph[key] = set()
+            continue
+
+        explore_list = list(children)
+        descendants: set[str] = set()
+
+        while explore_list:
+            child = explore_list.pop()
+            if child in descendants:
+                continue
+
+            descendants.add(child)
+
+            for next_child in graph.get(child, set()):
+                if next_child not in descendants:
+                    explore_list.append(next_child)
+
+        transitive_graph[key] = descendants
+
+    return transitive_graph
