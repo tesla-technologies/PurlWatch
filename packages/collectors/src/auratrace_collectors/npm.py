@@ -1,11 +1,12 @@
 import json
-import re
 from dataclasses import dataclass
 from typing import Any
-from urllib.parse import quote
 
 import httpx
 from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
+from packageurl import PackageURL
+
+from auratrace_collectors import common
 
 
 @dataclass(frozen=True)
@@ -25,29 +26,28 @@ class Fact:
     owners_current_only: bool
 
 
-class PackageNotFound(Exception):
-    """Se lanza cuando el paquete no se encuentra en npm"""
-
-
-class ResponseException(Exception):
-    """Se lanza cuando hay un error en la petición"""
-
-
 def parse_fact(raw_json: dict[str, Any]) -> Fact:
     json_versions = raw_json.get("versions", {})
     json_time = raw_json.get("time", {})
 
+    json_maintainers = raw_json.get("maintainers", [])
+    maintainers = []
+    for m in json_maintainers:
+        maintainers.append(m.get("name", ""))
     dict_versions = {}
 
     for v_key, v_data in json_versions.items():
         time = json_time.get(v_key, "")
         npm_user = (v_data.get("_npmUser") or {}).get("name")
-        maintainers = v_data.get("maintainers", [])
+        maintainers_list_v = v_data.get("maintainers", [])
+        maintainers_v = []
+        for m in maintainers_list_v:
+            maintainers_v.append(m.get("name", ""))
         is_trusted_publishing = npm_user == "GitHub Actions" and bool(
             v_data.get("trustedPublisher")
         )
 
-        version = Version(time, npm_user, maintainers, is_trusted_publishing)
+        version = Version(time, npm_user, maintainers_v, is_trusted_publishing)
         dict_versions[v_key] = version
 
     repo_data = raw_json.get("repository")
@@ -61,54 +61,54 @@ def parse_fact(raw_json: dict[str, Any]) -> Fact:
 
     return Fact(
         raw_json.get("name", ""),
-        raw_json.get("maintainers", []),
+        maintainers,
         repository,
         dict_versions,
         False,
     )
 
 
-def replay(reader: SnapshotReader, key: str) -> Fact:
-    response, _ = reader.get_document(key)
+def resolve_key(purl: str) -> str:
+    parsed_purl = PackageURL.from_string(purl)
+    if parsed_purl.namespace:
+        scope = parsed_purl.namespace.lstrip("@")
+        pkg_name = f"@{scope}/{parsed_purl.name}"
+    else:
+        pkg_name = parsed_purl.name
+
+    return pkg_name
+
+
+def replay(reader: SnapshotReader, purl: str) -> Fact | None:
+    pkg_name = resolve_key(purl)
+
+    key = f"npm/{pkg_name}/packument.json"
+    response, entry = reader.get_document(key)
+    if entry["status"] == 404:
+        return None
     parsed_response = json.loads(response)
 
     return parse_fact(parsed_response)
 
 
-def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> Fact:
-    headers = {"User-Agent": "auratrace/0.1.0"}
-    encoded_name = quote(name, safe="")
-    url = f"https://registry.npmjs.org/{encoded_name}"
+def collect(
+    purl: str | None, client: httpx.Client, writer: SnapshotWriter
+) -> Fact | None:
+    if not purl:
+        return None
 
-    try:
-        response = client.get(url, headers=headers)
+    pkg_name = resolve_key(purl)
 
-        response.raise_for_status()
+    result = common.collect(
+        client=client,
+        writer=writer,
+        url=f"https://registry.npmjs.org/{pkg_name}",
+        headers={"User-Agent": "auratrace/0.1.0"},
+        key=f"npm/{pkg_name}/packument.json",
+        collector="npm",
+    )
 
-        text = response.text
-        sanitized_text, count = re.subn(
-            r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "<EMAIL>", text
-        )
+    if not result:
+        return None
 
-        writer.add_document(
-            "npm",
-            "0.1.0",
-            f"npm/{encoded_name}/packument.json",
-            url,
-            response.status_code,
-            dict(response.headers),
-            count > 0,
-            sanitized_text,
-        )
-
-        return parse_fact(json.loads(sanitized_text))
-    except httpx.HTTPStatusError as err:
-        if err.response.status_code == 404:
-            raise PackageNotFound(f"Package '{name}' was not found") from err
-        raise ResponseException(
-            f"HTTP error {err.response.status_code} received from registry"
-        ) from err
-    except httpx.RequestError as err:
-        raise ResponseException(
-            f"Request failed trying to connect to npm server: {err}"
-        ) from err
+    return parse_fact(result)

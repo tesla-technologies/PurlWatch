@@ -5,6 +5,7 @@ from typing import Any
 
 import pytest
 from auratrace_collectors.crates import replay as crates_replay
+from auratrace_collectors.ecosystems import replay as ecosystems_replay
 from auratrace_collectors.npm import replay as npm_replay
 from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
 
@@ -15,7 +16,7 @@ TEST_DIR = Path(__file__).parent
 def snapshot_builder(
     request: pytest.FixtureRequest, tmp_path: Path
 ) -> Iterator[Callable[..., SnapshotReader]]:
-    """Crea snapshots dinámicos al vuelo para cualquier test."""
+    """Create dynamic snapshots"""
     readers_to_close: list[SnapshotReader] = []
 
     def _build(
@@ -55,60 +56,33 @@ def snapshot_builder(
         r.close()
 
 
-@pytest.mark.parametrize(
-    ("n_versions", "n_maint", "n_trusted"),
-    [(6, 6, 0)],
-)
 def test_npm_replay_fact(
     snapshot_builder: Callable[..., SnapshotReader],
-    n_versions: int,
-    n_maint: int,
-    n_trusted: int,
 ) -> None:
 
     reader = snapshot_builder(
         [
             {
-                "key": "npm/express/packument.json",
+                "key": "npm/is-sorted/packument.json",
                 "body": Path(f"{TEST_DIR}/fixtures/npm/is_sorted.json"),
             }
         ]
     )
 
-    result = npm_replay(reader, "npm/express/packument.json")
+    result = npm_replay(reader, "pkg:npm/is-sorted@1.0.5")
+    assert result
 
-    assert len(result.versions) == n_versions
+    assert result.name == "is-sorted"
+    assert result.current_owners == ["dcousens"]
+    assert result.repository == "git+https://github.com/dcousens/is-sorted.git"
 
-    r_maint = 0
-    r_trusted = 0
-    for v_data in result.versions.values():
-        if v_data.maintainers:
-            r_maint += 1
-
-        if v_data.trusted_publishing:
-            r_trusted += 1
-
-    assert n_maint == r_maint
-    assert n_trusted == r_trusted
+    specific_version = result.versions["1.0.0"]
+    assert specific_version.publisher == "dcousens"
+    assert specific_version.maintainers == ["dcousens"]
 
 
-@pytest.mark.parametrize(
-    ("v_json", "o_json", "n_versions", "n_yanked"),
-    [
-        (
-            "cargo/void/versions_crate.json",
-            "cargo/void/owners_crate.json",
-            8,
-            0,
-        )
-    ],
-)
 def test_crates_replay_fact(
     snapshot_builder: Callable[..., SnapshotReader],
-    v_json: str,
-    o_json: str,
-    n_versions: int,
-    n_yanked: int,
 ) -> None:
 
     reader = snapshot_builder(
@@ -124,17 +98,32 @@ def test_crates_replay_fact(
         ]
     )
 
-    result = crates_replay(reader, v_json, o_json)
+    result = crates_replay(reader, "pkg:cargo/void")
+    assert result
 
-    assert result.name
-    assert result.current_owners is not None
-    assert len(result.current_owners) > 0
+    assert result.name == "void"
+    assert result.current_owners == ["reem"]
+    assert result.repository == "https://github.com/reem/rust-void.git"
 
-    assert len(result.versions) == n_versions
+    specific_version = result.versions["1.0.0"]
+    assert specific_version.publisher == None
+    assert specific_version.maintainers == ["reem"]
+    assert specific_version.yanked == False
 
-    r_yanked = 0
-    for v_data in result.versions.values():
-        if v_data.yanked:
-            r_yanked += 1
 
-    assert n_yanked == r_yanked
+def test_express_replay_fact(
+    snapshot_builder: Callable[..., SnapshotReader],
+) -> None:
+
+    reader = snapshot_builder(
+        [
+            {
+                "key": "ecosystems/express/metadata.json",
+                "body": Path(f"{TEST_DIR}/fixtures/ecosystems/express.json"),
+            }
+        ]
+    )
+
+    result = ecosystems_replay(reader, "ecosystems/express/metadata.json")
+
+    assert result == "https://github.com/expressjs/express"

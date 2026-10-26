@@ -5,48 +5,51 @@
     "description": "",
     "type": "object",
     "additionalProperties": false,
-    "required": ["purl", "published_at", "publisher_kind", 
+    "required": ["purl", "publisher_hid", "published_at", "publisher_kind", 
     "maintainers_hids", "owners_current_only", "source", "observed_at", "release"],
     "properties": {
         "purl": {
-            "description": "",
+            "description": "The Package URL with version",
             "type": "string",
-            "pattern": "^pkg*"
+            "pattern": "^pkg:[a-z]+/."
         },
         "published_at": {
-            "description": "",
+            "description": "From the registry, the time map on npm or created_at on crates.io",
             "type": "string",
             "format": "date-time"
         },
         "publisher_hid": {
-            "description": "",
+            "description": "Keyed hash of the publishing account, null where the registry does not expose it",
             "type": ["string", "null"]
         },
         "publisher_kind": {
-            "description": "",
+            "description": "Kind of the publisher",
             "type": "string",
             "enum": ["account", "trusted_publisher", "unknown"]
         },
         "maintainers_hids": {
-            "description": "",
-            "type": "array"
+            "description": "Keyed hashes of the maintainers field at that version on npm, or of the current owners on crates.io",
+            "type": "array",
+            "items":{
+                "type": "string"
+            }
         },
         "owners_current_only": {
-            "description": "",
+            "description": "True when the owners could only be observed as they are today",
             "type": "boolean"
         },
         "source": {
-            "description": "",
+            "description": "Where the data comes from",
             "type": "string",
             "enum": ["live", "wayback", "dump"]
         },
         "observed_at": {
-            "description": "",
+            "description": "When the history was computed",
             "type": "string",
             "format": "date-time"
         },
         "release": {
-            "description": "",
+            "description": "The data set release identifier",
             "type": "string"
         }
     }

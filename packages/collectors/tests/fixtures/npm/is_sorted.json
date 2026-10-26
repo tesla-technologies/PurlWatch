@@ -277,10 +277,10 @@
             },
             "repository": {
                 "type": "git",
-                "url": "git+https://github.com/dcousens/is-sorted.git"
+                "url": "git+ssh://github.com/dcousens/is-sorted.git"
             },
             "bugs": {
-                "url": "https://github.com/dcousens/is-sorted/issues"
+                "url": "https://git@github.com/dcousens/is-sorted/issues"
             },
             "homepage": "https://github.com/dcousens/is-sorted",
             "keywords": [
