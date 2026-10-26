@@ -1,6 +1,5 @@
 import dataclasses
 import hashlib
-import importlib
 import json
 import os
 import secrets
@@ -9,9 +8,11 @@ import tempfile
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from importlib.metadata import version
 from pathlib import Path
 from types import TracebackType
 from typing import Any, Self
+from urllib.parse import urlparse
 
 
 class ReaderFileNotFoundError(Exception):
@@ -33,11 +34,15 @@ class Snapshot:
 
 
 class SnapshotWriter:
-    def __init__(self, out_path: Path, clock: Callable[[], datetime] | None = None):
+    def __init__(
+        self,
+        out_path: Path | None = None,
+        clock: Callable[[], datetime] | None = None,
+        suffix: str | None = None,
+    ):
         self.clock = clock or (lambda: datetime.now(timezone.utc))
-        self.execution_id: str = self.clock().strftime(
-            "%Y%m%d%H%M%S"
-        ) + secrets.token_hex(2)
+        self.suffix = suffix or secrets.token_hex(2)
+        self.execution_id: str = self.clock().strftime("%Y%m%d%H%M%S") + self.suffix
         self.start_time = self.clock().isoformat()
         self._index: list[Snapshot] = []
         self._temp_dir = tempfile.TemporaryDirectory(prefix="auratrace-")
@@ -57,6 +62,8 @@ class SnapshotWriter:
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None:
+        if exc_type is not None:
+            self.close_document(None, None, None, complete=False)
         self._temp_dir.cleanup()
 
     def add_document(
@@ -99,29 +106,41 @@ class SnapshotWriter:
         ruleset_digest: str | None,
         sbom_digest: str | None,
         baselines_digest: str | None,
+        complete: bool = True,
     ) -> tuple[Path, str]:
         end_time = self.clock().isoformat()
 
         index_list = [dataclasses.asdict(item) for item in self._index]
 
-        with open(self._base_path / "index.json", "w", encoding="utf-8") as index:
-            json.dump(index_list, index, indent=2, sort_keys=True)
+        index_data = (
+            json.dumps(index_list, indent=2, sort_keys=True).encode("utf-8") + b"\n"
+        )
+        (self._base_path / "index.json").write_bytes(index_data)
 
-        services_list = sorted({item.path for item in self._index})
+        services_list = sorted(
+            {
+                host
+                for item in self._index
+                if (host := urlparse(getattr(item, "url", "")).hostname) is not None
+            }
+        )
 
         manifest_dict = {
             "run_identifier": self.execution_id,
-            "tool_version": importlib.metadata.version("auratrace-core"),
+            "tool_version": version("auratrace-core"),
             "ruleset_digest": ruleset_digest,
             "sbom_digest": sbom_digest,
             "baselines_digest": baselines_digest,
             "services": services_list,
             "start_time": self.start_time,
             "end_time": end_time,
+            "complete": complete,
         }
 
-        with open(self._base_path / "manifest.json", "w", encoding="utf-8") as manifest:
-            json.dump(manifest_dict, manifest, indent=2, sort_keys=True)
+        manifest_data = (
+            json.dumps(manifest_dict, indent=2, sort_keys=True).encode("utf-8") + b"\n"
+        )
+        (self._base_path / "manifest.json").write_bytes(manifest_data)
 
         files = [path for path in self._base_path.rglob("*") if path.is_file()]
         path_list = sorted(
@@ -159,21 +178,25 @@ class SnapshotReader:
     def __init__(self, tar: Path):
         self.tar = tarfile.open(tar, "r")  # noqa: SIM115
 
-        manifest_file = self.tar.extractfile("manifest.json")
-        if not manifest_file:
-            raise ReaderFileNotFoundError(
-                f"File manifest.json was not found for tar {tar}"
-            )
-        self.manifest = json.load(manifest_file)
+        try:
+            manifest_file = self.tar.extractfile("manifest.json")
+            if not manifest_file:
+                raise ReaderFileNotFoundError(
+                    f"File manifest.json was not found for tar {tar}"
+                )
+            self.manifest = json.load(manifest_file)
 
-        index_file = self.tar.extractfile("index.json")
-        if not index_file:
-            raise ReaderFileNotFoundError(
-                f"File index.json was not found for tar {tar}"
-            )
-        index_list = json.load(index_file)
+            index_file = self.tar.extractfile("index.json")
+            if not index_file:
+                raise ReaderFileNotFoundError(
+                    f"File index.json was not found for tar {tar}"
+                )
+            index_list = json.load(index_file)
 
-        self._index = {entry["path"]: entry for entry in index_list}
+            self._index = {entry["path"]: entry for entry in index_list}
+        except KeyError:
+            self.tar.close()
+            raise ReaderFileNotFoundError(f"File was not found for tar {tar}")
 
     def __enter__(self) -> Self:
         return self

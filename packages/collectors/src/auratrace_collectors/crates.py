@@ -1,19 +1,12 @@
 import json
-import re
 from dataclasses import dataclass
 from typing import Any
-from urllib.parse import quote
 
 import httpx
 from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
+from packageurl import PackageURL
 
-
-class PackageNotFound(Exception):
-    """Se lanza cuando el paquete no se encuentra en crates.io"""
-
-
-class ResponseException(Exception):
-    """Se lanza cuando hay un error en la petición"""
+from auratrace_collectors import common
 
 
 @dataclass(frozen=True)
@@ -38,25 +31,50 @@ def parse_fact(versions: dict[str, Any], owners: dict[str, Any]) -> Fact:
 
     dict_versions = {}
 
+    owners_list = []
+    for owner in owners.get("users", []):
+        if owner.get("login") is not None:
+            owners_list.append(owner.get("login", None))
+
     for v_data in versions_json:
         time = v_data.get("created_at", "")
         publisher = (v_data.get("published_by", {}) or {}).get("login", None)
         yanked = v_data.get("yanked", False)
 
-        dict_versions[v_data.get("num", "")] = Version(time, publisher, [], yanked)
+        dict_versions[v_data.get("num", "")] = Version(
+            time, publisher, owners_list, yanked
+        )
 
     return Fact(
         versions.get("crate", {}).get("name", None),
-        owners.get("users"),
+        owners_list,
         versions.get("crate", {}).get("repository", None),
         dict_versions,
         True,
     )
 
 
-def replay(reader: SnapshotReader, key_v: str, key_o: str) -> Fact:
-    response_v, _ = reader.get_document(key_v)
-    response_o, _ = reader.get_document(key_o)
+def resolve_key(purl: str) -> str:
+    parsed_purl = PackageURL.from_string(purl)
+    if parsed_purl.namespace:
+        pkg_name = f"{parsed_purl.namespace}/{parsed_purl.name}"
+    else:
+        pkg_name = parsed_purl.name
+
+    return pkg_name
+
+
+def replay(reader: SnapshotReader, purl: str) -> Fact | None:
+    pkg_name = resolve_key(purl)
+
+    key_v = f"cargo/{pkg_name}/versions_crate.json"
+    key_o = f"cargo/{pkg_name}/owners_crate.json"
+
+    response_v, entry_v = reader.get_document(key_v)
+    response_o, entry_o = reader.get_document(key_o)
+
+    if entry_v["status"] == 404 or entry_o["status"] == 404:
+        return None
 
     parsed_response_v = json.loads(response_v)
     parsed_response_o = json.loads(response_o)
@@ -64,73 +82,33 @@ def replay(reader: SnapshotReader, key_v: str, key_o: str) -> Fact:
     return parse_fact(parsed_response_v, parsed_response_o)
 
 
-def collect(name: str, client: httpx.Client, writer: SnapshotWriter) -> Fact:
-    headers = {"User-Agent": "auratrace/0.1.0"}
-    encoded_name = quote(name, safe="")
-    url = f"https://crates.io/api/v1/crates/{encoded_name}"
+def collect(
+    purl: str | None, client: httpx.Client, writer: SnapshotWriter
+) -> Fact | None:
+    if not purl:
+        return None
 
-    try:
-        v_response = client.get(url, headers=headers)
+    pkg_name = resolve_key(purl)
 
-        v_response.raise_for_status()
+    result_v = common.collect(
+        client=client,
+        writer=writer,
+        url=f"https://crates.io/api/v1/crates/{pkg_name}",
+        headers={"User-Agent": "auratrace/0.1.0"},
+        key=f"cargo/{pkg_name}/versions_crate.json",
+        collector="crates",
+    )
 
-        text = v_response.text
-        v_sanitized_text, v_count = re.subn(
-            r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "<EMAIL>", text
-        )
+    result_o = common.collect(
+        client=client,
+        writer=writer,
+        url=f"https://crates.io/api/v1/crates/{pkg_name}/owners",
+        headers={"User-Agent": "auratrace/0.1.0"},
+        key=f"cargo/{pkg_name}/owners_crate.json",
+        collector="crates",
+    )
 
-        writer.add_document(
-            "crates.io",
-            "0.1.0",
-            f"cargo/{encoded_name}/versions_crate.json",
-            url,
-            v_response.status_code,
-            dict(v_response.headers),
-            v_count > 0,
-            v_sanitized_text,
-        )
+    if not result_o or not result_v:
+        return None
 
-    except httpx.HTTPStatusError as err:
-        if err.response.status_code == 404:
-            raise PackageNotFound(f"Package '{name}' was not found") from err
-        raise ResponseException(
-            f"HTTP error {err.response.status_code} received from registry"
-        ) from err
-    except httpx.RequestError as err:
-        raise ResponseException(
-            f"Request failed trying to connect to crates.io server: {err}"
-        ) from err
-
-    try:
-        o_response = client.get(url + "/owners", headers=headers)
-
-        o_response.raise_for_status()
-
-        text = o_response.text
-        o_sanitized_text, o_count = re.subn(
-            r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "<EMAIL>", text
-        )
-
-        writer.add_document(
-            "crates.io",
-            "0.1.0",
-            f"cargo/{encoded_name}/owners_crate.json",
-            url,
-            o_response.status_code,
-            dict(o_response.headers),
-            o_count > 0,
-            o_sanitized_text,
-        )
-
-    except httpx.HTTPStatusError as err:
-        if err.response.status_code == 404:
-            raise PackageNotFound(f"Package '{name}' was not found") from err
-        raise ResponseException(
-            f"HTTP error {err.response.status_code} received from registry"
-        ) from err
-    except httpx.RequestError as err:
-        raise ResponseException(
-            f"Request failed trying to connect to crates.io server: {err}"
-        ) from err
-
-    return parse_fact(json.loads(v_sanitized_text), json.loads(o_sanitized_text))
+    return parse_fact(result_v, result_o)

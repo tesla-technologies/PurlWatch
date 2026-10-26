@@ -1,49 +1,51 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "mapping",
-    "title": "",
-    "description": "",
+    "title": "Mapping Table",
+    "description": "One row per package, without version, per release",
     "type": "object",
     "additionalProperties": false,
-    "required": ["purl", "forge", 
+    "required": ["purl", "repository", "forge", 
     "confidence", "sources_agreeing", "sources", "observed_at", "release"],
     "properties": {
         "purl": {
-            "description": "",
+            "description": "The Package URL with version",
             "type": "string",
-            "pattern": "^pkg*"
+            "pattern": "^pkg:[a-z]+/."
         },
         "repository": {
-            "description": "",
+            "description": "The normalised clone URL",
             "type": ["string", "null"]
         },
         "forge": {
-            "description": "",
+            "description": "Possible forges",
             "type": "string",
             "enum": ["github", "gitlab", "codeberg", "sourcehut", "gitea", "other", "unknown"]
         },
         "confidence": {
-            "description": "",
+            "description": "Confidence level",
             "type": "string",
             "enum": ["high", "medium", "low", "none"]
         },
         "sources_agreeing": {
-            "description": "",
+            "description": "How many consulted sources agree with the resolved repository",
             "type": "integer",
             "minimum": 0 
         },
         "sources": {
-            "description": "",
+            "description": "Which sources were consulted",
             "type": "array",
-            "enum": ["registry", "ecosystems", "depsdev", "provenance"]
+            "items": {
+                "enum": ["registry", "ecosystems", "depsdev", "provenance"]
+            }
         },
         "observed_at": {
-            "description": "",
+            "description": "When the mapping was computed",
             "type": "string",
             "format": "date-time"
         },
         "release": {
-            "description": "",
+            "description": "The data set release identifier",
             "type": "string"
         }
     }

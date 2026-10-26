@@ -12,7 +12,7 @@ cache:
       - .pre-commit-config.yaml
   paths:
     - .uv_cache/
-    - PRE_COMMIT_HOME
+    - .cache/pre-commit
 
 stages:
   - lint
@@ -22,7 +22,7 @@ stages:
 .rules-push-and-mr:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH
 
 .rules-tag-only:
   rules:
@@ -50,8 +50,7 @@ check-signoff:
   stage: lint
   variables:
     GIT_DEPTH: 0
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  extends: .rules-push-and-mr
   before_script:
     - apt-get update && apt-get install -y git
   script:
@@ -60,8 +59,6 @@ check-signoff:
 build:
   stage: release
   extends: .rules-tag-only
-  rules:
-    - if: $CI_COMMIT_TAG
   script:
     - uv build --all-packages
   artifacts:

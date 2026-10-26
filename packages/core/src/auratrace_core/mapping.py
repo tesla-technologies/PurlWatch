@@ -6,18 +6,29 @@ from enum import Enum
 from typing import Any
 from urllib.parse import urlparse
 
+from packageurl import PackageURL
 
-class Forge(Enum):
+
+class Forge(str, Enum):
     GITHUB = "github"
     GITLAB = "gitlab"
     CODEBERG = "codeberg"
     SOURCEHUT = "sourcehut"
     GITEA = "gitea"
+    SBOM = "sbom"
     OTHER = "other"
     UNKNOWN = "unknown"
 
 
-class Confidence(Enum):
+FORGE_HOSTS = {
+    "github.com": Forge.GITHUB,
+    "gitlab.com": Forge.GITLAB,
+    "codeberg.org": Forge.CODEBERG,
+    "git.sr.ht": Forge.SOURCEHUT,
+}
+
+
+class Confidence(str, Enum):
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"
@@ -34,20 +45,28 @@ class Map:
     sources: list[str]
     observed_at: str
     release: str
+    note: str | None = None
 
 
 def normalize_url(url: str) -> str | None:
     repo_regex = re.compile(
-        r"^(?:[a-zA-Z+]+://)?(?:git@)?(?P<forge>[^/:]+)[/:](?P<owner>[^/]+)/(?P<repo>[^/#?]+?)(?:\.git)?/?$"
+        r"^(?:[a-zA-Z+]+:)*(?:[a-zA-Z+]+://)?(?:git@)?(?:(?P<forge>[^/:]+)[/:])?(?P<owner>[^/]+)/(?P<repo>[^/#?]+?)(?:\.git)?(?:/[^#?]*)?(?:[#?].*)?$"
     )
 
     match = repo_regex.search(url.strip())
     if not match:
         return None
 
-    forge = re.sub(r"(\.[a-zA-Z]+)$", "", match.group("forge").lower())
-    owner = match.group("owner").lower()
-    repo = match.group("repo").lower()
+    forge = match.group("forge")
+    if not forge:
+        forge = "github.com"
+
+    owner = match.group("owner")
+    repo = match.group("repo")
+
+    domain_regex = re.compile(r"^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$")
+    if not domain_regex.search(forge):
+        forge = forge + ".com"
 
     final_url = f"https://{forge}/{owner}/{repo}"
 
@@ -58,7 +77,7 @@ def extract_map_fields(candidates: list[tuple[str, str]]) -> dict[str, Any]:
     """In case of low confidence the repository is decided through votes.
     If there is a draw, the registry source has priority deciding the source"""
     repository = None
-    forge = None
+    forge = Forge.UNKNOWN
     confidence = Confidence.NONE
     sources_agreeing = 0
     sources = [source for source, _ in candidates]
@@ -117,18 +136,18 @@ def extract_map_fields(candidates: list[tuple[str, str]]) -> dict[str, Any]:
 def extract_forge(url: str | None) -> Forge:
     if url is None:
         return Forge.UNKNOWN
-
-    str_forge = urlparse(url).netloc
-    forge = Forge.UNKNOWN
-    if str_forge in {item.value for item in Forge}:
-        forge = Forge(str_forge)
-
-    return forge
+    return FORGE_HOSTS.get(urlparse(url).netloc, Forge.OTHER)
 
 
-def map_to_repo(purl: str, fields: dict[str, Any], release: str) -> Map:
+def map_to_repo(
+    purl: str, fields: dict[str, Any], release: str, note: str | None = None
+) -> Map:
+    mapping_purl = PackageURL(
+        **{**PackageURL.from_string(purl).to_dict(), "version": None}
+    ).to_string()
+
     return Map(
-        purl=purl,
+        purl=mapping_purl,
         repository=fields["repository"],
         forge=fields["forge"],
         confidence=fields["confidence"],
@@ -136,4 +155,5 @@ def map_to_repo(purl: str, fields: dict[str, Any], release: str) -> Map:
         sources=fields["sources"],
         observed_at=datetime.now(timezone.utc).isoformat(),
         release=release,
+        note=note,
     )

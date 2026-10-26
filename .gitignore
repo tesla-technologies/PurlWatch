@@ -19,6 +19,9 @@ snapshots/
 *.tar
 *.tar.gz
 
+# Snapshot exception for replay test
+!tests/fixtures/*.tar
+
 # Secrets and keys
 *.key
 *.pem

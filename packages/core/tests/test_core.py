@@ -47,10 +47,20 @@ def test_sbom_invalid_version_error() -> None:
     [
         (
             "git+https://github.com/dcousens/is-sorted.git",
-            "https://github/dcousens/is-sorted",
+            "https://github.com/dcousens/is-sorted",
         ),
-        ("git://github.com/isaacs/inherits.git", "https://github/isaacs/inherits"),
-        ("https://github.com/reem/rust-void.git", "https://github/reem/rust-void"),
+        ("git://github.com/isaacs/inherits.git", "https://github.com/isaacs/inherits"),
+        ("https://github.com/reem/rust-void.git", "https://github.com/reem/rust-void"),
+        ("github:usuario/repo", "https://github.com/usuario/repo"),
+        ("usuario/repo", "https://github.com/usuario/repo"),
+        (
+            "scm:git:https://github.com/google/guava.git",
+            "https://github.com/google/guava",
+        ),
+        (
+            "https://github.com/babel/babel/tree/main/packages/babel-core",
+            "https://github.com/babel/babel",
+        ),
     ],
 )
 def test_normalized_url(url: str, normalized: str) -> None:

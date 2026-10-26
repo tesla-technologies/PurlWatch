@@ -1,0 +1,14 @@
+{
+    "purl": "pkg:npm/express@4.18.2",
+    "published_at": "2022-10-08T18:24:00Z",
+    "publisher_hid": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "publisher_kind": "account",
+    "maintainers_hids": [
+        "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+        "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a"
+    ],
+    "owners_current_only": false,
+    "source": "anything",
+    "observed_at": "2026-10-20T14:53:00Z",
+    "release": "4.18.2"
+}
