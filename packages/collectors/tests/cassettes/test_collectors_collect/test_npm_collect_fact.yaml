@@ -1,0 +1,76 @@
+interactions:
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      host:
+      - registry.npmjs.org
+      user-agent:
+      - auratrace/0.1.0
+    method: GET
+    uri: https://registry.npmjs.org/is-sorted
+  response:
+    body:
+      string: '{"_id":"is-sorted","_rev":"9-abea36b057c37738988bd5a4ed9fd84e","author":{"name":"Daniel
+        Cousens"},"bugs":{"url":"https://github.com/dcousens/is-sorted/issues"},"description":"A
+        small module to check if an Array is sorted","dist-tags":{"latest":"1.0.5"},"homepage":"https://github.com/dcousens/is-sorted","keywords":["is-sorted","sorting","sort","sorted","array","list","comparison"],"license":"MIT","maintainers":[{"name":"dcousens"}],"name":"is-sorted","readmeFilename":"README.md","repository":{"type":"git","url":"git+https://github.com/dcousens/is-sorted.git"},"time":{"1.0.0":"2015-05-18T03:52:55.192Z","1.0.1":"2015-05-18T03:55:42.250Z","1.0.2":"2015-08-15T13:47:53.824Z","1.0.3":"2017-09-25T06:37:52.782Z","1.0.4":"2017-09-25T06:39:20.596Z","1.0.5":"2018-05-22T08:35:40.227Z","created":"2015-05-18T03:52:55.192Z","modified":"2022-06-19T02:50:30.330Z"},"versions":{"1.0.0":{"_from":".","_id":"is-sorted@1.0.0","_nodeVersion":"0.12.3","_npmUser":{"name":"dcousens"},"_npmVersion":"2.9.0","_shasum":"3427d230ac13ba2394b3c799f13f3f678378f3af","author":{"name":"Daniel
+        Cousens"},"bugs":{"url":"https://github.com/dcousens/is-sorted/issues"},"description":"A
+        small module to check if an Array is sorted","devDependencies":{"mocha":"*","standard":"*"},"directories":{},"dist":{"integrity":"sha512-AW3Rj29JdICqqdr0IXoYyzK7yE5XiuQHyF48fCEIBbBfbqvkUWwBIaPl0xTZ5Crzt0vS+4pe10cLDh+QffBSQw==","shasum":"3427d230ac13ba2394b3c799f13f3f678378f3af","signatures":[{"keyid":"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA","sig":"MEUCIBPiav2ZvRPIzh2fDgvj0Ptf+K8Vtz2lhZC6fy5x37fiAiEA7W3rbn/btemjEOkGI+QVwcoGH4CcF72vt/WB88IXS60="}],"tarball":"https://registry.npmjs.org/is-sorted/-/is-sorted-1.0.0.tgz"},"gitHead":"829b24aaec0a6e77fa1c41ae8082806db120f6d0","homepage":"https://github.com/dcousens/is-sorted","keywords":["is-sorted","sorting","sort","sorted","array","list","comparison"],"license":"MIT","main":"index.js","maintainers":[{"name":"dcousens"}],"name":"is-sorted","repository":{"type":"git","url":"git+https://github.com/dcousens/is-sorted.git"},"scripts":{"standard":"standard","test":"npm
+        run-script unit","unit":"mocha"},"version":"1.0.0"},"1.0.1":{"_from":".","_id":"is-sorted@1.0.1","_nodeVersion":"0.12.3","_npmUser":{"name":"dcousens"},"_npmVersion":"2.9.0","_shasum":"adf51ca4c3ffcefeb44c8a50c85106c057402d5b","author":{"name":"Daniel
+        Cousens"},"bugs":{"url":"https://github.com/dcousens/is-sorted/issues"},"description":"A
+        small module to check if an Array is sorted","devDependencies":{"mocha":"*","standard":"*"},"directories":{},"dist":{"integrity":"sha512-gXxeu3tTpYIXCSzCJm8ZPPQvHr1u5oJw6r1I/fys3Zv7MwP2VixpWbuVACaNh53k2Q/RseTHVg1IH+q/JWsxcg==","shasum":"adf51ca4c3ffcefeb44c8a50c85106c057402d5b","signatures":[{"keyid":"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA","sig":"MEUCIEY4ylkqLZs5shSEjR6A0yVWmC5tBB/6whkbleYeyiGiAiEAtAGQc6XmF8JwkSafiUG3733R8Pg4w3WPg5h0eX3oFAg="}],"tarball":"https://registry.npmjs.org/is-sorted/-/is-sorted-1.0.1.tgz"},"gitHead":"657484778d8bce480a931457b8a269ddf8d5c4f6","homepage":"https://github.com/dcousens/is-sorted","keywords":["is-sorted","sorting","sort","sorted","array","list","comparison"],"license":"MIT","main":"index.js","maintainers":[{"name":"dcousens"}],"name":"is-sorted","repository":{"type":"git","url":"git+https://github.com/dcousens/is-sorted.git"},"scripts":{"standard":"standard","test":"npm
+        run-script unit","unit":"mocha"},"version":"1.0.1"},"1.0.2":{"_from":".","_id":"is-sorted@1.0.2","_nodeVersion":"0.12.7","_npmUser":{"name":"dcousens"},"_npmVersion":"2.13.4","_shasum":"2cbb31d33aaa5a362b14605da02d7701e1d112d7","author":{"name":"Daniel
+        Cousens"},"bugs":{"url":"https://github.com/dcousens/is-sorted/issues"},"description":"A
+        small module to check if an Array is sorted","devDependencies":{"mocha":"*","standard":"*"},"directories":{},"dist":{"integrity":"sha512-XEyv9Zg0h5nwNFKDW8UbOV3egZK09gZg29B/cnLnHgKorLHkhw6yIJ6/cFyC1n84nvzlu3SAtPf5KKcmNZJzHA==","shasum":"2cbb31d33aaa5a362b14605da02d7701e1d112d7","signatures":[{"keyid":"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA","sig":"MEUCIAHgPfFY3agWNJcudylF/cBtEmvLSC/JSXhoRxKCFrVyAiEA9oRzPwZYexMavScCVkoIz5bwg0JBSNxlxhD0Ov9lFzs="}],"tarball":"https://registry.npmjs.org/is-sorted/-/is-sorted-1.0.2.tgz"},"gitHead":"62bbc30b1846ada97fa8e57b5fe06eafc124773d","homepage":"https://github.com/dcousens/is-sorted","keywords":["is-sorted","sorting","sort","sorted","array","list","comparison"],"license":"MIT","main":"index.js","maintainers":[{"name":"dcousens"}],"name":"is-sorted","repository":{"type":"git","url":"git+https://github.com/dcousens/is-sorted.git"},"scripts":{"standard":"standard","test":"npm
+        run-script unit","unit":"mocha"},"version":"1.0.2"},"1.0.3":{"_id":"is-sorted@1.0.3","_nodeVersion":"8.5.0","_npmOperationalInternal":{"host":"s3://npm-registry-packages","tmp":"tmp/is-sorted-1.0.3.tgz_1506321472701_0.8353451685979962"},"_npmUser":{"name":"dcousens"},"_npmVersion":"5.3.0","author":{"name":"Daniel
+        Cousens"},"bugs":{"url":"https://github.com/dcousens/is-sorted/issues"},"description":"A
+        small module to check if an Array is sorted","devDependencies":{"standard":"*","tape":"^4.8.0"},"directories":{},"dist":{"integrity":"sha512-LFZDZrHv2pVjwHhX0gWGhgiw6J42fNBL2WlgmyAUkBOeUX09aY6b07MGlp92t+u5KVQT63C08dg2pkAz57lLZw==","shasum":"8e8a3e0d6f3c02f2ec8eafa7564673ae557e19ff","signatures":[{"keyid":"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA","sig":"MEYCIQDg0AS3jp6dx+2IuMXDKAHeoRm1R+FOHBS0bHe2jDrzZwIhAJ0Vx76IlW10+XXSRy/0bFYfghp0oQ+53Q1uAdM/qE+l"}],"tarball":"https://registry.npmjs.org/is-sorted/-/is-sorted-1.0.3.tgz"},"gitHead":"28e59cf9ba2c29e1c625ddaf23626844c8abade9","homepage":"https://github.com/dcousens/is-sorted","keywords":["is-sorted","sorting","sort","sorted","array","list","comparison"],"license":"MIT","main":"index.js","maintainers":[{"name":"dcousens"}],"name":"is-sorted","repository":{"type":"git","url":"git+https://github.com/dcousens/is-sorted.git"},"scripts":{"standard":"standard","test":"npm
+        run-script unit","unit":"mocha"},"version":"1.0.3"},"1.0.4":{"_id":"is-sorted@1.0.4","_nodeVersion":"8.5.0","_npmOperationalInternal":{"host":"s3://npm-registry-packages","tmp":"tmp/is-sorted-1.0.4.tgz_1506321560492_0.959084517788142"},"_npmUser":{"name":"dcousens"},"_npmVersion":"5.3.0","author":{"name":"Daniel
+        Cousens"},"bugs":{"url":"https://github.com/dcousens/is-sorted/issues"},"description":"A
+        small module to check if an Array is sorted","devDependencies":{"standard":"*","tape":"^4.8.0"},"directories":{},"dist":{"integrity":"sha512-uI3448g+UCXDRczuswU0ORid+IoV6LqAiJ6mQ+xcH/ATYlwPxdqprXrvohurE0+tUMptCdduewLe2/0M9kR0OA==","shasum":"3ca5c5cc9697ad867171961ad6ee6d75e618d691","signatures":[{"keyid":"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA","sig":"MEUCIF8x86aLQMAWldTiXIuEhOk3DIO38xdj48QKurU9qGkWAiEAjrrK9TcTwAIkGxGOhl24EB4vh37CI9opTbzKsvuicyk="}],"tarball":"https://registry.npmjs.org/is-sorted/-/is-sorted-1.0.4.tgz"},"gitHead":"886d95e4a70f3dd430325cea8e56d306d75fecd7","homepage":"https://github.com/dcousens/is-sorted","keywords":["is-sorted","sorting","sort","sorted","array","list","comparison"],"license":"MIT","main":"index.js","maintainers":[{"name":"dcousens"}],"name":"is-sorted","repository":{"type":"git","url":"git+https://github.com/dcousens/is-sorted.git"},"scripts":{"standard":"standard","test":"npm
+        run-script unit","unit":"tape test/*.js"},"version":"1.0.4"},"1.0.5":{"_hasShrinkwrap":false,"_id":"is-sorted@1.0.5","_nodeVersion":"10.1.0","_npmOperationalInternal":{"host":"s3://npm-registry-packages","tmp":"tmp/is-sorted_1.0.5_1526978140131_0.9554924783134939"},"_npmUser":{"name":"dcousens"},"_npmVersion":"6.0.1","author":{"name":"Daniel
+        Cousens"},"bugs":{"url":"https://github.com/dcousens/is-sorted/issues"},"description":"A
+        small module to check if an Array is sorted","devDependencies":{"standard":"*","tape":"^4.8.0"},"directories":{},"dist":{"fileCount":7,"integrity":"sha512-KZJvKDrI+Kg3ixeDaZQIt7RIwcGnm07+NSipyj1r9MtjDrLG678ETy4yO6dBJLUjejPdge9fLCGxsWkQO/3PJg==","npm-signature":"-----BEGIN
+        PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJbA9ZdCRA9TVsSAnZWagAAaXkP/Rn7ohT4nPpJqzaC9jil\naTAPPSltdSgdI13MXDnymjX8B51QCXOeIvM8acF7bgh3Ey5wn/yFPjhSnTVN\nECPXcrEllQzFTTU5xRCYb+4QT7856YyjHM1lYV5FwwcVqy8bOxS7QqMASpRq\nm4ftlZHqf9YkAqvbk/ZH1yPn+SmSdv5yaXVq7BkP+z6A9M/Ea3GmnS+Mutn4\n2frMvBThKE7dVD0U/h4nwf/HTYCBFiAPT1sRAsJNzSEFqeLreInDDYDHQhHk\n7BxkYX0B+YnGJKkD4JhqtOy18H7CXIQI3EfTF2s+JaUY86LTLKpR27QDFQS0\n4UCM4tooEpGV1MdSlV3E8AMLjBPOe+7F7cah+MMtUIsjKzqCm6gBGYaZNVMK\ngT4B+88z9YdbQi4Wq45IyYG8nq1OkZoG8yG4A6rLdtl6QP6TrA0QkSv/MTTv\nF4KZlu9RDKHJOaorvz3+Y4Gm2qETLnNQU45zMs1CesiqQE+YASA6SDvC68Zo\n7h6+kZSvHUdY9oCqgGBEG253Wi6FgWrc2oJC/Ywy9B7JNsGVFex31Y+HKujf\noHgWXJHbLFlpEoX0Bo42QqrPDNd3qGkKcePkXRqJMoWZADNzC//HzHR2dk3m\nbN9UAKXgrCSTJXZStbs8xKbCM9Xn01AKwL5ry+pUHzs5kade2hUiO5Q8P0Sy\n4b+p\r\n=ABFn\r\n-----END
+        PGP SIGNATURE-----\r\n","shasum":"ded2e357010bc79350b10ec2768e27db1b92b128","signatures":[{"keyid":"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA","sig":"MEUCIGJlxRW8PhKO5nxHaAdq2fLQFfg8zfNZE4vqTwj5Fi/1AiEA2b0Wi8CS4pe0F57s/KWVewvSpxR1nzBNBwwknbIv+Ro="}],"tarball":"https://registry.npmjs.org/is-sorted/-/is-sorted-1.0.5.tgz","unpackedSize":4361},"gitHead":"24829180ba1fafb86b8abca7b30681b3cefc3b5e","homepage":"https://github.com/dcousens/is-sorted","keywords":["is-sorted","sorting","sort","sorted","array","list","comparison"],"license":"MIT","main":"index.js","maintainers":[{"name":"dcousens"}],"name":"is-sorted","repository":{"type":"git","url":"git+https://github.com/dcousens/is-sorted.git"},"scripts":{"standard":"standard","test":"npm
+        run-script unit","unit":"tape test/*.js"},"version":"1.0.5"}}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - public, max-age=300
+      cf-cache-status:
+      - HIT
+      cf-ray:
+      - a50a7cfcd833191e-MAD
+      connection:
+      - keep-alive
+      content-length:
+      - '9701'
+      content-type:
+      - application/json
+      date:
+      - Mon, 26 Oct 2026 15:27:59 GMT
+      etag:
+      - W/"60d066066c1ea0f2a08f4ff69d94b205"
+      last-modified:
+      - Sun, 19 Jun 2022 02:50:31 GMT
+      server:
+      - cloudflare
+      set-cookie:
+      - __cf_bm=aqPM96H5.FCFlfZ4FDn_wa8p8vYLa1gelt1h4R5NB2k-1793028479.4957838-1.0.1.1-WAG0_Cfn77l20sl_MsDIgzLiP3sL3uGPuv4uyhc905XTNqB4gDMb2GOoc0fRAo4JvWs7xG6sxmKeRVy0IvhPHGeX0H2lvKpKgSgXbDUzagI6ki0j6aGOMPn3TXlYQmCG;
+        HttpOnly; SameSite=None; Secure; Path=/; Domain=npmjs.org; Expires=Mon, 26
+        Oct 2026 15:57:59 GMT
+      transfer-encoding:
+      - chunked
+      vary:
+      - accept-encoding, accept
+    status:
+      code: 200
+      message: OK
+version: 1
