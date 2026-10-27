@@ -57,7 +57,7 @@ One row per package, without version, per release.
 | --- | --- | --- |
 | purl | string | the package's Package URL without version |
 | repository | string or null | the normalised clone URL |
-| forge | enum | github, gitlab, codeberg, sourcehut, gitea, other, unknown |
+| forge | enum | github, gitlab, codeberg, sourcehut, gitea, sbom, other, unknown |
 | confidence | enum | high, medium, low, none |
 | sources_agreeing | integer | how many consulted sources agree with the resolved repository |
 | sources | array | which sources were consulted |

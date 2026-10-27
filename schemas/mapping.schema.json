@@ -20,7 +20,7 @@
         "forge": {
             "description": "Possible forges",
             "type": "string",
-            "enum": ["github", "gitlab", "codeberg", "sourcehut", "gitea", "other", "unknown"]
+            "enum": ["github", "gitlab", "codeberg", "sourcehut", "gitea", "sbom", "other", "unknown"]
         },
         "confidence": {
             "description": "Confidence level",

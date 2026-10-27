@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 import json
 import sys
 from dataclasses import asdict
@@ -46,8 +47,6 @@ def format_output_human(
         print(f"Sources agreeing: {map.sources_agreeing}")
         print(f"Sources: {', '.join(map.sources)}")
         print(f"Forge: {map.forge.value}")
-        if map.note:
-            print(f"Note: {map.note}")
 
         if not his:
             continue
@@ -64,20 +63,35 @@ def format_output_human(
 
 
 def format_output_json(
-    map_list: list[Any],
+    map_list: list[Any], manifest: dict[str, Any], snapshot_digest: str
 ) -> None:
+    manifest["snapshot_digest"] = f"sha256:{snapshot_digest}"
+
+    mapping_list = []
+    history_list = []
+
     for m in map_list:
         map = m[0]
         his = m[1]
 
-        print(json.dumps(asdict(map)))
+        mapping_list.append(asdict(map))
         for v in his:
-            print(json.dumps(asdict(v[1])))
+            history_list.append(asdict(v[1]))
+
+    final_obj = {
+        "run": manifest,
+        "mapping": mapping_list,
+        "publisher_history": history_list,
+    }
+
+    print(
+        json.dumps(final_obj, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    )
 
 
 def resolve_collect(
-    graph: dict[str, set[str]], external_dict: dict[str, str]
-) -> list[Any]:
+    graph: dict[str, set[str]], external_dict: dict[str, str], sbom: Path
+) -> tuple[list[Any], dict[str, Any], str]:
     httpx_client = create_http_client()
 
     with snapshot.SnapshotWriter() as writer:
@@ -99,8 +113,7 @@ def resolve_collect(
 
                 map_fields = mapping.extract_map_fields(candidates)
 
-                note = "Only repository path applies"
-                map_item = mapping.map_to_repo(component, map_fields, "0.1.0", note)
+                map_item = mapping.map_to_repo(component, map_fields, "0.1.0")
                 map_list.append((map_item, history_list))
                 continue
 
@@ -149,14 +162,21 @@ def resolve_collect(
             map_item = mapping.map_to_repo(component, map_fields, "0.1.0")
             map_list.append((map_item, history_list))
 
-            writer.close_document(None, None, None)
+            with sbom.open("rb") as file:
+                sbom_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
+            _, snapshot_digest, manifest = writer.close_document(
+                None, sbom_digest, None
+            )
 
-    return map_list
+    return map_list, manifest, snapshot_digest
 
 
 def resolve_replay(
     graph: dict[str, set[str]], tar: Path, external_dict: dict[str, str]
-) -> list[Any]:
+) -> tuple[list[Any], dict[str, Any], str]:
+    with tar.open("rb") as file:
+        final_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
+
     with snapshot.SnapshotReader(tar) as reader:
         map_list = []
         history_list: list[tuple[str, Any]] = []
@@ -218,7 +238,7 @@ def resolve_replay(
             map_item = mapping.map_to_repo(component, map_fields, "0.1.0")
             map_list.append((map_item, history_list))
 
-    return map_list
+    return map_list, reader.manifest, final_digest
 
 
 def run_resolve(args: argparse.Namespace) -> int:
@@ -232,18 +252,22 @@ def run_resolve(args: argparse.Namespace) -> int:
             if comp.purl and comp.external_ref:
                 external_dict[comp.purl] = comp.external_ref
 
-    except parser.InvalidStructureError as err:
+    except (parser.InvalidStructureError, parser.UnsupportedFormatError) as err:
         print(f"Error: {err}", file=sys.stderr)
         return 2
 
     try:
         if args.offline:
-            map_list = resolve_replay(transitive_graph, args.offline, external_dict)
+            map_list, manifest, snapshot_digest = resolve_replay(
+                transitive_graph, Path(args.offline), external_dict
+            )
         else:
-            map_list = resolve_collect(transitive_graph, external_dict)
+            map_list, manifest, snapshot_digest = resolve_collect(
+                transitive_graph, external_dict, Path(args.sbom)
+            )
 
         if args.json:
-            format_output_json(map_list)
+            format_output_json(map_list, manifest, snapshot_digest)
         else:
             format_output_human(map_list)
 

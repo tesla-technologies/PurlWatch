@@ -45,7 +45,6 @@ class Map:
     sources: list[str]
     observed_at: str
     release: str
-    note: str | None = None
 
 
 def normalize_url(url: str) -> str | None:
@@ -139,9 +138,7 @@ def extract_forge(url: str | None) -> Forge:
     return FORGE_HOSTS.get(urlparse(url).netloc, Forge.OTHER)
 
 
-def map_to_repo(
-    purl: str, fields: dict[str, Any], release: str, note: str | None = None
-) -> Map:
+def map_to_repo(purl: str, fields: dict[str, Any], release: str) -> Map:
     mapping_purl = PackageURL(
         **{**PackageURL.from_string(purl).to_dict(), "version": None}
     ).to_string()
@@ -155,5 +152,4 @@ def map_to_repo(
         sources=fields["sources"],
         observed_at=datetime.now(timezone.utc).isoformat(),
         release=release,
-        note=note,
     )
