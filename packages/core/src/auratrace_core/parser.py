@@ -59,7 +59,7 @@ def parse_sbom(sbom: Path) -> ParsedSBOM:
             elif "spdxVersion" in raw_json and raw_json["spdxVersion"] in spdx_versions:
                 return spdx_parser(sbom)
             else:
-                raise UnsupportedFormatError("Format or version not supported")
+                raise UnsupportedFormatError("SBOM format or version is not supported")
     except (CycloneDxException, KeyError) as err:
         raise InvalidStructureError(f"File structure it's not valid: {err}")
     except json.JSONDecodeError as err:

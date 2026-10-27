@@ -252,7 +252,7 @@ def run_resolve(args: argparse.Namespace) -> int:
             if comp.purl and comp.external_ref:
                 external_dict[comp.purl] = comp.external_ref
 
-    except parser.InvalidStructureError as err:
+    except (parser.InvalidStructureError, parser.UnsupportedFormatError) as err:
         print(f"Error: {err}", file=sys.stderr)
         return 2
 
