@@ -50,7 +50,8 @@ check-signoff:
   stage: lint
   variables:
     GIT_DEPTH: 0
-  extends: .rules-push-and-mr
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   before_script:
     - apt-get update && apt-get install -y git
   script:
