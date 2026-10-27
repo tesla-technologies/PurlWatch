@@ -34,7 +34,7 @@ def test_snapshot_workflow(tmp_path: Path) -> None:
                 url=f"https://registry.example.org/{payload['key']}",
             )
 
-        tar_path, _ = writer.close_document(None, None, None)
+        tar_path, _, _ = writer.close_document(None, None, None)
 
         with SnapshotReader(tar_path) as reader:
             for payload in payload_list:
@@ -70,7 +70,7 @@ def test_tar_digest(tmp_path: Path) -> None:
             url=f"https://registry.example.org/{payload['key']}",
         )
 
-    _, tar_digest = writer.close_document(None, None, None)
+    _, tar_digest, _ = writer.close_document(None, None, None)
 
     for payload in payload_list:
         writer2.add_document(
@@ -84,7 +84,7 @@ def test_tar_digest(tmp_path: Path) -> None:
             url=f"https://registry.example.org/{payload['key']}",
         )
 
-    _, tar_digest2 = writer2.close_document(None, None, None)
+    _, tar_digest2, _ = writer2.close_document(None, None, None)
 
     assert tar_digest == tar_digest2
 

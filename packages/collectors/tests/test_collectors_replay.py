@@ -44,7 +44,7 @@ def snapshot_builder(
                 url=doc.get("url", f"https://registry.example.org/{key}"),
             )
 
-        tar_path, _ = writer.close_document(None, None, None)
+        tar_path, _, _ = writer.close_document(None, None, None)
         reader = SnapshotReader(tar=tar_path)
 
         readers_to_close.append(reader)

@@ -107,7 +107,7 @@ class SnapshotWriter:
         sbom_digest: str | None,
         baselines_digest: str | None,
         complete: bool = True,
-    ) -> tuple[Path, str]:
+    ) -> tuple[Path, str, dict[str, Any]]:
         end_time = self.clock().isoformat()
 
         index_list = [dataclasses.asdict(item) for item in self._index]
@@ -162,7 +162,7 @@ class SnapshotWriter:
         with tar_path.open("rb") as file:
             final_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
 
-        return tar_path, final_digest
+        return tar_path, final_digest, manifest_dict
 
     def tarinfo_filter(self, ti: tarfile.TarInfo) -> tarfile.TarInfo:
         ti.mtime = 0
