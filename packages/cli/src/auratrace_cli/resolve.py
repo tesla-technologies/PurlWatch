@@ -47,8 +47,6 @@ def format_output_human(
         print(f"Sources agreeing: {map.sources_agreeing}")
         print(f"Sources: {', '.join(map.sources)}")
         print(f"Forge: {map.forge.value}")
-        if map.note:
-            print(f"Note: {map.note}")
 
         if not his:
             continue
