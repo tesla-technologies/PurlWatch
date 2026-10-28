@@ -124,6 +124,6 @@ def test_express_replay_fact(
         ]
     )
 
-    result = ecosystems_replay(reader, "ecosystems/express/metadata.json")
+    result = ecosystems_replay(reader, "express")
 
     assert result == "https://github.com/expressjs/express"

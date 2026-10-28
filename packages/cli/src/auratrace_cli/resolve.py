@@ -226,9 +226,7 @@ def resolve_replay(
             if pkg_type == "cargo":
                 fact = crates.replay(reader, component)
 
-            ecosystem_collect = ecosystems.replay(
-                reader, f"ecosystems/{component}/metadata.json"
-            )
+            ecosystem_collect = ecosystems.replay(reader, component)
             if ecosystem_collect is not None:
                 ecosystem_url = mapping.normalize_url(ecosystem_collect)
                 if ecosystem_url is not None:
