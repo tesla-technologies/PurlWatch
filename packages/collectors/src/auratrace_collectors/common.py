@@ -1,28 +1,9 @@
 import json
 import re
-from dataclasses import dataclass
 from typing import Any, cast
 
 import httpx
 from auratrace_core.snapshot import SnapshotWriter
-
-
-@dataclass(frozen=True)
-class Version:
-    time: str
-    publisher: str | None
-    maintainers: list[str]
-    trusted_publishing: bool = False
-    yanked: bool = False
-
-
-@dataclass(frozen=True)
-class Fact:
-    name: str
-    current_owners: list[str] | None
-    repository: str | None
-    versions: dict[str, Version]
-    owners_current_only: bool
 
 
 class PackageNotFound(Exception):
