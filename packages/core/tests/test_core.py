@@ -61,6 +61,16 @@ def test_sbom_invalid_version_error() -> None:
             "https://github.com/babel/babel/tree/main/packages/babel-core",
             "https://github.com/babel/babel",
         ),
+        ("gitlab:org/repo", "https://gitlab.com/org/repo"),
+        ("bitbucket:org/repo", "https://bitbucket.org/org/repo"),
+        ("https://git.sr.ht/~sircmpwn/scdoc", "https://git.sr.ht/~sircmpwn/scdoc"),
+        ("https://gitlab.gnome.org/GNOME/glib", "https://gitlab.gnome.org/GNOME/glib"),
+        (
+            "https://gitlab.com/group/subgroup/project",
+            "https://gitlab.com/group/subgroup/project",
+        ),
+        ("https://github.com:443/x/y", "https://github.com/x/y"),
+        ("https://www.github.com/x/y", "https://github.com/x/y"),
     ],
 )
 def test_normalized_url(url: str, normalized: str) -> None:

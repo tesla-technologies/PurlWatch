@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlsplit
 
 from packageurl import PackageURL
 
@@ -28,6 +28,14 @@ FORGE_HOSTS = {
 }
 
 
+SHORT_FORMS = {
+    "github:": "github.com/",
+    "gitlab:": "gitlab.com/",
+    "bitbucket:": "bitbucket.org/",
+    "gist:": "gist.github.com/",
+}
+
+
 class Confidence(str, Enum):
     HIGH = "high"
     MEDIUM = "medium"
@@ -47,28 +55,64 @@ class Map:
     release: str
 
 
-def normalize_url(url: str) -> str | None:
-    repo_regex = re.compile(
-        r"^(?:[a-zA-Z+]+:)*(?:[a-zA-Z+]+://)?(?:git@)?(?:(?P<forge>[^/:]+)[/:])?(?P<owner>[^/]+)/(?P<repo>[^/#?]+?)(?:\.git)?(?:/[^#?]*)?(?:[#?].*)?$"
-    )
+def process_url(url: str) -> str:
+    for key, value in SHORT_FORMS.items():
+        if url.startswith(key):
+            return "https://" + url.replace(key, value, 1)
 
-    match = repo_regex.search(url.strip())
-    if not match:
+    if re.match(r"^[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$", url):
+        return "https://github.com/" + url
+
+    if match := re.match(r"^([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+):(.+)$", url):
+        return f"ssh://{match.group(1)}/{match.group(2)}"
+
+    return url
+
+
+def normalize_url(url: str) -> str | None:
+    s_url = url.strip()
+    s_url = s_url.removeprefix("git+")
+    s_url = s_url.removeprefix("scm:git:")
+    s_url = s_url.removeprefix("scm:")
+    s_url = s_url.removesuffix(".git")
+
+    first_url = process_url(s_url)
+    parsed_url = urlsplit(first_url)
+
+    host = parsed_url.hostname
+    if host:
+        host = host.lower().removeprefix("www.")
+    else:
         return None
 
-    forge = match.group("forge")
-    if not forge:
-        forge = "github.com"
+    scheme = parsed_url.scheme
+    if scheme in ("git", "http", ""):
+        scheme = "https"
 
-    owner = match.group("owner")
-    repo = match.group("repo")
+    path = parsed_url.path
 
-    domain_regex = re.compile(r"^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$")
-    if not domain_regex.search(forge):
-        forge = forge + ".com"
+    segments = path.strip("/").split("/")
 
-    final_url = f"https://{forge}/{owner}/{repo}"
+    if host in ("github.com", "codeberg.org", "bitbucket.org"):
+        valid_segments = segments[:2]
+    elif "gitlab" in host:
+        if "/-/" in path:
+            valid_segments = segments[: segments.index("-")]
+        else:
+            valid_segments = segments
+    elif "sr.ht" in host:
+        user_idx = next(
+            (i for i, seg in enumerate(segments) if seg.startswith("~")), None
+        )
+        if user_idx is not None and user_idx + 1 < len(segments):
+            valid_segments = segments[user_idx : user_idx + 2]
+        else:
+            valid_segments = segments[:2]
+    else:
+        valid_segments = segments[:2]
 
+    clean_path = "/".join(valid_segments)
+    final_url = f"{scheme}://{host}/{clean_path}"
     return final_url
 
 
