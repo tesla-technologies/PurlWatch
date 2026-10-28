@@ -27,10 +27,10 @@ def collect(purl: str, client: httpx.Client, writer: SnapshotWriter) -> str | No
     result = common.collect(
         client=client,
         writer=writer,
-        url=f"https://packages.ecosyste.ms/api/v1/packages/lookup?purl={purl}",
-        headers={"User-Agent": "auratrace/0.1.0"},
+        url="https://packages.ecosyste.ms/api/v1/packages/lookup",
         key=f"ecosystems/{purl}/metadata.json",
         collector="ecosyste.ms",
+        params={"purl": purl},
     )
 
     if not result:

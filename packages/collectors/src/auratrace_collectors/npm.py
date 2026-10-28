@@ -103,7 +103,6 @@ def collect(
         client=client,
         writer=writer,
         url=f"https://registry.npmjs.org/{pkg_name}",
-        headers={"User-Agent": "auratrace/0.1.0"},
         key=f"npm/{pkg_name}/packument.json",
         collector="npm",
     )

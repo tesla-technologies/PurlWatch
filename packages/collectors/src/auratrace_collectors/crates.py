@@ -94,7 +94,6 @@ def collect(
         client=client,
         writer=writer,
         url=f"https://crates.io/api/v1/crates/{pkg_name}",
-        headers={"User-Agent": "auratrace/0.1.0"},
         key=f"cargo/{pkg_name}/versions_crate.json",
         collector="crates",
     )
@@ -103,7 +102,6 @@ def collect(
         client=client,
         writer=writer,
         url=f"https://crates.io/api/v1/crates/{pkg_name}/owners",
-        headers={"User-Agent": "auratrace/0.1.0"},
         key=f"cargo/{pkg_name}/owners_crate.json",
         collector="crates",
     )

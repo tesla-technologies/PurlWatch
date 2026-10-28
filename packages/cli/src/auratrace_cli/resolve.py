@@ -43,7 +43,7 @@ def main() -> None:
 
 def create_http_client() -> httpx.Client:
     return httpx.Client(
-        headers={"User-Agent": "auratrace/0.1.0 (https://gitlab.com/code-supply)"},
+        headers={"User-Agent": "auratrace/0.1.0"},
         transport=client.AuratraceTransport(min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
         timeout=15.0,
@@ -110,81 +110,84 @@ def resolve_collect(
 ) -> tuple[list[Any], dict[str, Any], str]:
     httpx_client = create_http_client()
 
-    with snapshot.SnapshotWriter() as writer:
-        map_list = []
-        history_list: list[tuple[str, Any]] = []
+    try:
+        with snapshot.SnapshotWriter() as writer:
+            map_list = []
+            history_list: list[tuple[str, Any]] = []
 
-        for component in graph:
-            history_list = []
-            candidates = []
-            purl = PackageURL.from_string(component)
-            pkg_type = purl.type
+            for component in graph:
+                history_list = []
+                candidates = []
+                purl = PackageURL.from_string(component)
+                pkg_type = purl.type
 
-            if pkg_type == "generic":
-                raw_repo = external_dict.get(component)
-                if raw_repo:
-                    repo_url = mapping.normalize_url(raw_repo)
-                    if repo_url:
-                        candidates.append(("sbom", repo_url))
+                if pkg_type == "generic":
+                    raw_repo = external_dict.get(component)
+                    if raw_repo:
+                        repo_url = mapping.normalize_url(raw_repo)
+                        if repo_url:
+                            candidates.append(("sbom", repo_url))
+
+                    map_fields = mapping.extract_map_fields(candidates)
+
+                    map_item = mapping.map_to_repo(component, map_fields, "0.1.0")
+                    map_list.append((map_item, history_list))
+                    continue
+
+                fact: npm.Fact | crates.Fact | None = None
+                if pkg_type == "npm":
+                    fact = npm.collect(component, httpx_client, writer)
+
+                if pkg_type == "cargo":
+                    fact = crates.collect(component, httpx_client, writer)
+
+                ecosystem_collect = ecosystems.collect(component, httpx_client, writer)
+                if ecosystem_collect is not None:
+                    ecosystem_url = mapping.normalize_url(ecosystem_collect)
+                    if ecosystem_url is not None:
+                        candidates.append(("ecosystems", ecosystem_url))
+
+                if fact is not None:
+                    if fact.repository is not None:
+                        candidate_url = mapping.normalize_url(fact.repository)
+                        if candidate_url is not None:
+                            candidates.append(("registry", candidate_url))
+
+                    base = PackageURL.from_string(component)
+                    for key, val in sorted(
+                        fact.versions.items(), key=lambda kv: kv[1].time
+                    ):
+                        row_purl = PackageURL(
+                            type=base.type,
+                            namespace=base.namespace,
+                            name=base.name,
+                            version=key,
+                        ).to_string()
+                        version_dict = asdict(cast(Any, val))
+                        history_fields = history.extract_history_fields(
+                            version_dict, pkg_type
+                        )
+                        history_item = history.map_to_history(
+                            row_purl,
+                            history_fields,
+                            fact.owners_current_only,
+                            "0.1.0",
+                        )
+                        history_list.append((key, history_item))
 
                 map_fields = mapping.extract_map_fields(candidates)
-
                 map_item = mapping.map_to_repo(component, map_fields, "0.1.0")
                 map_list.append((map_item, history_list))
-                continue
 
-            fact: npm.Fact | crates.Fact | None = None
-            if pkg_type == "npm":
-                fact = npm.collect(component, httpx_client, writer)
+                with sbom.open("rb") as file:
+                    sbom_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
+                _, snapshot_digest, manifest = writer.close_document(
+                    None, sbom_digest, None
+                )
 
-            if pkg_type == "cargo":
-                fact = crates.collect(component, httpx_client, writer)
-
-            ecosystem_collect = ecosystems.collect(component, httpx_client, writer)
-            if ecosystem_collect is not None:
-                ecosystem_url = mapping.normalize_url(ecosystem_collect)
-                if ecosystem_url is not None:
-                    candidates.append(("ecosystems", ecosystem_url))
-
-            if fact is not None:
-                if fact.repository is not None:
-                    candidate_url = mapping.normalize_url(fact.repository)
-                    if candidate_url is not None:
-                        candidates.append(("registry", candidate_url))
-
-                base = PackageURL.from_string(component)
-                for key, val in sorted(
-                    fact.versions.items(), key=lambda kv: kv[1].time
-                ):
-                    row_purl = PackageURL(
-                        type=base.type,
-                        namespace=base.namespace,
-                        name=base.name,
-                        version=key,
-                    ).to_string()
-                    version_dict = asdict(cast(Any, val))
-                    history_fields = history.extract_history_fields(
-                        version_dict, pkg_type
-                    )
-                    history_item = history.map_to_history(
-                        row_purl,
-                        history_fields,
-                        fact.owners_current_only,
-                        "0.1.0",
-                    )
-                    history_list.append((key, history_item))
-
-            map_fields = mapping.extract_map_fields(candidates)
-            map_item = mapping.map_to_repo(component, map_fields, "0.1.0")
-            map_list.append((map_item, history_list))
-
-            with sbom.open("rb") as file:
-                sbom_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
-            _, snapshot_digest, manifest = writer.close_document(
-                None, sbom_digest, None
-            )
-
-    return map_list, manifest, snapshot_digest
+        return map_list, manifest, snapshot_digest
+    finally:
+        httpx_client.close()
 
 
 def resolve_replay(

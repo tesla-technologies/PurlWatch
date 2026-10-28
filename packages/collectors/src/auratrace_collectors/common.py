@@ -88,12 +88,12 @@ def collect(
     client: httpx.Client,
     writer: SnapshotWriter,
     url: str,
-    headers: dict[str, str],
     key: str,
     collector: str,
+    params: dict[str, str] | None = None,
 ) -> dict[str, Any] | None:
     try:
-        response = client.get(url, headers=headers)
+        response = client.get(url, params=params)
 
         response.raise_for_status()
 
