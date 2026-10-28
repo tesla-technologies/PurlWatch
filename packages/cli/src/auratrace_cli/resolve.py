@@ -13,9 +13,9 @@ from packageurl import PackageURL
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(exit_on_error=False)
     subparsers = parser.add_subparsers(dest="command", required=True)
-    resolve_c = subparsers.add_parser("resolve")
+    resolve_c = subparsers.add_parser("resolve", exit_on_error=False)
     resolve_c.add_argument(
         "--sbom", required=True, type=Path, help="Specifies the SBOM to read."
     )
@@ -268,7 +268,11 @@ def run_resolve(args: argparse.Namespace) -> int:
             if comp.purl and comp.external_ref:
                 external_dict[comp.purl] = comp.external_ref
 
-    except (parser.InvalidStructureError, parser.UnsupportedFormatError) as err:
+    except (
+        parser.InvalidStructureError,
+        parser.UnsupportedFormatError,
+        FileNotFoundError,
+    ) as err:
         print(f"Error: {err}", file=sys.stderr)
         return 2
 

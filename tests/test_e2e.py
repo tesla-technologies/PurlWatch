@@ -100,6 +100,24 @@ def test_resolve_e2e_collect_error(tmp_path: Path):
     assert result.returncode == 2
 
 
+def test_resolve_e2e_offline_error(tmp_path: Path):
+    root_dir = Path(__file__).resolve().parent.parent
+    sbom = root_dir / "examples" / "node-cli.cdx.json"
+
+    custom_cache = tmp_path / "cache"
+    env = os.environ.copy()
+    env["AURATRACE_HASH_KEY"] = "replay-secret-test-key"
+    env["AURATRACE_CACHE_DIR"] = str(custom_cache)
+
+    cmd = ["auratrace", "resolve", "--sbom", str(sbom), "--offline"]
+
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, env=env, cwd=root_dir, check=False
+    )
+
+    assert result.returncode == 3
+
+
 def schema_path(schema: str, path: Path) -> dict[str, Any]:
     schema = path / schema
     with open(schema, "r", encoding="utf-8") as f:
