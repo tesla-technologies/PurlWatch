@@ -107,7 +107,7 @@ def format_output_json(
 
 def resolve_collect(
     graph: dict[str, set[str]], external_dict: dict[str, str], sbom: Path
-) -> tuple[list[Any], dict[str, Any], str]:
+) -> tuple[list[Any], Path, dict[str, Any], str]:
     httpx_client = create_http_client()
 
     try:
@@ -179,13 +179,14 @@ def resolve_collect(
                 map_item = mapping.map_to_repo(component, map_fields, "0.1.0")
                 map_list.append((map_item, history_list))
 
-                with sbom.open("rb") as file:
-                    sbom_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
-                _, snapshot_digest, manifest = writer.close_document(
-                    None, sbom_digest, None
-                )
+            with sbom.open("rb") as file:
+                sbom_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
 
-        return map_list, manifest, snapshot_digest
+            tar_path, snapshot_digest, manifest = writer.close_document(
+                None, sbom_digest, None
+            )
+
+        return map_list, tar_path, manifest, snapshot_digest
     finally:
         httpx_client.close()
 
@@ -260,6 +261,7 @@ def resolve_replay(
 
 def run_resolve(args: argparse.Namespace) -> int:
     try:
+        tar_path = None
         parsed_sbom = parser.parse_sbom(args.sbom)
         direct_graph = parser.build_direct_graph(parsed_sbom)
         transitive_graph = parser.build_transitive_graph(direct_graph)
@@ -283,7 +285,7 @@ def run_resolve(args: argparse.Namespace) -> int:
                 transitive_graph, args.offline, external_dict
             )
         else:
-            map_list, manifest, snapshot_digest = resolve_collect(
+            map_list, tar_path, manifest, snapshot_digest = resolve_collect(
                 transitive_graph, external_dict, args.sbom
             )
 
@@ -291,6 +293,11 @@ def run_resolve(args: argparse.Namespace) -> int:
             format_output_json(map_list, manifest, snapshot_digest)
         else:
             format_output_human(map_list)
+
+        if tar_path:
+            print(
+                f"\nSnapshot: {tar_path} (digest: {snapshot_digest})", file=sys.stderr
+            )
 
         return 0
     except (ValueError, FileNotFoundError) as err:

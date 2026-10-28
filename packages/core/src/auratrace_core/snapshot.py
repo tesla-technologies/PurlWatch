@@ -52,6 +52,7 @@ class SnapshotWriter:
             Path(cache_env) if cache_env else (Path.home() / ".cache" / "auratrace")
         )
         self._out_path: Path = out_path or (default_cache / "snapshots")
+        self._closed = False
 
     def __enter__(self) -> Self:
         return self
@@ -65,6 +66,8 @@ class SnapshotWriter:
         if exc_type is not None:
             self.close_document(None, None, None, complete=False)
         self._temp_dir.cleanup()
+        if not self._closed:
+            self._closed = True
 
     def add_document(
         self,
@@ -108,6 +111,11 @@ class SnapshotWriter:
         baselines_digest: str | None,
         complete: bool = True,
     ) -> tuple[Path, str, dict[str, Any]]:
+        if self._closed:
+            raise RuntimeError("Writer was close previously")
+
+        self._closed = True
+
         end_time = self.clock().isoformat()
 
         index_list = [dataclasses.asdict(item) for item in self._index]
