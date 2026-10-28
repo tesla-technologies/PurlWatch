@@ -16,11 +16,27 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
     resolve_c = subparsers.add_parser("resolve")
-    resolve_c.add_argument("--sbom", required=True, type=Path, help="")
-    resolve_c.add_argument("--offline", required=False, help="")
-    resolve_c.add_argument("--json", action="store_true", required=False, help="")
+    resolve_c.add_argument(
+        "--sbom", required=True, type=Path, help="Specifies the SBOM to read."
+    )
+    resolve_c.add_argument(
+        "--offline",
+        required=False,
+        type=Path,
+        help="Runs the command in offline mode. Reads the snapshot and prints the information in the specified format. The snapshot must correspond directly to the provided SBOM.",
+    )
+    resolve_c.add_argument(
+        "--json",
+        action="store_true",
+        required=False,
+        help="Changes the output from a human-readable text format to a machine-readable format. It can be applied to online and offline mode.",
+    )
 
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except argparse.ArgumentError as err:
+        if "--offline" in err.message or err.argument_name == "--offline":
+            sys.exit(3)
 
     sys.exit(run_resolve(args))
 
@@ -259,11 +275,11 @@ def run_resolve(args: argparse.Namespace) -> int:
     try:
         if args.offline:
             map_list, manifest, snapshot_digest = resolve_replay(
-                transitive_graph, Path(args.offline), external_dict
+                transitive_graph, args.offline, external_dict
             )
         else:
             map_list, manifest, snapshot_digest = resolve_collect(
-                transitive_graph, external_dict, Path(args.sbom)
+                transitive_graph, external_dict, args.sbom
             )
 
         if args.json:
@@ -272,8 +288,8 @@ def run_resolve(args: argparse.Namespace) -> int:
             format_output_human(map_list)
 
         return 0
-    except ValueError as err:
-        print(f"Error: Bad form PURL: {err}", file=sys.stderr)
+    except (ValueError, FileNotFoundError) as err:
+        print(f"Error: {err}", file=sys.stderr)
         return 2
 
 
