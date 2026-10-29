@@ -6,8 +6,6 @@ from enum import Enum
 from typing import Any
 from urllib.parse import urlparse, urlsplit
 
-from packageurl import PackageURL
-
 
 class Forge(str, Enum):
     GITHUB = "github"
@@ -15,7 +13,6 @@ class Forge(str, Enum):
     CODEBERG = "codeberg"
     SOURCEHUT = "sourcehut"
     GITEA = "gitea"
-    SBOM = "sbom"
     OTHER = "other"
     UNKNOWN = "unknown"
 
@@ -45,7 +42,7 @@ class Confidence(str, Enum):
 
 @dataclass(frozen=True)
 class Map:
-    purl: str
+    purl: str | None
     repository: str
     forge: Forge
     confidence: Confidence
@@ -116,20 +113,20 @@ def normalize_url(url: str) -> str | None:
     return final_url
 
 
-def extract_map_fields(candidates: list[tuple[str, str]]) -> dict[str, Any]:
+def extract_map_fields(candidates: list[tuple[str, str]] | None) -> dict[str, Any]:
     """In case of low confidence the repository is decided through votes.
     If there is a draw, the registry source has priority deciding the source"""
     repository = None
     forge = Forge.UNKNOWN
     confidence = Confidence.NONE
     sources_agreeing = 0
-    sources = [source for source, _ in candidates]
+    sources = [source for source, _ in candidates] if candidates else []
 
     if not candidates:
         return {
             "repository": repository,
             "forge": forge,
-            "confidence": Confidence.NONE,
+            "confidence": confidence,
             "sources_agreeing": sources_agreeing,
             "sources": sources,
         }
@@ -182,13 +179,9 @@ def extract_forge(url: str | None) -> Forge:
     return FORGE_HOSTS.get(urlparse(url).netloc, Forge.OTHER)
 
 
-def map_to_repo(purl: str, fields: dict[str, Any], release: str) -> Map:
-    mapping_purl = PackageURL(
-        **{**PackageURL.from_string(purl).to_dict(), "version": None}
-    ).to_string()
-
+def map_to_repo(purl: str | None, fields: dict[str, Any], release: str) -> Map:
     return Map(
-        purl=mapping_purl,
+        purl=purl,
         repository=fields["repository"],
         forge=fields["forge"],
         confidence=fields["confidence"],

@@ -8,7 +8,7 @@ from typing import Any, cast
 
 import httpx
 from auratrace_collectors import client, crates, npm, sources
-from auratrace_core import hashing, history, mapping, parser, snapshot
+from auratrace_core import hashing, history, mapping, parser, resolve, snapshot
 from packageurl import PackageURL
 
 
@@ -106,19 +106,20 @@ def format_output_json(
 
 
 def resolve_component(
-    graph: dict[str, set[str]], external_dict: dict[str, str], src: sources.Source
+    nodes: dict[str, resolve.Node], external_dict: dict[str, str], src: sources.Source
 ) -> list[tuple[mapping.Map, list[tuple[str, Any]]]]:
     map_list = []
     history_list: list[tuple[str, Any]] = []
 
-    for component in graph:
+    for component in nodes.values():
         history_list = []
-        candidates = []
-        purl = PackageURL.from_string(component)
-        pkg_type = purl.type
+        candidates: list[tuple[str, str]] = []
 
-        if pkg_type == "generic":
-            raw_repo = external_dict.get(component)
+        if component.route == resolve.Route.NO_PURL or not component.purl:
+            continue
+
+        if component.route == resolve.Route.REPOSITORY_ONLY:
+            raw_repo = external_dict.get(component.ref)
             if raw_repo:
                 repo_url = mapping.normalize_url(raw_repo)
                 if repo_url:
@@ -126,18 +127,22 @@ def resolve_component(
 
             map_fields = mapping.extract_map_fields(candidates)
 
-            map_item = mapping.map_to_repo(component, map_fields, "0.1.0")
+            map_item = mapping.map_to_repo(component.purl, map_fields, "0.1.0")
             map_list.append((map_item, history_list))
             continue
 
         fact: npm.Fact | crates.Fact | None = None
-        if pkg_type == "npm":
-            fact = src.npm(component)
 
-        if pkg_type == "cargo":
-            fact = src.crates(component)
+        if component.route == resolve.Route.REGISTRY:
+            purl = PackageURL.from_string(component.purl)
+            pkg_type = purl.type
+            if pkg_type == "npm":
+                fact = src.npm(component.purl)
 
-        ecosystem_collect = src.ecosystems(component)
+            if pkg_type == "cargo":
+                fact = src.crates(component.purl)
+
+        ecosystem_collect = src.ecosystems(component.purl)
         if ecosystem_collect is not None:
             ecosystem_url = mapping.normalize_url(ecosystem_collect)
             if ecosystem_url is not None:
@@ -149,7 +154,7 @@ def resolve_component(
                 if candidate_url is not None:
                     candidates.append(("registry", candidate_url))
 
-            base = PackageURL.from_string(component)
+            base = PackageURL.from_string(component.purl)
             for key, val in sorted(fact.versions.items(), key=lambda kv: kv[1].time):
                 row_purl = PackageURL(
                     type=base.type,
@@ -168,7 +173,7 @@ def resolve_component(
                 history_list.append((key, history_item))
 
         map_fields = mapping.extract_map_fields(candidates)
-        map_item = mapping.map_to_repo(component, map_fields, "0.1.0")
+        map_item = mapping.map_to_repo(component.package, map_fields, "0.1.0")
         map_list.append((map_item, history_list))
 
     return map_list
@@ -178,13 +183,12 @@ def run_resolve(args: argparse.Namespace) -> int:
     try:
         tar_path = None
         parsed_sbom = parser.parse_sbom(args.sbom)
-        direct_graph = parser.build_direct_graph(parsed_sbom)
-        transitive_graph = parser.build_transitive_graph(direct_graph)
+        resolved_sbom = resolve.resolve(parsed_sbom)
 
         external_dict: dict[str, str] = {}
         for comp in parsed_sbom.comp_list:
-            if comp.purl and comp.external_ref:
-                external_dict[comp.purl] = comp.external_ref
+            if comp.bom_ref and comp.external_ref:
+                external_dict[comp.bom_ref] = comp.external_ref
 
     except (
         parser.InvalidStructureError,
@@ -199,7 +203,7 @@ def run_resolve(args: argparse.Namespace) -> int:
             with snapshot.SnapshotReader(args.offline) as reader:
                 snapshot_src = sources.SnapshotSource(reader)
                 map_list = resolve_component(
-                    transitive_graph, external_dict, snapshot_src
+                    resolved_sbom.nodes, external_dict, snapshot_src
                 )
                 manifest = reader.manifest
                 with args.offline.open("rb") as file:
@@ -210,7 +214,9 @@ def run_resolve(args: argparse.Namespace) -> int:
             httpx_client = create_http_client()
             with snapshot.SnapshotWriter() as writer:
                 live_src = sources.LiveSource(writer, httpx_client)
-                map_list = resolve_component(transitive_graph, external_dict, live_src)
+                map_list = resolve_component(
+                    resolved_sbom.nodes, external_dict, live_src
+                )
                 with args.sbom.open("rb") as file:
                     sbom_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
 

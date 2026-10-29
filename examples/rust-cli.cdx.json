@@ -4,7 +4,9 @@
   "specVersion": "1.5",
   "version": 1,
   "metadata": {
+    "timestamp": "2026-03-29T10:15:30Z",
     "component": {
+      "bom-ref": "pkg:cargo/mini-rust-cli@0.1.0",
       "type": "application",
       "name": "mini-rust-cli",
       "version": "0.1.0",
@@ -13,6 +15,7 @@
   },
   "components": [
     {
+      "bom-ref": "pkg:cargo/clap@4.5.4",
       "type": "library",
       "name": "clap",
       "version": "4.5.4",
@@ -23,6 +26,101 @@
             "id": "MIT"
           }
         }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/libzstd-native@1.5.5-custom",
+      "type": "library",
+      "publisher": "Core Platform Team",
+      "group": "vendor.sys",
+      "name": "libzstd-native",
+      "version": "1.5.5-custom",
+      "description": "Compilado C personalizado y optimizado de la librería Zstandard para entornos embebidos",
+      "purl": "pkg:generic/libzstd-native@1.5.5-custom",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "git+https://github.com/facebook/zstd.git#v1.5.5",
+          "comment": "Repositorio fuente upstream con parches corporativos aplicados"
+        },
+        {
+          "type": "distribution-intake",
+          "url": "https://artifactory.internal.net/artifactory/generic-binaries/libzstd-native-1.5.5-custom.tar.gz",
+          "comment": "Artefacto binario distribuido"
+        },
+        {
+          "type": "issue-tracker",
+          "url": "https://github.com/facebook/zstd/issues"
+        },
+        {
+          "type": "website",
+          "url": "https://facebook.github.io/zstd/"
+        }
+      ]
+    },
+    {
+      "bom-ref": "internal-crypto-helper-v0.4.1",
+      "type": "library",
+      "group": "internal.security",
+      "name": "internal-crypto-helper",
+      "version": "0.4.1-build88",
+      "description": "Binario estático interno detectado en disco por el scanner. No publicado en ningún registro público ni privado.",
+      "supplier": {
+        "name": "SecOps Team",
+        "url": [
+          "https://secops.internal.net"
+        ]
+      },
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4"
+        }
+      ],
+      "licenses": [
+        {
+          "expression": "Proprietary"
+        }
+      ],
+      "evidence": {
+        "occurrences": [
+          {
+            "location": "/usr/local/lib/libinternal_crypto.a"
+          }
+        ]
+      },
+      "properties": [
+        {
+          "name": "syft:location:0:path",
+          "value": "/usr/local/lib/libinternal_crypto.a"
+        },
+        {
+          "name": "auratrace:discovery:method",
+          "value": "binary-signature-scan"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:cargo/mini-rust-cli@0.1.0",
+      "dependsOn": [
+        "pkg:cargo/clap@4.5.4",
+        "pkg:generic/libzstd-native@1.5.5-custom",
+        "internal-crypto-helper-v0.4.1"
       ]
     }
   ]

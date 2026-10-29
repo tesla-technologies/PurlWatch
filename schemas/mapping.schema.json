@@ -20,7 +20,7 @@
         "forge": {
             "description": "Possible forges",
             "type": "string",
-            "enum": ["github", "gitlab", "codeberg", "sourcehut", "gitea", "sbom", "other", "unknown"]
+            "enum": ["github", "gitlab", "codeberg", "sourcehut", "gitea", "other", "unknown"]
         },
         "confidence": {
             "description": "Confidence level",
@@ -36,7 +36,7 @@
             "description": "Which sources were consulted",
             "type": "array",
             "items": {
-                "enum": ["registry", "ecosystems", "depsdev", "provenance"]
+                "enum": ["registry", "ecosystems", "depsdev", "provenance", "sbom"]
             }
         },
         "observed_at": {
