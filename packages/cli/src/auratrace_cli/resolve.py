@@ -13,8 +13,8 @@ from packageurl import PackageURL
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(exit_on_error=False)
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    resolve_parser = argparse.ArgumentParser(exit_on_error=False)
+    subparsers = resolve_parser.add_subparsers(dest="command", required=True)
     resolve_c = subparsers.add_parser("resolve", exit_on_error=False)
     resolve_c.add_argument(
         "--sbom", required=True, type=Path, help="Specifies the SBOM to read."
@@ -33,7 +33,7 @@ def main() -> None:
     )
 
     try:
-        args = parser.parse_args()
+        args = resolve_parser.parse_args()
     except argparse.ArgumentError as err:
         if "--offline" in err.message or err.argument_name == "--offline":
             sys.exit(3)
@@ -54,15 +54,15 @@ def format_output_human(
     map_list: list[Any],
 ) -> None:
     for m in map_list:
-        map = m[0]
+        mapp = m[0]
         his = m[1]
         print("=" * 80)
-        print(f"Purl: {map.purl}")
-        print(f"Repository: {map.repository}")
-        print(f"Confidence: {map.confidence.value}")
-        print(f"Sources agreeing: {map.sources_agreeing}")
-        print(f"Sources: {', '.join(map.sources)}")
-        print(f"Forge: {map.forge.value}")
+        print(f"Purl: {mapp.purl}")
+        print(f"Repository: {mapp.repository}")
+        print(f"Confidence: {mapp.confidence.value}")
+        print(f"Sources agreeing: {mapp.sources_agreeing}")
+        print(f"Sources: {', '.join(mapp.sources)}")
+        print(f"Forge: {mapp.forge.value}")
 
         if not his:
             continue
@@ -87,10 +87,10 @@ def format_output_json(
     history_list = []
 
     for m in map_list:
-        map = m[0]
+        mapp = m[0]
         his = m[1]
 
-        mapping_list.append(asdict(map))
+        mapping_list.append(asdict(mapp))
         for v in his:
             history_list.append(asdict(v[1]))
 

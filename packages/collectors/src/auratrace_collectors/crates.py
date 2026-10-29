@@ -15,6 +15,7 @@ class Version:
     publisher: str | None
     maintainers: list[str]
     yanked: bool
+    trusted_publishing: bool
 
 
 @dataclass(frozen=True)
@@ -40,9 +41,10 @@ def parse_fact(versions: dict[str, Any], owners: dict[str, Any]) -> Fact:
         time = v_data.get("created_at", "")
         publisher = (v_data.get("published_by", {}) or {}).get("login", None)
         yanked = v_data.get("yanked", False)
+        trusted_publishing = v_data.get("trustpub_data", False)
 
         dict_versions[v_data.get("num", "")] = Version(
-            time, publisher, owners_list, yanked
+            time, publisher, owners_list, yanked, trusted_publishing
         )
 
     return Fact(
