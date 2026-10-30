@@ -6,6 +6,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any, cast
 
+import auratrace_core.exceptions as core_exc
 import httpx
 from auratrace_collectors import client, crates, npm, sources
 from auratrace_core import hashing, history, mapping, parser, resolve, snapshot
@@ -32,12 +33,7 @@ def main() -> None:
         help="Changes the output from a human-readable text format to a machine-readable format. It can be applied to online and offline mode.",
     )
 
-    try:
-        args = resolve_parser.parse_args()
-    except argparse.ArgumentError as err:
-        if "--offline" in err.message or err.argument_name == "--offline":
-            sys.exit(3)
-
+    args = resolve_parser.parse_args()
     sys.exit(run_resolve(args))
 
 
@@ -200,15 +196,6 @@ def run_resolve(args: argparse.Namespace) -> int:
             if comp.bom_ref and comp.external_ref:
                 external_dict[comp.bom_ref] = comp.external_ref
 
-    except (
-        parser.InvalidStructureError,
-        parser.UnsupportedFormatError,
-        FileNotFoundError,
-    ) as err:
-        print(f"Error: {err}", file=sys.stderr)
-        return 2
-
-    try:
         if args.offline:
             with snapshot.SnapshotReader(args.offline) as reader:
                 snapshot_src = sources.SnapshotSource(reader)
@@ -245,9 +232,9 @@ def run_resolve(args: argparse.Namespace) -> int:
             )
 
         return 0
-    except (ValueError, FileNotFoundError) as err:
-        print(f"Error: {err}", file=sys.stderr)
-        return 2
+    except core_exc.AuratraceError as err:
+        print(f"auratrace: {err}", file=sys.stderr)
+        return err.exit_code
 
 
 if __name__ == "__main__":

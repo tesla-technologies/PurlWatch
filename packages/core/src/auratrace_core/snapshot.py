@@ -14,8 +14,10 @@ from types import TracebackType
 from typing import Any, Self
 from urllib.parse import urlparse
 
+import auratrace_core.exceptions as core_exc
 
-class ReaderFileNotFoundError(Exception):
+
+class ReaderFileNotFoundError(core_exc.OfflineMissError):
     """Raises when a file it´s not found by it´s key in a Snapshot"""
 
 

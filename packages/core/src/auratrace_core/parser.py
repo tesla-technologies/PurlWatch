@@ -11,6 +11,8 @@ from cyclonedx.model.component import (
 from packageurl import PackageURL
 from spdx_tools.spdx.parser.parse_anything import parse_file
 
+import auratrace_core.exceptions as core_exc
+
 
 @dataclass(frozen=True)
 class Dependency:
@@ -36,17 +38,21 @@ class ParsedSBOM:
     dependencies: list[Dependency]
 
 
-class UnsupportedFormatError(Exception):
+class UnsupportedFormatError(core_exc.InputError):
     """Raised when file format or version it´s not supported."""
 
 
-class InvalidStructureError(Exception):
+class InvalidStructureError(core_exc.InputError):
     """Raised when file structure it´s not the expected one"""
+
+
+class SbomNotFoundError(core_exc.InputError):
+    """Raised when sbom it's not added"""
 
 
 def parse_sbom(sbom: Path) -> ParsedSBOM:
     if not sbom.exists():
-        raise FileNotFoundError("Not SBOM was added")
+        raise SbomNotFoundError("Not SBOM was added")
 
     try:
         with open(sbom, "r", encoding="utf-8") as s:

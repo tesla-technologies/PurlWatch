@@ -2,6 +2,7 @@ import json
 import re
 from typing import Any, cast
 
+import auratrace_core.exceptions as core_exc
 import httpx
 from auratrace_core.snapshot import SnapshotWriter
 
@@ -10,7 +11,7 @@ class PackageNotFound(Exception):
     """Raises when package it's not found"""
 
 
-class ResponseException(Exception):
+class ResponseException(core_exc.NetworkError):
     """Raises when an exception occurs on the petition"""
 
 
