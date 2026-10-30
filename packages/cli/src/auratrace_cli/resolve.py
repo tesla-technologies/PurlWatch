@@ -127,7 +127,7 @@ def resolve_component(
 
             map_fields = mapping.extract_map_fields(candidates)
 
-            map_item = mapping.map_to_repo(component.purl, map_fields, "0.1.0")
+            map_item = mapping.map_to_repo(component.purl, map_fields, "0.1.0", None)
             map_list.append((map_item, history_list))
             continue
 
@@ -143,8 +143,8 @@ def resolve_component(
                 fact = src.crates(component.purl)
 
         ecosystem_collect = src.ecosystems(component.purl)
-        if ecosystem_collect is not None:
-            ecosystem_url = mapping.normalize_url(ecosystem_collect)
+        if ecosystem_collect is not None and ecosystem_collect.repository:
+            ecosystem_url = mapping.normalize_url(ecosystem_collect.repository)
             if ecosystem_url is not None:
                 candidates.append(("ecosystems", ecosystem_url))
 
@@ -169,11 +169,21 @@ def resolve_component(
                     history_fields,
                     fact.owners_current_only,
                     "0.1.0",
+                    fact.observed_at,
                 )
                 history_list.append((key, history_item))
 
+        if fact is not None:
+            observed_at = fact.observed_at
+        elif ecosystem_collect is not None:
+            observed_at = ecosystem_collect.observed_at
+        else:
+            observed_at = None
+
         map_fields = mapping.extract_map_fields(candidates)
-        map_item = mapping.map_to_repo(component.package, map_fields, "0.1.0")
+        map_item = mapping.map_to_repo(
+            component.package, map_fields, "0.1.0", observed_at
+        )
         map_list.append((map_item, history_list))
 
     return map_list

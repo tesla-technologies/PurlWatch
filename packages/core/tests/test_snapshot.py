@@ -23,6 +23,7 @@ def test_snapshot_workflow(tmp_path: Path) -> None:
         ]
 
         for payload in payload_list:
+            doc_time = writer.clock().isoformat()
             writer.add_document(
                 collector="test",
                 collector_v="0.1.0",
@@ -32,6 +33,7 @@ def test_snapshot_workflow(tmp_path: Path) -> None:
                 body=payload["body"],
                 email_removed=False,
                 url=f"https://registry.example.org/{payload['key']}",
+                time=doc_time,
             )
 
         tar_path, _, _ = writer.close_document(None, None, None)
@@ -59,6 +61,7 @@ def test_tar_digest(tmp_path: Path) -> None:
     ]
 
     for payload in payload_list:
+        doc_time = writer.clock().isoformat()
         writer.add_document(
             collector="test",
             collector_v="0.1.0",
@@ -68,11 +71,13 @@ def test_tar_digest(tmp_path: Path) -> None:
             body=payload["body"],
             email_removed=False,
             url=f"https://registry.example.org/{payload['key']}",
+            time=doc_time,
         )
 
     _, tar_digest, _ = writer.close_document(None, None, None)
 
     for payload in payload_list:
+        doc_time2 = writer2.clock().isoformat()
         writer2.add_document(
             collector="test",
             collector_v="0.1.0",
@@ -82,6 +87,7 @@ def test_tar_digest(tmp_path: Path) -> None:
             body=payload["body"],
             email_removed=False,
             url=f"https://registry.example.org/{payload['key']}",
+            time=doc_time2,
         )
 
     _, tar_digest2, _ = writer2.close_document(None, None, None)
@@ -107,6 +113,7 @@ def test_tar_incomplete(tmp_path: Path) -> None:
         ]
 
         for payload in payload_list:
+            doc_time = writer.clock().isoformat()
             writer.add_document(
                 collector="test",
                 collector_v="0.1.0",
@@ -116,6 +123,7 @@ def test_tar_incomplete(tmp_path: Path) -> None:
                 body=payload["body"],
                 email_removed=False,
                 url=f"https://registry.example.org/{payload['key']}",
+                time=doc_time,
             )
 
         raise RuntimeError("Test simulated error")

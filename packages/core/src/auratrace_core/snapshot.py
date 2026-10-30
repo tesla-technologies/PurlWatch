@@ -79,10 +79,10 @@ class SnapshotWriter:
         headers: dict[str, str],
         email_removed: bool,
         body: str,
+        time: str,
     ) -> None:
         encoded_body = body.encode("utf-8")
         digest = hashlib.sha256(encoded_body).hexdigest()
-        time = self.clock().isoformat()
         size = len(encoded_body)
 
         snapshot = Snapshot(

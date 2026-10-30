@@ -145,6 +145,7 @@ def spdx_parser(sbom: Path) -> ParsedSBOM:
 
     rel_types = ["DEPENDS_ON", "CONTAINS", "DYNAMIC_LINK"]
     reverse_rel_types = ["DEPENDENCY_OF", "DEV_DEPENDENCY_OF"]
+    VCS_PREFFIX = ("git+", "hg+", "svn+", "bzr+")
 
     dependencies = []
     described_ids = []
@@ -180,8 +181,8 @@ def spdx_parser(sbom: Path) -> ParsedSBOM:
                 purl = parse_purl(ref.locator)
                 break
 
-            if ref_type == "vcs":
-                external_ref = ref.locator
+        if str(pkg.download_location).startswith(VCS_PREFFIX):
+            external_ref = str(pkg.download_location)
 
         if len(described_ids) > 0 and pkg.spdx_id == described_ids[0]:
             root_comp = Component(name, version, pkg.spdx_id, purl, external_ref)

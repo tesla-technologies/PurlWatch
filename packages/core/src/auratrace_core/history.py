@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
 
@@ -57,7 +56,11 @@ def extract_history_fields(version: dict[str, Any], type: str) -> dict[str, Any]
 
 
 def map_to_history(
-    purl: str, fields: dict[str, Any], owners_current: bool, release: str
+    purl: str,
+    fields: dict[str, Any],
+    owners_current: bool,
+    release: str,
+    observed_at: str,
 ) -> History:
     return History(
         purl=purl,
@@ -67,6 +70,6 @@ def map_to_history(
         maintainers_hids=fields["maintainers_hids"],
         owners_current_only=owners_current,
         source=fields["source"],
-        observed_at=datetime.now(timezone.utc).isoformat(),
+        observed_at=observed_at,
         release=release,
     )

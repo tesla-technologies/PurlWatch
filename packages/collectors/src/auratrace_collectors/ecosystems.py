@@ -1,4 +1,5 @@
 import json
+from dataclasses import dataclass
 from typing import Any
 from urllib.parse import quote
 
@@ -8,8 +9,14 @@ from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
 from auratrace_collectors import common
 
 
-def parse_fact(raw_json: dict[str, Any]) -> str | None:
-    return raw_json.get("repository_url", None)
+@dataclass(frozen=True)
+class Fact:
+    repository: str | None
+    observed_at: str
+
+
+def parse_fact(raw_json: dict[str, Any], observed_at: str) -> Fact | None:
+    return Fact(raw_json.get("repository_url", None), observed_at)
 
 
 def resolve_key(purl: str) -> str:
@@ -18,7 +25,7 @@ def resolve_key(purl: str) -> str:
     return f"ecosystems/{purl}/metadata.json"
 
 
-def replay(reader: SnapshotReader, purl: str) -> str | None:
+def replay(reader: SnapshotReader, purl: str) -> Fact | None:
     key = resolve_key(purl)
 
     response, entry = reader.get_document(key)
@@ -29,13 +36,13 @@ def replay(reader: SnapshotReader, purl: str) -> str | None:
     if not parsed_response:
         return None
 
-    return parse_fact(parsed_response)
+    return parse_fact(parsed_response, entry["time"])
 
 
-def collect(purl: str, client: httpx.Client, writer: SnapshotWriter) -> str | None:
+def collect(purl: str, client: httpx.Client, writer: SnapshotWriter) -> Fact | None:
     key = resolve_key(purl)
 
-    result = common.collect(
+    collected = common.collect(
         client=client,
         writer=writer,
         url="https://packages.ecosyste.ms/api/v1/packages/lookup",
@@ -44,6 +51,9 @@ def collect(purl: str, client: httpx.Client, writer: SnapshotWriter) -> str | No
         params={"purl": purl},
     )
 
-    if not result:
+    if collected is None:
         return None
-    return parse_fact(result)
+
+    result, observed_at = collected
+
+    return parse_fact(result, observed_at)

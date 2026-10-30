@@ -87,4 +87,4 @@ def test_ecosystems_collect_fact(
         result = ecosystems_collect(parsed_purl, client, writer)
         assert result
 
-        assert result == "https://github.com/expressjs/express"
+        assert result.repository == "https://github.com/expressjs/express"

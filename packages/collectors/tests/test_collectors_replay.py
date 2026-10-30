@@ -33,6 +33,8 @@ def snapshot_builder(
             elif isinstance(body, dict):
                 body = json.dumps(body)
 
+            doc_time = writer.clock().isoformat()
+
             writer.add_document(
                 collector="test",
                 collector_v="0.1.0",
@@ -42,6 +44,7 @@ def snapshot_builder(
                 email_removed=False,
                 body=body,
                 url=doc.get("url", f"https://registry.example.org/{key}"),
+                time=doc_time,
             )
 
         tar_path, _, _ = writer.close_document(None, None, None)
@@ -126,4 +129,5 @@ def test_express_replay_fact(
 
     result = ecosystems_replay(reader, "express")
 
-    assert result == "https://github.com/expressjs/express"
+    assert result
+    assert result.repository == "https://github.com/expressjs/express"

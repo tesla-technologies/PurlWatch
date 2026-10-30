@@ -1,7 +1,6 @@
 import re
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
 from urllib.parse import urlparse, urlsplit
@@ -48,7 +47,7 @@ class Map:
     confidence: Confidence
     sources_agreeing: int
     sources: list[str]
-    observed_at: str
+    observed_at: str | None
     release: str
 
 
@@ -179,7 +178,9 @@ def extract_forge(url: str | None) -> Forge:
     return FORGE_HOSTS.get(urlparse(url).netloc, Forge.OTHER)
 
 
-def map_to_repo(purl: str | None, fields: dict[str, Any], release: str) -> Map:
+def map_to_repo(
+    purl: str | None, fields: dict[str, Any], release: str, observed_at: str | None
+) -> Map:
     return Map(
         purl=purl,
         repository=fields["repository"],
@@ -187,6 +188,6 @@ def map_to_repo(purl: str | None, fields: dict[str, Any], release: str) -> Map:
         confidence=fields["confidence"],
         sources_agreeing=fields["sources_agreeing"],
         sources=fields["sources"],
-        observed_at=datetime.now(timezone.utc).isoformat(),
+        observed_at=observed_at,
         release=release,
     )

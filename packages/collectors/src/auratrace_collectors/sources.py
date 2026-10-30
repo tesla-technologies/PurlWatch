@@ -9,7 +9,7 @@ from auratrace_collectors import crates, ecosystems, npm
 class Source(Protocol):
     def npm(self, purl: str) -> npm.Fact | None: ...
     def crates(self, purl: str) -> crates.Fact | None: ...
-    def ecosystems(self, purl: str) -> str | None: ...
+    def ecosystems(self, purl: str) -> ecosystems.Fact | None: ...
 
 
 class LiveSource:
@@ -23,7 +23,7 @@ class LiveSource:
     def crates(self, purl: str) -> crates.Fact | None:
         return crates.collect(purl, self._client, self._writer)
 
-    def ecosystems(self, purl: str) -> str | None:
+    def ecosystems(self, purl: str) -> ecosystems.Fact | None:
         return ecosystems.collect(purl, self._client, self._writer)
 
 
@@ -37,5 +37,5 @@ class SnapshotSource:
     def crates(self, purl: str) -> crates.Fact | None:
         return crates.replay(self._reader, purl)
 
-    def ecosystems(self, purl: str) -> str | None:
+    def ecosystems(self, purl: str) -> ecosystems.Fact | None:
         return ecosystems.replay(self._reader, purl)

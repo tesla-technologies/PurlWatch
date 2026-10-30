@@ -72,7 +72,7 @@ def collect(
     key: str,
     collector: str,
     params: dict[str, str] | None = None,
-) -> dict[str, Any] | None:
+) -> tuple[dict[str, Any], str] | None:
     try:
         response = client.get(url, params=params)
 
@@ -85,6 +85,8 @@ def collect(
 
         headers_dict = extract_allowed_headers(response.headers)
 
+        doc_time = writer.clock().isoformat()
+
         writer.add_document(
             collector,
             "0.1.0",
@@ -94,11 +96,13 @@ def collect(
             dict(headers_dict),
             email_removed,
             sanitized_text,
+            doc_time,
         )
 
-        return cast(dict[str, Any], json.loads(sanitized_text))
+        return cast(dict[str, Any], json.loads(sanitized_text)), str(doc_time)
     except httpx.HTTPStatusError as err:
         if err.response.status_code == 404:
+            doc_time = writer.clock().isoformat()
             writer.add_document(
                 collector,
                 "0.1.0",
@@ -108,6 +112,7 @@ def collect(
                 extract_allowed_headers(response.headers),
                 False,
                 "",
+                doc_time,
             )
             return None
         raise ResponseException(

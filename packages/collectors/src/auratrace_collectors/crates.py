@@ -25,9 +25,12 @@ class Fact:
     repository: str | None
     versions: dict[str, Version]
     owners_current_only: bool
+    observed_at: str
 
 
-def parse_fact(versions: dict[str, Any], owners: dict[str, Any]) -> Fact:
+def parse_fact(
+    versions: dict[str, Any], owners: dict[str, Any], observed_at: str
+) -> Fact:
     versions_json = versions.get("versions", {})
 
     dict_versions = {}
@@ -53,6 +56,7 @@ def parse_fact(versions: dict[str, Any], owners: dict[str, Any]) -> Fact:
         versions.get("crate", {}).get("repository", None),
         dict_versions,
         True,
+        observed_at,
     )
 
 
@@ -81,7 +85,7 @@ def replay(reader: SnapshotReader, purl: str) -> Fact | None:
     parsed_response_v = json.loads(response_v)
     parsed_response_o = json.loads(response_o)
 
-    return parse_fact(parsed_response_v, parsed_response_o)
+    return parse_fact(parsed_response_v, parsed_response_o, entry_v["time"])
 
 
 def collect(
@@ -92,7 +96,7 @@ def collect(
 
     pkg_name = resolve_key(purl)
 
-    result_v = common.collect(
+    collected_v = common.collect(
         client=client,
         writer=writer,
         url=f"https://crates.io/api/v1/crates/{pkg_name}",
@@ -100,7 +104,10 @@ def collect(
         collector="crates",
     )
 
-    result_o = common.collect(
+    if collected_v is None:
+        return None
+
+    collected_o = common.collect(
         client=client,
         writer=writer,
         url=f"https://crates.io/api/v1/crates/{pkg_name}/owners",
@@ -108,7 +115,10 @@ def collect(
         collector="crates",
     )
 
-    if not result_o or not result_v:
+    if collected_o is None:
         return None
 
-    return parse_fact(result_v, result_o)
+    result_v, observed_at = collected_v
+    result_o, _ = collected_o
+
+    return parse_fact(result_v, result_o, observed_at)

@@ -41,7 +41,7 @@
         },
         "observed_at": {
             "description": "When the mapping was computed",
-            "type": "string",
+            "type": ["string", "null"],
             "format": "date-time"
         },
         "release": {
