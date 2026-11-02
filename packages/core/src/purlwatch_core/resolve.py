@@ -4,7 +4,7 @@ from enum import Enum
 
 from packageurl import PackageURL
 
-from auratrace_core.parser import ParsedSBOM
+from purlwatch_core.parser import ParsedSBOM
 
 
 class Route(str, Enum):

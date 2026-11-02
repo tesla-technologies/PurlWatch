@@ -1,5 +1,5 @@
 [project]
-name = "auratrace-dataset"
+name = "purlwatch-dataset"
 version = "0.1.0"
 description = "Dataset..."
 requires-python = ">=3.12"

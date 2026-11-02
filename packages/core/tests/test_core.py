@@ -1,8 +1,8 @@
 from pathlib import Path
 
 import pytest
-from auratrace_core.mapping import extract_map_fields, normalize_url
-from auratrace_core.parser import UnsupportedFormatError, parse_sbom
+from purlwatch_core.mapping import extract_map_fields, normalize_url
+from purlwatch_core.parser import UnsupportedFormatError, parse_sbom
 
 TEST_DIR = Path(__file__).parent
 

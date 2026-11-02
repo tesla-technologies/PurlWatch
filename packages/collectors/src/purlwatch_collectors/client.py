@@ -6,7 +6,7 @@ import httpx
 HOST_DELAYS = {"crates.io": 1, "registry.npmjs.org": 0.5, "packages.ecosyste.ms": 0.5}
 
 
-class AuratraceTransport(httpx.HTTPTransport):
+class PurlwatchTransport(httpx.HTTPTransport):
     def __init__(self, min_host_delay: float = 0.5, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._cache: dict[str, httpx.Response] = {}

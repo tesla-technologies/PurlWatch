@@ -1,12 +1,12 @@
 [project]
-name = "auratrace-collectors"
+name = "purlwatch-collectors"
 version = "0.1.0"
 description = "Collectors..."
 requires-python = ">=3.12"
 authors = [{ name = "Tesla Technologies & Software S.L." }]
 
 dependencies = [
-    "auratrace-core",
+    "purlwatch-core",
     "httpx>=0.28.1",
 ]
 
@@ -15,4 +15,4 @@ requires = ["uv_build>=0.12.23,<0.13.0"]
 build-backend = "uv_build"
 
 [tool.uv.sources]
-auratrace-core = { workspace = true }
+purlwatch-core = { workspace = true }

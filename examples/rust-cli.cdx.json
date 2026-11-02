@@ -108,7 +108,7 @@
           "value": "/usr/local/lib/libinternal_crypto.a"
         },
         {
-          "name": "auratrace:discovery:method",
+          "name": "purlwatch:discovery:method",
           "value": "binary-signature-scan"
         }
       ]

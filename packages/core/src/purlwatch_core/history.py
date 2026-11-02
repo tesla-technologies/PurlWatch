@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any
 
-from auratrace_core.hashing import identity_hid
+from purlwatch_core.hashing import identity_hid
 
 
 class Kind(str, Enum):

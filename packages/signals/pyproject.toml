@@ -1,5 +1,5 @@
 [project]
-name = "auratrace-signals"
+name = "purlwatch-signals"
 version = "0.1.0"
 description = "Signals..."
 requires-python = ">=3.12"

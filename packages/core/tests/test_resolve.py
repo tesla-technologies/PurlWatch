@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import cast
 
-from auratrace_core import parser, resolve
+from purlwatch_core import parser, resolve
 
 
 @dataclass(frozen=True)

@@ -2,9 +2,9 @@ import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 
-from auratrace_cli.resolve import create_http_client, resolve_component
-from auratrace_collectors import sources
-from auratrace_core import parser, resolve, snapshot
+from purlwatch_cli.resolve import create_http_client, resolve_component
+from purlwatch_collectors import sources
+from purlwatch_core import parser, resolve, snapshot
 
 ROOT = Path(__file__).resolve().parent.parent
 

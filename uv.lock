@@ -8,12 +8,12 @@ resolution-markers = [
 
 [manifest]
 members = [
-    "auratrace-attest",
-    "auratrace-cli",
-    "auratrace-collectors",
-    "auratrace-core",
-    "auratrace-dataset",
-    "auratrace-signals",
+    "purlwatch-attest",
+    "purlwatch-cli",
+    "purlwatch-collectors",
+    "purlwatch-core",
+    "purlwatch-dataset",
+    "purlwatch-signals",
 ]
 
 [manifest.dependency-groups]
@@ -114,42 +114,42 @@ wheels = [
 ]
 
 [[package]]
-name = "auratrace-attest"
+name = "purlwatch-attest"
 version = "0.1.0"
 source = { editable = "packages/attest" }
 
 [[package]]
-name = "auratrace-cli"
+name = "purlwatch-cli"
 version = "0.1.0"
 source = { editable = "packages/cli" }
 dependencies = [
-    { name = "auratrace-collectors" },
-    { name = "auratrace-core" },
+    { name = "purlwatch-collectors" },
+    { name = "purlwatch-core" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "auratrace-collectors", editable = "packages/collectors" },
-    { name = "auratrace-core", editable = "packages/core" },
+    { name = "purlwatch-collectors", editable = "packages/collectors" },
+    { name = "purlwatch-core", editable = "packages/core" },
 ]
 
 [[package]]
-name = "auratrace-collectors"
+name = "purlwatch-collectors"
 version = "0.1.0"
 source = { editable = "packages/collectors" }
 dependencies = [
-    { name = "auratrace-core" },
+    { name = "purlwatch-core" },
     { name = "httpx" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "auratrace-core", editable = "packages/core" },
+    { name = "purlwatch-core", editable = "packages/core" },
     { name = "httpx", specifier = ">=0.28.1" },
 ]
 
 [[package]]
-name = "auratrace-core"
+name = "purlwatch-core"
 version = "0.1.0"
 source = { editable = "packages/core" }
 dependencies = [
@@ -166,12 +166,12 @@ requires-dist = [
 ]
 
 [[package]]
-name = "auratrace-dataset"
+name = "purlwatch-dataset"
 version = "0.1.0"
 source = { editable = "packages/dataset" }
 
 [[package]]
-name = "auratrace-signals"
+name = "purlwatch-signals"
 version = "0.1.0"
 source = { editable = "packages/signals" }
 

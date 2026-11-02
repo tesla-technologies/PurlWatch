@@ -11,7 +11,7 @@ from cyclonedx.model.component import (
 from packageurl import PackageURL
 from spdx_tools.spdx.parser.parse_anything import parse_file
 
-import auratrace_core.exceptions as core_exc
+import purlwatch_core.exceptions as core_exc
 
 
 @dataclass(frozen=True)
