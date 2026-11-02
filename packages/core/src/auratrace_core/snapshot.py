@@ -14,8 +14,10 @@ from types import TracebackType
 from typing import Any, Self
 from urllib.parse import urlparse
 
+import auratrace_core.exceptions as core_exc
 
-class ReaderFileNotFoundError(Exception):
+
+class ReaderFileNotFoundError(core_exc.OfflineMissError):
     """Raises when a file it´s not found by it´s key in a Snapshot"""
 
 
@@ -52,6 +54,7 @@ class SnapshotWriter:
             Path(cache_env) if cache_env else (Path.home() / ".cache" / "auratrace")
         )
         self._out_path: Path = out_path or (default_cache / "snapshots")
+        self._closed = False
 
     def __enter__(self) -> Self:
         return self
@@ -65,6 +68,8 @@ class SnapshotWriter:
         if exc_type is not None:
             self.close_document(None, None, None, complete=False)
         self._temp_dir.cleanup()
+        if not self._closed:
+            self._closed = True
 
     def add_document(
         self,
@@ -76,10 +81,10 @@ class SnapshotWriter:
         headers: dict[str, str],
         email_removed: bool,
         body: str,
+        time: str,
     ) -> None:
         encoded_body = body.encode("utf-8")
         digest = hashlib.sha256(encoded_body).hexdigest()
-        time = self.clock().isoformat()
         size = len(encoded_body)
 
         snapshot = Snapshot(
@@ -108,6 +113,11 @@ class SnapshotWriter:
         baselines_digest: str | None,
         complete: bool = True,
     ) -> tuple[Path, str, dict[str, Any]]:
+        if self._closed:
+            raise RuntimeError("Writer was close previously")
+
+        self._closed = True
+
         end_time = self.clock().isoformat()
 
         index_list = [dataclasses.asdict(item) for item in self._index]
@@ -176,17 +186,20 @@ class SnapshotWriter:
 
 class SnapshotReader:
     def __init__(self, tar: Path):
-        self.tar = tarfile.open(tar, "r")  # noqa: SIM115
+        try:
+            archive = tarfile.open(tar, "r")  # noqa: SIM115
+        except (KeyError, FileNotFoundError) as err:
+            raise ReaderFileNotFoundError(f"File was not found for tar {tar}") from err
 
         try:
-            manifest_file = self.tar.extractfile("manifest.json")
+            manifest_file = archive.extractfile("manifest.json")
             if not manifest_file:
                 raise ReaderFileNotFoundError(
                     f"File manifest.json was not found for tar {tar}"
                 )
             self.manifest = json.load(manifest_file)
 
-            index_file = self.tar.extractfile("index.json")
+            index_file = archive.extractfile("index.json")
             if not index_file:
                 raise ReaderFileNotFoundError(
                     f"File index.json was not found for tar {tar}"
@@ -194,8 +207,10 @@ class SnapshotReader:
             index_list = json.load(index_file)
 
             self._index = {entry["path"]: entry for entry in index_list}
-        except KeyError:
-            self.tar.close()
+
+            self.tar: tarfile.TarFile = archive
+        except (KeyError, FileNotFoundError):
+            archive.close()
             raise ReaderFileNotFoundError(f"File was not found for tar {tar}")
 
     def __enter__(self) -> Self:

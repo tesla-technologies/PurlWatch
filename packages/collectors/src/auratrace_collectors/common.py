@@ -1,35 +1,17 @@
 import json
 import re
-from dataclasses import dataclass
 from typing import Any, cast
 
+import auratrace_core.exceptions as core_exc
 import httpx
 from auratrace_core.snapshot import SnapshotWriter
-
-
-@dataclass(frozen=True)
-class Version:
-    time: str
-    publisher: str | None
-    maintainers: list[str]
-    trusted_publishing: bool = False
-    yanked: bool = False
-
-
-@dataclass(frozen=True)
-class Fact:
-    name: str
-    current_owners: list[str] | None
-    repository: str | None
-    versions: dict[str, Version]
-    owners_current_only: bool
 
 
 class PackageNotFound(Exception):
     """Raises when package it's not found"""
 
 
-class ResponseException(Exception):
+class ResponseException(core_exc.NetworkError):
     """Raises when an exception occurs on the petition"""
 
 
@@ -88,12 +70,12 @@ def collect(
     client: httpx.Client,
     writer: SnapshotWriter,
     url: str,
-    headers: dict[str, str],
     key: str,
     collector: str,
-) -> dict[str, Any] | None:
+    params: dict[str, str] | None = None,
+) -> tuple[dict[str, Any], str] | None:
     try:
-        response = client.get(url, headers=headers)
+        response = client.get(url, params=params)
 
         response.raise_for_status()
 
@@ -104,6 +86,8 @@ def collect(
 
         headers_dict = extract_allowed_headers(response.headers)
 
+        doc_time = writer.clock().isoformat()
+
         writer.add_document(
             collector,
             "0.1.0",
@@ -113,11 +97,13 @@ def collect(
             dict(headers_dict),
             email_removed,
             sanitized_text,
+            doc_time,
         )
 
-        return cast(dict[str, Any], json.loads(sanitized_text))
+        return cast(dict[str, Any], json.loads(sanitized_text)), str(doc_time)
     except httpx.HTTPStatusError as err:
         if err.response.status_code == 404:
+            doc_time = writer.clock().isoformat()
             writer.add_document(
                 collector,
                 "0.1.0",
@@ -127,6 +113,7 @@ def collect(
                 extract_allowed_headers(response.headers),
                 False,
                 "",
+                doc_time,
             )
             return None
         raise ResponseException(

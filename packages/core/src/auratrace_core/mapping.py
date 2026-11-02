@@ -1,12 +1,9 @@
 import re
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
-from urllib.parse import urlparse
-
-from packageurl import PackageURL
+from urllib.parse import urlparse, urlsplit
 
 
 class Forge(str, Enum):
@@ -15,7 +12,6 @@ class Forge(str, Enum):
     CODEBERG = "codeberg"
     SOURCEHUT = "sourcehut"
     GITEA = "gitea"
-    SBOM = "sbom"
     OTHER = "other"
     UNKNOWN = "unknown"
 
@@ -28,6 +24,14 @@ FORGE_HOSTS = {
 }
 
 
+SHORT_FORMS = {
+    "github:": "github.com/",
+    "gitlab:": "gitlab.com/",
+    "bitbucket:": "bitbucket.org/",
+    "gist:": "gist.github.com/",
+}
+
+
 class Confidence(str, Enum):
     HIGH = "high"
     MEDIUM = "medium"
@@ -37,55 +41,91 @@ class Confidence(str, Enum):
 
 @dataclass(frozen=True)
 class Map:
-    purl: str
+    purl: str | None
     repository: str
     forge: Forge
     confidence: Confidence
     sources_agreeing: int
     sources: list[str]
-    observed_at: str
+    observed_at: str | None
     release: str
 
 
-def normalize_url(url: str) -> str | None:
-    repo_regex = re.compile(
-        r"^(?:[a-zA-Z+]+:)*(?:[a-zA-Z+]+://)?(?:git@)?(?:(?P<forge>[^/:]+)[/:])?(?P<owner>[^/]+)/(?P<repo>[^/#?]+?)(?:\.git)?(?:/[^#?]*)?(?:[#?].*)?$"
-    )
+def process_url(url: str) -> str:
+    for key, value in SHORT_FORMS.items():
+        if url.startswith(key):
+            return "https://" + url.replace(key, value, 1)
 
-    match = repo_regex.search(url.strip())
-    if not match:
+    if re.match(r"^[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$", url):
+        return "https://github.com/" + url
+
+    if match := re.match(r"^([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+):(.+)$", url):
+        return f"ssh://{match.group(1)}/{match.group(2)}"
+
+    return url
+
+
+def normalize_url(url: str) -> str | None:
+    s_url = url.strip()
+    s_url = s_url.removeprefix("git+")
+    s_url = s_url.removeprefix("scm:git:")
+    s_url = s_url.removeprefix("scm:")
+    s_url = s_url.removesuffix(".git")
+
+    first_url = process_url(s_url)
+    parsed_url = urlsplit(first_url)
+
+    host = parsed_url.hostname
+    if host:
+        host = host.lower().removeprefix("www.")
+    else:
         return None
 
-    forge = match.group("forge")
-    if not forge:
-        forge = "github.com"
+    scheme = parsed_url.scheme
+    if scheme in ("git", "http", ""):
+        scheme = "https"
 
-    owner = match.group("owner")
-    repo = match.group("repo")
+    path = parsed_url.path
 
-    domain_regex = re.compile(r"^[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$")
-    if not domain_regex.search(forge):
-        forge = forge + ".com"
+    segments = path.strip("/").split("/")
 
-    final_url = f"https://{forge}/{owner}/{repo}"
+    if host in ("github.com", "codeberg.org", "bitbucket.org"):
+        valid_segments = segments[:2]
+    elif "gitlab" in host:
+        if "/-/" in path:
+            valid_segments = segments[: segments.index("-")]
+        else:
+            valid_segments = segments
+    elif "sr.ht" in host:
+        user_idx = next(
+            (i for i, seg in enumerate(segments) if seg.startswith("~")), None
+        )
+        if user_idx is not None and user_idx + 1 < len(segments):
+            valid_segments = segments[user_idx : user_idx + 2]
+        else:
+            valid_segments = segments[:2]
+    else:
+        valid_segments = segments[:2]
 
+    clean_path = "/".join(valid_segments)
+    final_url = f"{scheme}://{host}/{clean_path}"
     return final_url
 
 
-def extract_map_fields(candidates: list[tuple[str, str]]) -> dict[str, Any]:
+def extract_map_fields(candidates: list[tuple[str, str]] | None) -> dict[str, Any]:
     """In case of low confidence the repository is decided through votes.
     If there is a draw, the registry source has priority deciding the source"""
     repository = None
     forge = Forge.UNKNOWN
     confidence = Confidence.NONE
     sources_agreeing = 0
-    sources = [source for source, _ in candidates]
+    sources = [source for source, _ in candidates] if candidates else []
 
     if not candidates:
         return {
             "repository": repository,
             "forge": forge,
-            "confidence": Confidence.NONE,
+            "confidence": confidence,
             "sources_agreeing": sources_agreeing,
             "sources": sources,
         }
@@ -138,18 +178,16 @@ def extract_forge(url: str | None) -> Forge:
     return FORGE_HOSTS.get(urlparse(url).netloc, Forge.OTHER)
 
 
-def map_to_repo(purl: str, fields: dict[str, Any], release: str) -> Map:
-    mapping_purl = PackageURL(
-        **{**PackageURL.from_string(purl).to_dict(), "version": None}
-    ).to_string()
-
+def map_to_repo(
+    purl: str | None, fields: dict[str, Any], release: str, observed_at: str | None
+) -> Map:
     return Map(
-        purl=mapping_purl,
+        purl=purl,
         repository=fields["repository"],
         forge=fields["forge"],
         confidence=fields["confidence"],
         sources_agreeing=fields["sources_agreeing"],
         sources=fields["sources"],
-        observed_at=datetime.now(timezone.utc).isoformat(),
+        observed_at=observed_at,
         release=release,
     )

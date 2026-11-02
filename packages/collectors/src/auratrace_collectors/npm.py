@@ -24,9 +24,10 @@ class Fact:
     repository: str | None
     versions: dict[str, Version]
     owners_current_only: bool
+    observed_at: str
 
 
-def parse_fact(raw_json: dict[str, Any]) -> Fact:
+def parse_fact(raw_json: dict[str, Any], observed_at: str) -> Fact:
     json_versions = raw_json.get("versions", {})
     json_time = raw_json.get("time", {})
 
@@ -65,6 +66,7 @@ def parse_fact(raw_json: dict[str, Any]) -> Fact:
         repository,
         dict_versions,
         False,
+        observed_at,
     )
 
 
@@ -88,7 +90,7 @@ def replay(reader: SnapshotReader, purl: str) -> Fact | None:
         return None
     parsed_response = json.loads(response)
 
-    return parse_fact(parsed_response)
+    return parse_fact(parsed_response, entry["time"])
 
 
 def collect(
@@ -99,16 +101,17 @@ def collect(
 
     pkg_name = resolve_key(purl)
 
-    result = common.collect(
+    collected = common.collect(
         client=client,
         writer=writer,
         url=f"https://registry.npmjs.org/{pkg_name}",
-        headers={"User-Agent": "auratrace/0.1.0"},
         key=f"npm/{pkg_name}/packument.json",
         collector="npm",
     )
 
-    if not result:
+    if collected is None:
         return None
 
-    return parse_fact(result)
+    result, observed_at = collected
+
+    return parse_fact(result, observed_at)

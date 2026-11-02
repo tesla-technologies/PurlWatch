@@ -2,6 +2,8 @@ import hashlib
 import hmac
 import os
 
+import auratrace_core.exceptions as core_exc
+
 
 def identity_hid(registry: str, handle: str) -> str:
     env_key = os.getenv("AURATRACE_HASH_KEY")
@@ -9,7 +11,7 @@ def identity_hid(registry: str, handle: str) -> str:
     final_str = registry + "/" + handle
 
     if not env_key:
-        raise ValueError(
+        raise core_exc.InputError(
             "Environment variable AURATRACE_HASH_KEY it´s empty or not found."
         )
 

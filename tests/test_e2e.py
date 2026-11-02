@@ -7,17 +7,15 @@ from typing import Any
 
 import jsonschema
 
-root_dir = Path(__file__).resolve().parent.parent
-cli_pkg_dir = root_dir / "packages" / "cli"
+ROOT = Path(__file__).resolve().parent.parent
+cli_pkg_dir = ROOT / "packages" / "cli"
 SCHEMAS_DIR = Path(__file__).parent.parent / "schemas"
 
 if str(cli_pkg_dir) not in sys.path:
     sys.path.insert(0, str(cli_pkg_dir))
 
 import pytest
-from auratrace_cli.resolve import (
-    main,
-)
+from auratrace_cli.resolve import main, run_resolve
 
 
 @pytest.mark.parametrize(
@@ -29,9 +27,9 @@ from auratrace_cli.resolve import (
     ],
 )
 def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
-    root_dir = Path(__file__).resolve().parent.parent
-    sbom_path = root_dir / "examples" / sbom
-    tar_path = root_dir / "tests" / "fixtures" / tar
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom_path = ROOT / "examples" / sbom
+    tar_path = ROOT / "tests" / "fixtures" / tar
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
@@ -41,7 +39,7 @@ def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
     cmd = ["auratrace", "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
 
     result = subprocess.run(
-        cmd, capture_output=True, text=True, env=env, cwd=root_dir, check=False
+        cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
     )
 
     assert result.returncode == 0, (
@@ -65,8 +63,8 @@ def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
 def test_resolve_e2e_collect(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, sbom: str
 ):
-    root_dir = Path(__file__).resolve().parent.parent
-    sbom_path = root_dir / "examples" / sbom
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom_path = ROOT / "examples" / sbom
 
     custom_cache = tmp_path / "cache"
     monkeypatch.setenv("AURATRACE_HASH_KEY", "replay-secret-test-key")
@@ -82,7 +80,7 @@ def test_resolve_e2e_collect(
 
 
 def test_resolve_e2e_collect_error(tmp_path: Path):
-    root_dir = Path(__file__).resolve().parent.parent
+    ROOT = Path(__file__).resolve().parent.parent
     bad_sbom = tmp_path / "bad.json"
     bad_sbom.write_text("{ json invalido")
 
@@ -94,10 +92,35 @@ def test_resolve_e2e_collect_error(tmp_path: Path):
     cmd = ["auratrace", "resolve", "--sbom", str(bad_sbom)]
 
     result = subprocess.run(
-        cmd, capture_output=True, text=True, env=env, cwd=root_dir, check=False
+        cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
     )
 
     assert result.returncode == 2
+
+
+def test_resolve_e2e_offline_error(tmp_path: Path):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom = ROOT / "examples" / "node-cli.cdx.json"
+
+    custom_cache = tmp_path / "cache"
+    env = os.environ.copy()
+    env["AURATRACE_HASH_KEY"] = "replay-secret-test-key"
+    env["AURATRACE_CACHE_DIR"] = str(custom_cache)
+
+    cmd = [
+        "auratrace",
+        "resolve",
+        "--sbom",
+        str(sbom),
+        "--offline",
+        "examples/fixtures/node.tar",
+    ]
+
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
+    )
+
+    assert result.returncode == 3
 
 
 def schema_path(schema: str, path: Path) -> dict[str, Any]:
@@ -115,9 +138,9 @@ def schema_path(schema: str, path: Path) -> dict[str, Any]:
     ],
 )
 def test_resolve_e2e_json_schema(tmp_path: Path, sbom: str, tar: str):
-    root_dir = Path(__file__).resolve().parent.parent
-    sbom_path = root_dir / "examples" / sbom
-    tar_path = root_dir / "tests" / "fixtures" / tar
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom_path = ROOT / "examples" / sbom
+    tar_path = ROOT / "tests" / "fixtures" / tar
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
@@ -135,7 +158,7 @@ def test_resolve_e2e_json_schema(tmp_path: Path, sbom: str, tar: str):
     ]
 
     result = subprocess.run(
-        cmd, capture_output=True, text=True, env=env, cwd=root_dir, check=False
+        cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
     )
 
     assert result.returncode == 0
@@ -153,3 +176,38 @@ def test_resolve_e2e_json_schema(tmp_path: Path, sbom: str, tar: str):
     history_schema = schema_path("publisher-history.schema.json", SCHEMAS_DIR)
     for h in history_list:
         jsonschema.validate(instance=h, schema=history_schema)
+
+
+MAPPING_SCHEMA = schema_path("mapping.schema.json", SCHEMAS_DIR)
+HISTORY_SCHEMA = schema_path("publisher-history.schema.json", SCHEMAS_DIR)
+GOLDEN = ROOT / "tests" / "golden"
+
+
+@pytest.mark.parametrize("name", ["node-cli", "node-web-app", "rust-cli"])
+def test_replay_matches_golden(
+    name: str, monkeypatch: pytest.MonkeyPatch, capsys
+) -> None:
+    monkeypatch.setenv("AURATRACE_HASH_KEY", "test-key-in-ci")
+    code = run_resolve(
+        [
+            "resolve",
+            "--sbom",
+            f"examples/{name}.cdx.json",
+            "--offline",
+            f"tests/fixtures/{name}.tar",
+            "--json",
+        ]
+    )
+    out = capsys.readouterr().out
+    assert code == 0
+
+    doc = json.loads(out)
+    for row in doc["mapping"]:
+        jsonschema.validate(row, MAPPING_SCHEMA)
+    for row in doc["publisher_history"]:
+        jsonschema.validate(row, HISTORY_SCHEMA)
+
+    expected = (GOLDEN / f"{name}.json").read_text(encoding="utf-8")
+    if os.getenv("UPDATE_GOLDEN"):
+        (GOLDEN / f"{name}.json").write_text(out, encoding="utf-8", newline="\n")
+    assert out == expected

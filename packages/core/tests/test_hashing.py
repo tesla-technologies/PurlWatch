@@ -1,16 +1,17 @@
+import auratrace_core.exceptions as core_exc
 import pytest
 from auratrace_core.hashing import identity_hid
 
 
 def test_hash_nonexistance_throws_error(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("AURATRACE_HASH_KEY", raising=False)
-    with pytest.raises(ValueError):
+    with pytest.raises(core_exc.InputError):
         identity_hid("npm", "isaacs")
 
 
 def test_empty_hash_throws_error(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("AURATRACE_HASH_KEY", "")
-    with pytest.raises(ValueError):
+    with pytest.raises(core_exc.InputError):
         identity_hid("npm", "isaacs")
 
 
