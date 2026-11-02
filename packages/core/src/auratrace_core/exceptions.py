@@ -2,13 +2,13 @@ class AuratraceError(Exception):
     exit_code = 1
 
 
-class InputError(AuratraceError):  # SBOM, PURL, configuración
+class InputError(AuratraceError):
     exit_code = 2
 
 
-class OfflineMissError(AuratraceError):  # el snapshot no tiene el documento
+class OfflineMissError(AuratraceError):
     exit_code = 3
 
 
-class NetworkError(AuratraceError):  # tras agotar reintentos
+class NetworkError(AuratraceError):
     exit_code = 4

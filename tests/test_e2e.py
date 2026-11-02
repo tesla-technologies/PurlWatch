@@ -107,7 +107,14 @@ def test_resolve_e2e_offline_error(tmp_path: Path):
     env["AURATRACE_HASH_KEY"] = "replay-secret-test-key"
     env["AURATRACE_CACHE_DIR"] = str(custom_cache)
 
-    cmd = ["auratrace", "resolve", "--sbom", str(sbom), "--offline"]
+    cmd = [
+        "auratrace",
+        "resolve",
+        "--sbom",
+        str(sbom),
+        "--offline",
+        "examples/fixtures/node.tar",
+    ]
 
     result = subprocess.run(
         cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False

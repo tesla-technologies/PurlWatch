@@ -186,17 +186,20 @@ class SnapshotWriter:
 
 class SnapshotReader:
     def __init__(self, tar: Path):
-        self.tar = tarfile.open(tar, "r")  # noqa: SIM115
+        try:
+            archive = tarfile.open(tar, "r")  # noqa: SIM115
+        except (KeyError, FileNotFoundError) as err:
+            raise ReaderFileNotFoundError(f"File was not found for tar {tar}") from err
 
         try:
-            manifest_file = self.tar.extractfile("manifest.json")
+            manifest_file = archive.extractfile("manifest.json")
             if not manifest_file:
                 raise ReaderFileNotFoundError(
                     f"File manifest.json was not found for tar {tar}"
                 )
             self.manifest = json.load(manifest_file)
 
-            index_file = self.tar.extractfile("index.json")
+            index_file = archive.extractfile("index.json")
             if not index_file:
                 raise ReaderFileNotFoundError(
                     f"File index.json was not found for tar {tar}"
@@ -204,8 +207,10 @@ class SnapshotReader:
             index_list = json.load(index_file)
 
             self._index = {entry["path"]: entry for entry in index_list}
-        except KeyError:
-            self.tar.close()
+
+            self.tar: tarfile.TarFile = archive
+        except (KeyError, FileNotFoundError):
+            archive.close()
             raise ReaderFileNotFoundError(f"File was not found for tar {tar}")
 
     def __enter__(self) -> Self:

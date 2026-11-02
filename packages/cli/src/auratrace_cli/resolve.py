@@ -14,27 +14,7 @@ from packageurl import PackageURL
 
 
 def main() -> None:
-    resolve_parser = argparse.ArgumentParser(exit_on_error=False)
-    subparsers = resolve_parser.add_subparsers(dest="command", required=True)
-    resolve_c = subparsers.add_parser("resolve", exit_on_error=False)
-    resolve_c.add_argument(
-        "--sbom", required=True, type=Path, help="Specifies the SBOM to read."
-    )
-    resolve_c.add_argument(
-        "--offline",
-        required=False,
-        type=Path,
-        help="Runs the command in offline mode. Reads the snapshot and prints the information in the specified format. The snapshot must correspond directly to the provided SBOM.",
-    )
-    resolve_c.add_argument(
-        "--json",
-        action="store_true",
-        required=False,
-        help="Changes the output from a human-readable text format to a machine-readable format. It can be applied to online and offline mode.",
-    )
-
-    args = resolve_parser.parse_args()
-    sys.exit(run_resolve(args))
+    sys.exit(run_resolve(sys.argv[1:]))
 
 
 def create_http_client() -> httpx.Client:
@@ -97,7 +77,13 @@ def format_output_json(
     }
 
     print(
-        json.dumps(final_obj, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+        json.dumps(
+            final_obj,
+            sort_keys=True,
+            ensure_ascii=False,
+            separators=(",", ":"),
+            indent=1,
+        )
     )
 
 
@@ -185,7 +171,35 @@ def resolve_component(
     return map_list
 
 
-def run_resolve(args: argparse.Namespace) -> int:
+def build_parser() -> argparse.ArgumentParser:
+    resolve_parser = argparse.ArgumentParser(exit_on_error=False)
+    subparsers = resolve_parser.add_subparsers(dest="command", required=True)
+    resolve_c = subparsers.add_parser("resolve", exit_on_error=False)
+    resolve_c.add_argument(
+        "--sbom", required=True, type=Path, help="Specifies the SBOM to read."
+    )
+    resolve_c.add_argument(
+        "--offline",
+        required=False,
+        type=Path,
+        help="Runs the command in offline mode. Reads the snapshot and prints the information in the specified format. The snapshot must correspond directly to the provided SBOM.",
+    )
+    resolve_c.add_argument(
+        "--json",
+        action="store_true",
+        required=False,
+        help="Changes the output from a human-readable text format to a machine-readable format. It can be applied to online and offline mode.",
+    )
+
+    return resolve_parser
+
+
+def run_resolve(argv: list[str] | None = None) -> int:
+    if argv is None:
+        argv = sys.argv[1:]
+
+    args = build_parser().parse_args(argv)
+
     try:
         tar_path = None
         parsed_sbom = parser.parse_sbom(args.sbom)
@@ -233,7 +247,7 @@ def run_resolve(args: argparse.Namespace) -> int:
 
         return 0
     except core_exc.AuratraceError as err:
-        print(f"auratrace: {err}", file=sys.stderr)
+        print(f"auratrace: {err}:{err.exit_code}", file=sys.stderr)
         return err.exit_code
 
 
