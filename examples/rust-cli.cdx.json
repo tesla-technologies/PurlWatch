@@ -29,46 +29,13 @@
       ]
     },
     {
-      "bom-ref": "pkg:generic/libzstd-native@1.5.5-custom",
       "type": "library",
-      "publisher": "Core Platform Team",
-      "group": "vendor.sys",
-      "name": "libzstd-native",
-      "version": "1.5.5-custom",
-      "description": "Compilado C personalizado y optimizado de la librería Zstandard para entornos embebidos",
-      "purl": "pkg:generic/libzstd-native@1.5.5-custom",
-      "hashes": [
-        {
-          "alg": "SHA-256",
-          "content": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "BSD-3-Clause"
-          }
-        }
-      ],
+      "bom-ref": "xz@5.6.1",
+      "name": "xz",
+      "version": "5.6.1",
+      "purl": "pkg:generic/xz@5.6.1",
       "externalReferences": [
-        {
-          "type": "vcs",
-          "url": "git+https://github.com/facebook/zstd.git#v1.5.5",
-          "comment": "Repositorio fuente upstream con parches corporativos aplicados"
-        },
-        {
-          "type": "distribution-intake",
-          "url": "https://artifactory.internal.net/artifactory/generic-binaries/libzstd-native-1.5.5-custom.tar.gz",
-          "comment": "Artefacto binario distribuido"
-        },
-        {
-          "type": "issue-tracker",
-          "url": "https://github.com/facebook/zstd/issues"
-        },
-        {
-          "type": "website",
-          "url": "https://facebook.github.io/zstd/"
-        }
+      {"type": "vcs", "url": "https://github.com/tukaani-project/xz"}
       ]
     },
     {
@@ -77,7 +44,7 @@
       "group": "internal.security",
       "name": "internal-crypto-helper",
       "version": "0.4.1-build88",
-      "description": "Binario estático interno detectado en disco por el scanner. No publicado en ningún registro público ni privado.",
+      "description": "Internal static binary detected on disk by the scanner. Not published to any public or private registry.",
       "supplier": {
         "name": "SecOps Team",
         "url": [
@@ -119,7 +86,7 @@
       "ref": "pkg:cargo/mini-rust-cli@0.1.0",
       "dependsOn": [
         "pkg:cargo/clap@4.5.4",
-        "pkg:generic/libzstd-native@1.5.5-custom",
+        "xz@5.6.1",
         "internal-crypto-helper-v0.4.1"
       ]
     }

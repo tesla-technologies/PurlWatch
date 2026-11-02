@@ -40,6 +40,9 @@ def format_output_human(
         print(f"Sources: {', '.join(mapp.sources)}")
         print(f"Forge: {mapp.forge.value}")
 
+        if "sbom" in mapp.sources:
+            print("Note: Repository only path")
+
         if not his:
             continue
         print("\nVersions:")
