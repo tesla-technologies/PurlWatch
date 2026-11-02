@@ -11,7 +11,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/web
   response:
@@ -74,7 +74,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fweb%401.0.0
   response:
@@ -179,7 +179,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/accepts
   response:
@@ -455,7 +455,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Faccepts%402.0.0
   response:
@@ -622,7 +622,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/content-type
   response:
@@ -744,7 +744,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fcontent-type%402.1.0
   response:
@@ -916,7 +916,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/body-parser
   response:
@@ -1608,7 +1608,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fbody-parser%402.3.0
   response:
@@ -1834,7 +1834,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/bytes
   response:
@@ -1963,7 +1963,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fbytes%403.1.2
   response:
@@ -2116,7 +2116,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/call-bind-apply-helpers
   response:
@@ -2198,7 +2198,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fcall-bind-apply-helpers%401.0.2
   response:
@@ -2304,7 +2304,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/call-bound
   response:
@@ -2396,7 +2396,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fcall-bound%401.0.4
   response:
@@ -2502,7 +2502,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/content-disposition
   response:
@@ -2665,7 +2665,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fcontent-disposition%401.1.0
   response:
@@ -2847,7 +2847,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fcontent-type%401.0.5
   response:
@@ -3019,7 +3019,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/cookie
   response:
@@ -3244,7 +3244,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fcookie%400.7.2
   response:
@@ -3462,7 +3462,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/cookie-signature
   response:
@@ -3549,7 +3549,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fcookie-signature%401.2.2
   response:
@@ -3701,7 +3701,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/debug
   response:
@@ -4093,7 +4093,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fdebug%404.4.3
   response:
@@ -4289,7 +4289,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/depd
   response:
@@ -4463,7 +4463,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fdepd%402.0.0
   response:
@@ -4622,7 +4622,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/dunder-proto
   response:
@@ -4694,7 +4694,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fdunder-proto%401.0.1
   response:
@@ -4797,7 +4797,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/ee-first
   response:
@@ -4886,7 +4886,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fee-first%401.1.1
   response:
@@ -5028,7 +5028,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/encodeurl
   response:
@@ -5114,7 +5114,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fencodeurl%402.0.0
   response:
@@ -5343,7 +5343,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/es-define-property
   response:
@@ -5415,7 +5415,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fes-define-property%401.0.1
   response:
@@ -5521,7 +5521,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/es-errors
   response:
@@ -5628,7 +5628,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fes-errors%401.3.0
   response:
@@ -5734,7 +5734,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/es-object-atoms
   response:
@@ -5841,7 +5841,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fes-object-atoms%401.1.2
   response:
@@ -5944,7 +5944,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/escape-html
   response:
@@ -6001,7 +6001,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fescape-html%401.0.3
   response:
@@ -6143,7 +6143,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/etag
   response:
@@ -6291,7 +6291,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fetag%401.8.1
   response:
@@ -6472,7 +6472,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/express
   response:
@@ -9301,7 +9301,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fexpress%405.2.1
   response:
@@ -9561,7 +9561,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/finalhandler
   response:
@@ -9839,7 +9839,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Ffinalhandler%402.1.1
   response:
@@ -10006,7 +10006,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/forwarded
   response:
@@ -10082,7 +10082,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fforwarded%400.2.0
   response:
@@ -10257,7 +10257,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/fresh
   response:
@@ -10384,7 +10384,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Ffresh%402.0.0
   response:
@@ -10559,7 +10559,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/function-bind
   response:
@@ -10644,7 +10644,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Ffunction-bind%401.1.2
   response:
@@ -10811,7 +10811,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/get-intrinsic
   response:
@@ -11029,7 +11029,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fget-intrinsic%401.3.0
   response:
@@ -11202,7 +11202,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/get-proto
   response:
@@ -11274,7 +11274,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fget-proto%401.0.1
   response:
@@ -11380,7 +11380,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/gopd
   response:
@@ -11463,7 +11463,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fgopd%401.2.0
   response:
@@ -11633,7 +11633,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/has-symbols
   response:
@@ -11756,7 +11756,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fhas-symbols%401.1.0
   response:
@@ -12079,7 +12079,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/hasown
   response:
@@ -12186,7 +12186,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fhasown%402.0.4
   response:
@@ -12289,7 +12289,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/http-errors
   response:
@@ -12552,7 +12552,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fhttp-errors%402.0.1
   response:
@@ -12728,7 +12728,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/iconv-lite
   response:
@@ -13190,7 +13190,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Ficonv-lite%400.7.3
   response:
@@ -13369,7 +13369,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/inherits
   response:
@@ -13436,7 +13436,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Finherits%402.0.4
   response:
@@ -13601,7 +13601,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/ipaddr.js
   response:
@@ -13808,7 +13808,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fipaddr.js%401.9.1
   response:
@@ -13966,7 +13966,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/is-promise
   response:
@@ -14045,7 +14045,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fis-promise%404.0.0
   response:
@@ -14189,7 +14189,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/math-intrinsics
   response:
@@ -14263,7 +14263,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fmath-intrinsics%401.1.0
   response:
@@ -14366,7 +14366,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/media-typer
   response:
@@ -14486,7 +14486,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fmedia-typer%401.1.1
   response:
@@ -14657,7 +14657,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/merge-descriptors
   response:
@@ -14736,7 +14736,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fmerge-descriptors%402.0.0
   response:
@@ -14891,7 +14891,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/mime-db
   response:
@@ -15502,7 +15502,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fmime-db%401.54.0
   response:
@@ -15680,7 +15680,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/mime-types
   response:
@@ -16150,7 +16150,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fmime-types%403.0.2
   response:
@@ -16332,7 +16332,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/ms
   response:
@@ -16495,7 +16495,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fms%402.1.3
   response:
@@ -16679,7 +16679,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/negotiator
   response:
@@ -16900,7 +16900,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fnegotiator%401.1.0
   response:
@@ -17092,7 +17092,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/object-inspect
   response:
@@ -17384,7 +17384,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fobject-inspect%401.13.4
   response:
@@ -17550,7 +17550,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/on-finished
   response:
@@ -17661,7 +17661,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fon-finished%402.4.1
   response:
@@ -17816,7 +17816,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/once
   response:
@@ -17889,7 +17889,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fonce%401.4.0
   response:
@@ -18054,7 +18054,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/parseurl
   response:
@@ -18153,7 +18153,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fparseurl%401.3.3
   response:
@@ -18333,7 +18333,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/path-to-regexp
   response:
@@ -18707,7 +18707,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fpath-to-regexp%408.4.2
   response:
@@ -19019,7 +19019,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/proxy-addr
   response:
@@ -19257,7 +19257,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fproxy-addr%402.0.8
   response:
@@ -19442,7 +19442,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/qs
   response:
@@ -20585,7 +20585,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fqs%406.16.0
   response:
@@ -21202,7 +21202,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/range-parser
   response:
@@ -21312,7 +21312,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Frange-parser%401.3.0
   response:
@@ -21481,7 +21481,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/raw-body
   response:
@@ -21933,7 +21933,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fraw-body%403.0.2
   response:
@@ -22091,7 +22091,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/router
   response:
@@ -22422,7 +22422,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Frouter%402.2.0
   response:
@@ -22594,7 +22594,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/safer-buffer
   response:
@@ -22665,7 +22665,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fsafer-buffer%402.1.2
   response:
@@ -22808,7 +22808,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/send
   response:
@@ -23353,7 +23353,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fsend%401.2.1
   response:
@@ -23569,7 +23569,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/serve-static
   response:
@@ -24078,7 +24078,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fserve-static%402.2.1
   response:
@@ -24267,7 +24267,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/setprototypeof
   response:
@@ -24355,7 +24355,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fsetprototypeof%401.2.0
   response:
@@ -24459,7 +24459,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/side-channel
   response:
@@ -24589,7 +24589,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fside-channel%401.1.1
   response:
@@ -24759,7 +24759,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/side-channel-list
   response:
@@ -24833,7 +24833,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fside-channel-list%401.0.1
   response:
@@ -24939,7 +24939,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/side-channel-map
   response:
@@ -25013,7 +25013,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fside-channel-map%401.0.1
   response:
@@ -25119,7 +25119,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/side-channel-weakmap
   response:
@@ -25204,7 +25204,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fside-channel-weakmap%401.0.2
   response:
@@ -25311,7 +25311,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/statuses
   response:
@@ -25460,7 +25460,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fstatuses%402.0.2
   response:
@@ -25629,7 +25629,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/toidentifier
   response:
@@ -25707,7 +25707,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Ftoidentifier%401.0.1
   response:
@@ -25860,7 +25860,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/type-is
   response:
@@ -26176,7 +26176,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Ftype-is%402.1.0
   response:
@@ -26358,7 +26358,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/unpipe
   response:
@@ -26416,7 +26416,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Funpipe%401.0.0
   response:
@@ -26556,7 +26556,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/vary
   response:
@@ -26652,7 +26652,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fvary%401.1.2
   response:
@@ -26892,7 +26892,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/wrappy
   response:
@@ -26958,7 +26958,7 @@ interactions:
       host:
       - packages.ecosyste.ms
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg%3Anpm%2Fwrappy%401.0.2
   response:

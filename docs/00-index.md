@@ -1,6 +1,6 @@
 # Documentation index
 
-This is the development documentation of AuraTrace, which is a working name. Until milestone M1 of the funded project confirms them, these documents record the maintainers' current intent and every number in them is provisional.
+This is the development documentation of Purlwatch. Until milestone M1 of the funded project confirms them, these documents record the maintainers' current intent and every number in them is provisional.
 
 | File | What it covers |
 | --- | --- |

@@ -14,7 +14,7 @@ from types import TracebackType
 from typing import Any, Self
 from urllib.parse import urlparse
 
-import auratrace_core.exceptions as core_exc
+import purlwatch_core.exceptions as core_exc
 
 
 class ReaderFileNotFoundError(core_exc.OfflineMissError):
@@ -47,11 +47,11 @@ class SnapshotWriter:
         self.execution_id: str = self.clock().strftime("%Y%m%d%H%M%S") + self.suffix
         self.start_time = self.clock().isoformat()
         self._index: list[Snapshot] = []
-        self._temp_dir = tempfile.TemporaryDirectory(prefix="auratrace-")
+        self._temp_dir = tempfile.TemporaryDirectory(prefix="purlwatch-")
         self._base_path: Path = Path(self._temp_dir.name)
-        cache_env = os.getenv("AURATRACE_CACHE_DIR")
+        cache_env = os.getenv("PURLWATCH_CACHE_DIR")
         default_cache = (
-            Path(cache_env) if cache_env else (Path.home() / ".cache" / "auratrace")
+            Path(cache_env) if cache_env else (Path.home() / ".cache" / "purlwatch")
         )
         self._out_path: Path = out_path or (default_cache / "snapshots")
         self._closed = False
@@ -137,7 +137,7 @@ class SnapshotWriter:
 
         manifest_dict = {
             "run_identifier": self.execution_id,
-            "tool_version": version("auratrace-core"),
+            "tool_version": version("purlwatch-core"),
             "ruleset_digest": ruleset_digest,
             "sbom_digest": sbom_digest,
             "baselines_digest": baselines_digest,

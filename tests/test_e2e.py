@@ -15,7 +15,7 @@ if str(cli_pkg_dir) not in sys.path:
     sys.path.insert(0, str(cli_pkg_dir))
 
 import pytest
-from auratrace_cli.resolve import main, run_resolve
+from purlwatch_cli.resolve import main, run_resolve
 
 
 @pytest.mark.parametrize(
@@ -33,10 +33,10 @@ def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
-    env["AURATRACE_HASH_KEY"] = "replay-secret-test-key"
-    env["AURATRACE_CACHE_DIR"] = str(custom_cache)
+    env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
+    env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
 
-    cmd = ["auratrace", "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
+    cmd = ["purlwatch", "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
 
     result = subprocess.run(
         cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
@@ -67,10 +67,10 @@ def test_resolve_e2e_collect(
     sbom_path = ROOT / "examples" / sbom
 
     custom_cache = tmp_path / "cache"
-    monkeypatch.setenv("AURATRACE_HASH_KEY", "replay-secret-test-key")
-    monkeypatch.setenv("AURATRACE_CACHE_DIR", str(custom_cache))
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
 
-    test_args = ["auratrace", "resolve", "--sbom", str(sbom_path)]
+    test_args = ["purlwatch", "resolve", "--sbom", str(sbom_path)]
     monkeypatch.setattr(sys, "argv", test_args)
 
     with pytest.raises(SystemExit) as exc_info:
@@ -86,10 +86,10 @@ def test_resolve_e2e_collect_error(tmp_path: Path):
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
-    env["AURATRACE_HASH_KEY"] = "replay-secret-test-key"
-    env["AURATRACE_CACHE_DIR"] = str(custom_cache)
+    env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
+    env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
 
-    cmd = ["auratrace", "resolve", "--sbom", str(bad_sbom)]
+    cmd = ["purlwatch", "resolve", "--sbom", str(bad_sbom)]
 
     result = subprocess.run(
         cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
@@ -104,11 +104,11 @@ def test_resolve_e2e_offline_error(tmp_path: Path):
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
-    env["AURATRACE_HASH_KEY"] = "replay-secret-test-key"
-    env["AURATRACE_CACHE_DIR"] = str(custom_cache)
+    env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
+    env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
 
     cmd = [
-        "auratrace",
+        "purlwatch",
         "resolve",
         "--sbom",
         str(sbom),
@@ -144,11 +144,11 @@ def test_resolve_e2e_json_schema(tmp_path: Path, sbom: str, tar: str):
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
-    env["AURATRACE_HASH_KEY"] = "replay-secret-test-key"
-    env["AURATRACE_CACHE_DIR"] = str(custom_cache)
+    env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
+    env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
 
     cmd = [
-        "auratrace",
+        "purlwatch",
         "resolve",
         "--sbom",
         str(sbom_path),
@@ -187,7 +187,7 @@ GOLDEN = ROOT / "tests" / "golden"
 def test_replay_matches_golden(
     name: str, monkeypatch: pytest.MonkeyPatch, capsys
 ) -> None:
-    monkeypatch.setenv("AURATRACE_HASH_KEY", "test-key-in-ci")
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "test-key-in-ci")
     code = run_resolve(
         [
             "resolve",

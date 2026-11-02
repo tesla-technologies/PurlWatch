@@ -41,7 +41,7 @@ test:
   stage: test
   extends: .rules-push-and-mr
   variables:
-    AURATRACE_HASH_KEY: "test-key-in-ci"
+    PURLWATCH_HASH_KEY: "test-key-in-ci"
   script:
     - uv sync --all-packages --frozen
     - uv run pytest --record-mode=none

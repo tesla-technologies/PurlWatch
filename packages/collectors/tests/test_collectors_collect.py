@@ -2,12 +2,12 @@ from pathlib import Path
 
 import httpx
 import pytest
-from auratrace_collectors.client import AuratraceTransport
-from auratrace_collectors.crates import collect as crates_collect
-from auratrace_collectors.ecosystems import collect as ecosystems_collect
-from auratrace_collectors.npm import collect as npm_collect
-from auratrace_core.parser import parse_purl
-from auratrace_core.snapshot import SnapshotWriter
+from purlwatch_collectors.client import PurlwatchTransport
+from purlwatch_collectors.crates import collect as crates_collect
+from purlwatch_collectors.ecosystems import collect as ecosystems_collect
+from purlwatch_collectors.npm import collect as npm_collect
+from purlwatch_core.parser import parse_purl
+from purlwatch_core.snapshot import SnapshotWriter
 
 TEST_DIR = Path(__file__).parent
 
@@ -18,8 +18,8 @@ def test_npm_collect_fact(
 ) -> None:
 
     client = httpx.Client(
-        headers={"User-Agent": "auratrace/0.1.0 (https://gitlab.com/code-supply)"},
-        transport=AuratraceTransport(min_host_delay=0.5),
+        headers={"User-Agent": "purlwatch/0.1.0 (https://gitlab.com/code-supply)"},
+        transport=PurlwatchTransport(min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
         timeout=15.0,
     )
@@ -46,8 +46,8 @@ def test_crates_collect_fact(
 ) -> None:
 
     client = httpx.Client(
-        headers={"User-Agent": "auratrace/0.1.0 (https://gitlab.com/code-supply)"},
-        transport=AuratraceTransport(min_host_delay=0.5),
+        headers={"User-Agent": "purlwatch/0.1.0 (https://gitlab.com/code-supply)"},
+        transport=PurlwatchTransport(min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
         timeout=15.0,
     )
@@ -74,8 +74,8 @@ def test_ecosystems_collect_fact(
 ) -> None:
 
     client = httpx.Client(
-        headers={"User-Agent": "auratrace/0.1.0 (https://gitlab.com/code-supply)"},
-        transport=AuratraceTransport(min_host_delay=0.5),
+        headers={"User-Agent": "purlwatch/0.1.0 (https://gitlab.com/code-supply)"},
+        transport=PurlwatchTransport(min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
         timeout=15.0,
     )

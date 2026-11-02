@@ -6,11 +6,11 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any, cast
 
-import auratrace_core.exceptions as core_exc
 import httpx
-from auratrace_collectors import client, crates, npm, sources
-from auratrace_core import hashing, history, mapping, parser, resolve, snapshot
+import purlwatch_core.exceptions as core_exc
 from packageurl import PackageURL
+from purlwatch_collectors import client, crates, npm, sources
+from purlwatch_core import hashing, history, mapping, parser, resolve, snapshot
 
 
 def main() -> None:
@@ -19,8 +19,8 @@ def main() -> None:
 
 def create_http_client() -> httpx.Client:
     return httpx.Client(
-        headers={"User-Agent": "auratrace/0.1.0"},
-        transport=client.AuratraceTransport(min_host_delay=0.5),
+        headers={"User-Agent": "purlwatch/0.1.0"},
+        transport=client.PurlwatchTransport(min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
         timeout=15.0,
     )
@@ -246,8 +246,8 @@ def run_resolve(argv: list[str] | None = None) -> int:
             )
 
         return 0
-    except core_exc.AuratraceError as err:
-        print(f"auratrace: {err}:{err.exit_code}", file=sys.stderr)
+    except core_exc.PurlwatchError as err:
+        print(f"purlwatch: {err}:{err.exit_code}", file=sys.stderr)
         return err.exit_code
 
 

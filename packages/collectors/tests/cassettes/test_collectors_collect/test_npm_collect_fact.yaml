@@ -11,7 +11,7 @@ interactions:
       host:
       - registry.npmjs.org
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://registry.npmjs.org/is-sorted
   response:

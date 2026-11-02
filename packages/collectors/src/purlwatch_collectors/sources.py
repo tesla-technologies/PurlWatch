@@ -1,9 +1,9 @@
 from typing import Protocol
 
 import httpx
-from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
+from purlwatch_core.snapshot import SnapshotReader, SnapshotWriter
 
-from auratrace_collectors import crates, ecosystems, npm
+from purlwatch_collectors import crates, ecosystems, npm
 
 
 class Source(Protocol):

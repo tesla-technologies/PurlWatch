@@ -4,10 +4,10 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from auratrace_collectors.crates import replay as crates_replay
-from auratrace_collectors.ecosystems import replay as ecosystems_replay
-from auratrace_collectors.npm import replay as npm_replay
-from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
+from purlwatch_collectors.crates import replay as crates_replay
+from purlwatch_collectors.ecosystems import replay as ecosystems_replay
+from purlwatch_collectors.npm import replay as npm_replay
+from purlwatch_core.snapshot import SnapshotReader, SnapshotWriter
 
 TEST_DIR = Path(__file__).parent
 
@@ -38,7 +38,7 @@ def snapshot_builder(
             writer.add_document(
                 collector="test",
                 collector_v="0.1.0",
-                headers=doc.get("headers", {"User-Agent": "auratrace/0.1.0"}),
+                headers=doc.get("headers", {"User-Agent": "purlwatch/0.1.0"}),
                 status=doc.get("status", 200),
                 key=key,
                 email_removed=False,

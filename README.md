@@ -1,6 +1,6 @@
-# AuraTrace (working name)
+# PurlWatch
 
-AuraTrace is an open data set and a free software tool that surface early-warning signals of supply-chain risk from the metadata that package registries and code forges already publish. It is a pre-grant prototype as of October 2026 and nothing in it is released yet. The name is a placeholder that collides with an existing PyPI package and will change before 9 October 2026.
+Purlwatch is an open data set and a free software tool that surface early-warning signals of supply-chain risk from the metadata that package registries and code forges already publish. It is a pre-grant prototype as of October 2026 and nothing in it is released yet. The name is a placeholder that collides with an existing PyPI package and will change before 9 October 2026.
 
 ## Why it exists
 
@@ -48,14 +48,14 @@ Once the project it's downloaded, follow these steps from the root directory to 
 1. Create the virtual environment and install all project dependencies using `uv sync --all-packages`.
 
 2. Copy the example environment file to create your local .env using `cp .example.env .env`. Once .env file it's created, open it and set the following variables:
-    * **AURATRACE_HASH_KEY (Required)**: A unique secret string used to anonymize public account handles via hashing (as specified in docs/11-privacy-and-licensing.md). This value must never be hardcoded or committed to source control.
+    * **PURLWATCH_HASH_KEY (Required)**: A unique secret string used to anonymize public account handles via hashing (as specified in docs/11-privacy-and-licensing.md). This value must never be hardcoded or committed to source control.
 
-    * **AURATRACE_CACHE_DIR (Optional)**: Defines a custom cache path. If left unspecified, auratrace defaults to using your home directory (~/.cache/auratrace).
+    * **PURLWATCH_CACHE_DIR (Optional)**: Defines a custom cache path. If left unspecified, purlwatch defaults to using your home directory (~/.cache/purlwatch).
 
 ### Fast offline test
 Positioned at root run:
 
-`uv run --env-file .env auratrace resolve --sbom examples/node-cli.cdx.json --offline tests/fixtures/node-cli.tar`
+`uv run --env-file .env purlwatch resolve --sbom examples/node-cli.cdx.json --offline tests/fixtures/node-cli.tar`
 
 The expected output:
 ```
@@ -80,23 +80,23 @@ error: No environment file found at: .env
 ```
 **Solution:** Make sure you created the `.env` file in the root directory. If the file already exists, verify that your terminal is positioned at the project root before running the command.
 
-#### Missing `AURATRACE_HASH_KEY`
+#### Missing `PURLWATCH_HASH_KEY`
 
 ```console
-Error: Environment variable AURATRACE_HASH_KEY it´s empty or not found.
+Error: Environment variable PURLWATCH_HASH_KEY it´s empty or not found.
 ```
-**Solution**: Ensure `AURATRACE_HASH_KEY` is defined in your `.env` file. Fill it with any valid string inside quotes and save the changes.
+**Solution**: Ensure `PURLWATCH_HASH_KEY` is defined in your `.env` file. Fill it with any valid string inside quotes and save the changes.
 
 ### Command flags and what they do
 | Flag | What requires | What does |
 |------|---------------|-----------|
-| *None* | Just the SBOM after the --sbom flag | Runs the command in **online mode**. Gets the information through petitions, creates a snapshot (`.tar` extension) of the search at `AURATRACE_CACHE_DIR/snapshots` and prints the information in the specified format. |
+| *None* | Just the SBOM after the --sbom flag | Runs the command in **online mode**. Gets the information through petitions, creates a snapshot (`.tar` extension) of the search at `PURLWATCH_CACHE_DIR/snapshots` and prints the information in the specified format. |
 | `--offline` | The SBOM and a matching snapshot | Runs the command in **offline mode**. Reads the snapshot and prints the information in the specified format. The snapshot must correspond directly to the provided SBOM. |
 | `--json` | *Nothing* | Changes the output from a **human-readable** text format to a **machine-readable** format. It can be applied to online and offline mode.|
 
 ### Outputs
 #### Standard Output (Human-Readable)
-When executed without flags, `auratrace` prints one text block per component in the following format:
+When executed without flags, `purlwatch` prints one text block per component in the following format:
 ```
 Purl: Package URL
 Repository: Package repository URL
@@ -110,7 +110,7 @@ Version: Package version | Date: Version's publication date | Publisher hid: Has
 ```
 
 #### JSON format (Machine-readable)
-When the --json flag is provided, auratrace outputs a single JSON object containing three top-level keys:
+When the --json flag is provided, purlwatch outputs a single JSON object containing three top-level keys:
 
 * mapping: [*Mapping schema*](schemas/mapping.schema.json)
 

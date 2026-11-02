@@ -3,10 +3,10 @@ from dataclasses import dataclass
 from typing import Any
 
 import httpx
-from auratrace_core.snapshot import SnapshotReader, SnapshotWriter
 from packageurl import PackageURL
+from purlwatch_core.snapshot import SnapshotReader, SnapshotWriter
 
-from auratrace_collectors import common
+from purlwatch_collectors import common
 
 
 @dataclass(frozen=True)

@@ -11,7 +11,7 @@ interactions:
       host:
       - crates.io
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://crates.io/api/v1/crates/void
   response:
@@ -82,7 +82,7 @@ interactions:
       host:
       - crates.io
       user-agent:
-      - auratrace/0.1.0
+      - purlwatch/0.1.0
     method: GET
     uri: https://crates.io/api/v1/crates/void/owners
   response:

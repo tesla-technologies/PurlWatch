@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from auratrace_collectors import common
+from purlwatch_collectors import common
 
 TEST_DIR = Path(__file__).parent
 

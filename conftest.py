@@ -3,7 +3,7 @@ import json
 from typing import Any
 
 import pytest
-from auratrace_collectors.common import sanitize_payload
+from purlwatch_collectors.common import sanitize_payload
 
 
 @pytest.fixture(scope="module")

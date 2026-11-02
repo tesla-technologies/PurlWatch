@@ -1,5 +1,5 @@
 [project]
-name = "auratrace-attest"
+name = "purlwatch-attest"
 version = "0.1.0"
 description = "Attests..."
 requires-python = ">=3.12"

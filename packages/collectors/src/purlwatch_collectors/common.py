@@ -2,9 +2,9 @@ import json
 import re
 from typing import Any, cast
 
-import auratrace_core.exceptions as core_exc
 import httpx
-from auratrace_core.snapshot import SnapshotWriter
+import purlwatch_core.exceptions as core_exc
+from purlwatch_core.snapshot import SnapshotWriter
 
 
 class PackageNotFound(Exception):
