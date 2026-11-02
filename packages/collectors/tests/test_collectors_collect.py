@@ -18,7 +18,9 @@ def test_npm_collect_fact(
 ) -> None:
 
     client = httpx.Client(
-        headers={"User-Agent": "purlwatch/0.1.0 (https://gitlab.com/code-supply)"},
+        headers={
+            "User-Agent": "purlwatch/0.1.0 (https://github.com/tesla-technologies/purlwatch)"
+        },
         transport=PurlwatchTransport(min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
         timeout=15.0,
@@ -46,7 +48,9 @@ def test_crates_collect_fact(
 ) -> None:
 
     client = httpx.Client(
-        headers={"User-Agent": "purlwatch/0.1.0 (https://gitlab.com/code-supply)"},
+        headers={
+            "User-Agent": "purlwatch/0.1.0 (https://github.com/tesla-technologies/purlwatch)"
+        },
         transport=PurlwatchTransport(min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
         timeout=15.0,
@@ -74,7 +78,9 @@ def test_ecosystems_collect_fact(
 ) -> None:
 
     client = httpx.Client(
-        headers={"User-Agent": "purlwatch/0.1.0 (https://gitlab.com/code-supply)"},
+        headers={
+            "User-Agent": "purlwatch/0.1.0 (https://github.com/tesla-technologies/purlwatch)"
+        },
         transport=PurlwatchTransport(min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
         timeout=15.0,

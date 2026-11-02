@@ -39,11 +39,11 @@ class ParsedSBOM:
 
 
 class UnsupportedFormatError(core_exc.InputError):
-    """Raised when file format or version it´s not supported."""
+    """Raised when file format or version it's not supported."""
 
 
 class InvalidStructureError(core_exc.InputError):
-    """Raised when file structure it´s not the expected one"""
+    """Raised when file structure it's not the expected one"""
 
 
 class SbomNotFoundError(core_exc.InputError):
