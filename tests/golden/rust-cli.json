@@ -11,18 +11,6 @@
    "sources_agreeing":0
   },
   {
-   "confidence":"medium",
-   "forge":"github",
-   "observed_at":null,
-   "purl":"pkg:generic/libzstd-native@1.5.5-custom",
-   "release":"0.1.0",
-   "repository":"https://github.com/facebook/zstd.git",
-   "sources":[
-    "sbom"
-   ],
-   "sources_agreeing":1
-  },
-  {
    "confidence":"high",
    "forge":"github",
    "observed_at":"2026-10-29T16:22:39.243457+00:00",
@@ -34,6 +22,18 @@
     "registry"
    ],
    "sources_agreeing":2
+  },
+  {
+   "confidence":"medium",
+   "forge":"github",
+   "observed_at":null,
+   "purl":"pkg:generic/xz@5.6.1",
+   "release":"0.1.0",
+   "repository":"https://github.com/tukaani-project/xz",
+   "sources":[
+    "sbom"
+   ],
+   "sources_agreeing":1
   }
  ],
  "publisher_history":[
