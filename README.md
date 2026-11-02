@@ -58,18 +58,19 @@ Positioned at root run:
 `uv run --env-file .env purlwatch resolve --sbom examples/node-cli.cdx.json --offline tests/fixtures/node-cli.tar`
 
 The expected output:
-```
+```console
+$ uv run --env-file .env purlwatch resolve --sbom examples node-cli.cdx.json --offline tests/fixtures/node-cli.tar
 ================================================================================
-Purl: pkg:npm/commander
-Repository: https://github.com/tj/commander.js
-Confidence: high
-Sources agreeing: 2
+Purl: pkg:npm/cli
+Repository: ssh://github.com/node-js-libs/cli
+Confidence: low
+Sources agreeing: 1
 Sources: ecosystems, registry
 Forge: github
 
 Versions:
-Version: 0.0.1 | Date: 2011-08-14T22:17:52.365Z | Publisher hid: None | Publisher kind: unknown | Maintainers hids: h:4b3efe36
-Version: 0.0.3 | Date: 2011-08-15T15:30:08.289Z | Publisher hid: None | Publisher kind: unknown | Maintainers hids: h:4b3efe36
+Version: 0.1.0 | Date: 2011-01-01T07:20:54.661Z | Publisher hid: None | Publisher kind: unknown | Maintainers hids:
+Version: 0.1.1 | Date: 2011-01-02T13:27:25.447Z | Publisher hid: None | Publisher kind: unknown | Maintainers hids:
 ...
 ```
 
@@ -83,7 +84,7 @@ error: No environment file found at: .env
 #### Missing `PURLWATCH_HASH_KEY`
 
 ```console
-Error: Environment variable PURLWATCH_HASH_KEY it´s empty or not found.
+Error: Environment variable PURLWATCH_HASH_KEY it's empty or not found.
 ```
 **Solution**: Ensure `PURLWATCH_HASH_KEY` is defined in your `.env` file. Fill it with any valid string inside quotes and save the changes.
 
@@ -152,7 +153,7 @@ For full details on project outputs, refer to [`docs/08-outputs.md`](docs/08-out
 | Code | Meaning |
 | --- | --- |
 | 0 | the run completed, with or without findings under the warn policy |
-| 2 | input error, such as an unreadable SBOM or an unknown Package URL type |
+| 2 | input error, such as an unreadable SBOM, an unknown Package URL type or a missing .env key|
 | 3 | offline mode was requested and a required document was missing |
 | 4 | a network or rate-limit failure persisted after retries |
 

@@ -27,7 +27,9 @@ def test_snapshot_workflow(tmp_path: Path) -> None:
             writer.add_document(
                 collector="test",
                 collector_v="0.1.0",
-                headers={"User-Agent": "purlwatch/0.1.0"},
+                headers={
+                    "User-Agent": "purlwatch/0.1.0 (https://github.com/tesla-technologies/purlwatch)"
+                },
                 status=200,
                 key=payload["key"],
                 body=payload["body"],
@@ -65,7 +67,9 @@ def test_tar_digest(tmp_path: Path) -> None:
         writer.add_document(
             collector="test",
             collector_v="0.1.0",
-            headers={"User-Agent": "purlwatch/0.1.0"},
+            headers={
+                "User-Agent": "purlwatch/0.1.0 (https://github.com/tesla-technologies/purlwatch)"
+            },
             status=200,
             key=payload["key"],
             body=payload["body"],
@@ -81,7 +85,9 @@ def test_tar_digest(tmp_path: Path) -> None:
         writer2.add_document(
             collector="test",
             collector_v="0.1.0",
-            headers={"User-Agent": "purlwatch/0.1.0"},
+            headers={
+                "User-Agent": "purlwatch/0.1.0 (https://github.com/tesla-technologies/purlwatch)"
+            },
             status=200,
             key=payload["key"],
             body=payload["body"],
@@ -117,7 +123,9 @@ def test_tar_incomplete(tmp_path: Path) -> None:
             writer.add_document(
                 collector="test",
                 collector_v="0.1.0",
-                headers={"User-Agent": "purlwatch/0.1.0"},
+                headers={
+                    "User-Agent": "purlwatch/0.1.0 (https://github.com/tesla-technologies/purlwatch)"
+                },
                 status=200,
                 key=payload["key"],
                 body=payload["body"],

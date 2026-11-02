@@ -19,7 +19,9 @@ def main() -> None:
 
 def create_http_client() -> httpx.Client:
     return httpx.Client(
-        headers={"User-Agent": "purlwatch/0.1.0"},
+        headers={
+            "User-Agent": "purlwatch/0.1.0 (https://github.com/tesla-technologies/purlwatch)"
+        },
         transport=client.PurlwatchTransport(min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
         timeout=15.0,

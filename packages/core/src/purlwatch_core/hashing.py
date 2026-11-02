@@ -12,7 +12,7 @@ def identity_hid(registry: str, handle: str) -> str:
 
     if not env_key:
         raise core_exc.InputError(
-            "Environment variable PURLWATCH_HASH_KEY it´s empty or not found."
+            "Environment variable PURLWATCH_HASH_KEY it's empty or not found."
         )
 
     encoded_env_key = env_key.encode("utf-8")
