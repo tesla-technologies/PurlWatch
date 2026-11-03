@@ -3,19 +3,6 @@
   {
    "confidence":"high",
    "forge":"github",
-   "observed_at":"2026-10-29T16:20:35.205523+00:00",
-   "purl":"pkg:npm/web",
-   "release":"0.1.0",
-   "repository":"https://github.com/creationix/node-web",
-   "sources":[
-    "ecosystems",
-    "registry"
-   ],
-   "sources_agreeing":2
-  },
-  {
-   "confidence":"high",
-   "forge":"github",
    "observed_at":"2026-10-29T16:20:36.193004+00:00",
    "purl":"pkg:npm/accepts",
    "release":"0.1.0",
@@ -899,45 +886,6 @@
   }
  ],
  "publisher_history":[
-  {
-   "maintainers_hids":[
-    "d8422eb9469eb34dc6a346e467406dca301e28c53d9a9b68256a6369c7ce01d0"
-   ],
-   "observed_at":"2026-10-29T16:20:35.205523+00:00",
-   "owners_current_only":false,
-   "published_at":"2012-09-13T05:12:51.358Z",
-   "publisher_hid":"d8422eb9469eb34dc6a346e467406dca301e28c53d9a9b68256a6369c7ce01d0",
-   "publisher_kind":"account",
-   "purl":"pkg:npm/web@0.0.0",
-   "release":"0.1.0",
-   "source":"live"
-  },
-  {
-   "maintainers_hids":[
-    "d8422eb9469eb34dc6a346e467406dca301e28c53d9a9b68256a6369c7ce01d0"
-   ],
-   "observed_at":"2026-10-29T16:20:35.205523+00:00",
-   "owners_current_only":false,
-   "published_at":"2013-01-31T17:18:19.733Z",
-   "publisher_hid":"d8422eb9469eb34dc6a346e467406dca301e28c53d9a9b68256a6369c7ce01d0",
-   "publisher_kind":"account",
-   "purl":"pkg:npm/web@0.0.1",
-   "release":"0.1.0",
-   "source":"live"
-  },
-  {
-   "maintainers_hids":[
-    "d8422eb9469eb34dc6a346e467406dca301e28c53d9a9b68256a6369c7ce01d0"
-   ],
-   "observed_at":"2026-10-29T16:20:35.205523+00:00",
-   "owners_current_only":false,
-   "published_at":"2013-01-31T19:50:36.663Z",
-   "publisher_hid":"d8422eb9469eb34dc6a346e467406dca301e28c53d9a9b68256a6369c7ce01d0",
-   "publisher_kind":"account",
-   "purl":"pkg:npm/web@0.0.2",
-   "release":"0.1.0",
-   "source":"live"
-  },
   {
    "maintainers_hids":[
     "2b5a3f09281aa38f799250effada43a53612302e6af116a4b6f5cebda9aaf0b9"
