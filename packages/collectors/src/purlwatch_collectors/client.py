@@ -23,7 +23,7 @@ class PurlwatchTransport(httpx.HTTPTransport):
         host_delay = HOST_DELAYS.get(host, self.min_host_delay)
 
         for attempt in range(4):
-            elapsed = time.time() - self._last_request_time.get(host, 0.0)
+            elapsed = time.monotonic() - self._last_request_time.get(host, 0.0)
             if elapsed < host_delay:
                 time.sleep(host_delay - elapsed)
 
