@@ -42,7 +42,7 @@ def format_output_human(
         print(f"Sources: {', '.join(mapp.sources)}")
         print(f"Forge: {mapp.forge.value}")
 
-        if "sbom" in mapp.sources:
+        if m[2]:
             print("Note: Repository only path")
 
         if not his:
@@ -94,8 +94,8 @@ def format_output_json(
 
 def resolve_component(
     nodes: dict[str, resolve.Node], external_dict: dict[str, str], src: sources.Source
-) -> list[tuple[mapping.Map, list[tuple[str, Any]]]]:
-    map_list = []
+) -> list[tuple[mapping.Map, list[tuple[str, Any]], bool]]:
+    map_list: list[tuple[mapping.Map, list[tuple[str, Any]], bool]] = []
     history_list: list[tuple[str, Any]] = []
 
     for component in nodes.values():
@@ -119,7 +119,7 @@ def resolve_component(
             map_fields = mapping.extract_map_fields(candidates)
 
             map_item = mapping.map_to_repo(component.package, map_fields, "0.1.0", None)
-            map_list.append((map_item, history_list))
+            map_list.append((map_item, history_list, True))
             continue
 
         fact: npm.Fact | crates.Fact | None = None
@@ -175,7 +175,7 @@ def resolve_component(
         map_item = mapping.map_to_repo(
             component.package, map_fields, "0.1.0", observed_at
         )
-        map_list.append((map_item, history_list))
+        map_list.append((map_item, history_list, False))
 
     return map_list
 
