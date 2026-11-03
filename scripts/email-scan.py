@@ -134,9 +134,7 @@ def scan_for_email(f: Iterable[str], file: Path | str, pattern: re.Pattern) -> b
 def main() -> int:
     files = [Path(file) for file in sys.argv[1:]]
     has_emails = False
-    pattern = re.compile(
-        r"(?<!://)(?<!:)\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-    )
+    pattern = re.compile(r"(?<![/@])\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b")
 
     if len(files) == 0:
         return 0
