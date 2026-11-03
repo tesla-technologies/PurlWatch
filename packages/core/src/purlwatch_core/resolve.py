@@ -65,6 +65,8 @@ def resolve(sbom: ParsedSBOM) -> Resolved:
     node_dict = {}
     edges = build_edges(sbom)
     root_ref = None
+    depth: dict[str, int] = {}
+    via: dict[str, str] = {}
 
     if sbom.root_comp:
         root = sbom.root_comp
@@ -102,6 +104,9 @@ def resolve(sbom: ParsedSBOM) -> Resolved:
 def build_edges(sbom: ParsedSBOM) -> dict[str, frozenset[str]]:
     ref_dict: dict[str, str] = {}
     graph: dict[str, set[str]] = {}
+
+    if sbom.root_comp:
+        ref_dict[sbom.root_comp.bom_ref] = sbom.root_comp.bom_ref
 
     for comp in sbom.comp_list:
         if comp.bom_ref:

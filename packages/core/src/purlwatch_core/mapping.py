@@ -54,26 +54,26 @@ class Map:
 def process_url(url: str) -> str:
     for key, value in SHORT_FORMS.items():
         if url.startswith(key):
-            return "https://" + url.replace(key, value, 1)
+            url = "https://" + url.replace(key, value, 1)
 
     if re.match(r"^[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$", url):
-        return "https://github.com/" + url
+        url = "https://github.com/" + url
 
     if match := re.match(r"^([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+):(.+)$", url):
-        return f"ssh://{match.group(1)}/{match.group(2)}"
+        url = f"ssh://{match.group(1)}/{match.group(2)}"
 
     return url
 
 
 def normalize_url(url: str) -> str | None:
     s_url = url.strip()
+    s_url = process_url(s_url)
     s_url = s_url.removeprefix("git+")
     s_url = s_url.removeprefix("scm:git:")
     s_url = s_url.removeprefix("scm:")
     s_url = s_url.removesuffix(".git")
 
-    first_url = process_url(s_url)
-    parsed_url = urlsplit(first_url)
+    parsed_url = urlsplit(s_url)
 
     host = parsed_url.hostname
     if host:
@@ -82,7 +82,7 @@ def normalize_url(url: str) -> str | None:
         return None
 
     scheme = parsed_url.scheme
-    if scheme in ("git", "http", ""):
+    if scheme in ("git", "http", "ssh", ""):
         scheme = "https"
 
     path = parsed_url.path
@@ -109,7 +109,7 @@ def normalize_url(url: str) -> str | None:
 
     clean_path = "/".join(valid_segments)
     final_url = f"{scheme}://{host}/{clean_path}"
-    return final_url
+    return final_url.removesuffix(".git")
 
 
 def extract_map_fields(candidates: list[tuple[str, str]] | None) -> dict[str, Any]:

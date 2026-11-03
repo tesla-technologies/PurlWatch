@@ -102,7 +102,11 @@ def resolve_component(
         history_list = []
         candidates: list[tuple[str, str]] = []
 
-        if component.route == resolve.Route.NO_PURL or not component.purl:
+        if (
+            component.route == resolve.Route.NO_PURL
+            or not component.purl
+            or component.is_root
+        ):
             continue
 
         if component.route == resolve.Route.REPOSITORY_ONLY:
@@ -114,7 +118,7 @@ def resolve_component(
 
             map_fields = mapping.extract_map_fields(candidates)
 
-            map_item = mapping.map_to_repo(component.purl, map_fields, "0.1.0", None)
+            map_item = mapping.map_to_repo(component.package, map_fields, "0.1.0", None)
             map_list.append((map_item, history_list))
             continue
 
@@ -177,9 +181,9 @@ def resolve_component(
 
 
 def build_parser() -> argparse.ArgumentParser:
-    resolve_parser = argparse.ArgumentParser(exit_on_error=False)
+    resolve_parser = argparse.ArgumentParser()
     subparsers = resolve_parser.add_subparsers(dest="command", required=True)
-    resolve_c = subparsers.add_parser("resolve", exit_on_error=False)
+    resolve_c = subparsers.add_parser("resolve")
     resolve_c.add_argument(
         "--sbom", required=True, type=Path, help="Specifies the SBOM to read."
     )
@@ -252,7 +256,7 @@ def run_resolve(argv: list[str] | None = None) -> int:
 
         return 0
     except core_exc.PurlwatchError as err:
-        print(f"purlwatch: {err}:{err.exit_code}", file=sys.stderr)
+        print(f"purlwatch: {err}", file=sys.stderr)
         return err.exit_code
 
 

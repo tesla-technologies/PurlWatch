@@ -71,6 +71,8 @@ def test_sbom_invalid_version_error() -> None:
         ),
         ("https://github.com:443/x/y", "https://github.com/x/y"),
         ("https://www.github.com/x/y", "https://github.com/x/y"),
+        ("git+ssh://git@github.com/npm/wrappy.git", "https://github.com/npm/wrappy"),
+        ("git+https://github.com/x/y.git#main", "https://github.com/x/y"),
     ],
 )
 def test_normalized_url(url: str, normalized: str) -> None:
