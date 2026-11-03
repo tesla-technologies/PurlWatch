@@ -12,6 +12,8 @@ from packageurl import PackageURL
 from purlwatch_collectors import client, crates, npm, sources
 from purlwatch_core import hashing, history, mapping, parser, resolve, snapshot
 
+RELEASE_V = "0.1.0"
+
 
 def main() -> None:
     sys.exit(run_resolve(sys.argv[1:]))
@@ -165,7 +167,7 @@ def resolve_component(
                     row_purl,
                     history_fields,
                     fact.owners_current_only,
-                    "0.1.0",
+                    RELEASE_V,
                     fact.observed_at,
                 )
                 history_list.append((key, history_item))
@@ -179,7 +181,7 @@ def resolve_component(
 
         map_fields = mapping.extract_map_fields(candidates)
         map_item = mapping.map_to_repo(
-            component.package, map_fields, "0.1.0", observed_at
+            component.package, map_fields, RELEASE_V, observed_at
         )
         map_list.append((map_item, history_list, False))
 
