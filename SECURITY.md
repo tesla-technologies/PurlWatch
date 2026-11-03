@@ -11,3 +11,6 @@ Vulnerabilities in the third-party packages that the tool analyses are out of sc
 Until version 1.0 only the latest commit on `main` is supported.
 
 The threat model, including evasion of the signals by an adversary who knows the public rules, is described in `docs/07-attestation.md` and will be completed in milestone M4.
+
+### Contact address
+security@teslatechnologies.com

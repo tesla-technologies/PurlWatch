@@ -1,6 +1,6 @@
 # PurlWatch
 
-Purlwatch is an open data set and a free software tool that surface early-warning signals of supply-chain risk from the metadata that package registries and code forges already publish. It is a pre-grant prototype as of October 2026 and nothing in it is released yet.
+Purlwatch is an open data set and a free software tool that surface early-warning signals of supply-chain risk from the metadata that package registries and code forges already publish. It is a pre-grant prototype as of October-November 2026.
 
 ## Why it exists
 
@@ -71,8 +71,8 @@ Sources: ecosystems, registry
 Forge: github
 
 Versions:
-Version: 0.0.1 | Date: 2011-08-14T22:17:52.365Z | Publisher hid: None | Publisher kind: unknown | Maintainers hids: h:4b3efe36
-Version: 0.0.3 | Date: 2011-08-15T15:30:08.289Z | Publisher hid: None | Publisher kind: unknown | Maintainers hids: h:4b3efe36
+Version: 0.0.1 | Date: 2011-08-14T22:17:52.365Z | Publisher hid: | Publisher kind: unknown | Maintainers hids: h:4b3efe36
+Version: 0.0.3 | Date: 2011-08-15T15:30:08.289Z | Publisher hid: | Publisher kind: unknown | Maintainers hids: h:4b3efe36
 ...
 ```
 

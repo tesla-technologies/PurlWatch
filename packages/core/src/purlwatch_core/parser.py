@@ -52,7 +52,7 @@ class SbomNotFoundError(core_exc.InputError):
 
 def parse_sbom(sbom: Path) -> ParsedSBOM:
     if not sbom.exists():
-        raise SbomNotFoundError("Not SBOM was added")
+        raise SbomNotFoundError(f"SBOM file not found {sbom}")
 
     try:
         with open(sbom, "r", encoding="utf-8") as s:

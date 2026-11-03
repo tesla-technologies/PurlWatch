@@ -126,7 +126,9 @@ def resolve_component(
 
             map_fields = mapping.extract_map_fields(candidates)
 
-            map_item = mapping.map_to_repo(component.package, map_fields, "0.1.0", None)
+            map_item = mapping.map_to_repo(
+                component.package, map_fields, RELEASE_V, None
+            )
             map_list.append((map_item, history_list, True))
             continue
 
