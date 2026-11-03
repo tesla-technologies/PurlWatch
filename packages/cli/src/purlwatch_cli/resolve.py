@@ -238,17 +238,22 @@ def run_resolve(argv: list[str] | None = None) -> int:
                     ).hexdigest()
         else:
             httpx_client = create_http_client()
-            with snapshot.SnapshotWriter() as writer:
-                live_src = sources.LiveSource(writer, httpx_client)
-                map_list = resolve_component(
-                    resolved_sbom.nodes, external_dict, live_src
-                )
-                with args.sbom.open("rb") as file:
-                    sbom_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
+            try:
+                with snapshot.SnapshotWriter() as writer:
+                    live_src = sources.LiveSource(writer, httpx_client)
+                    map_list = resolve_component(
+                        resolved_sbom.nodes, external_dict, live_src
+                    )
+                    with args.sbom.open("rb") as file:
+                        sbom_digest = hashlib.file_digest(
+                            file, hashlib.sha256
+                        ).hexdigest()
 
-                tar_path, snapshot_digest, manifest = writer.close_document(
-                    None, sbom_digest, None
-                )
+                    tar_path, snapshot_digest, manifest = writer.close_document(
+                        None, sbom_digest, None
+                    )
+            finally:
+                httpx_client.close()
 
         if args.json:
             format_output_json(map_list, manifest, snapshot_digest)
