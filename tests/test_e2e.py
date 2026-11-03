@@ -25,6 +25,7 @@ from purlwatch_cli.resolve import main, run_resolve
         ("node-cli.cdx.json", "node-cli.tar"),
         ("rust-cli.cdx.json", "rust-cli.tar"),
         ("multi-dep.spdx.json", "multi-dep.tar"),
+        ("purlwatch.cdx.json", "purlwatch.tar"),
     ],
 )
 def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
@@ -92,6 +93,7 @@ def test_resolve_e2e_noroot_replay(tmp_path: Path, sbom: str, tar: str):
         "node-cli.cdx.json",
         "rust-cli.cdx.json",
         "multi-dep.spdx.json",
+        "purlwatch.cdx.json",
     ],
 )
 def test_resolve_e2e_collect(
@@ -198,6 +200,7 @@ def schema_path(schema: str, path: Path) -> dict[str, Any]:
         ("node-cli.cdx.json", "node-cli.tar"),
         ("rust-cli.cdx.json", "rust-cli.tar"),
         ("multi-dep.spdx.json", "multi-dep.tar"),
+        ("purlwatch.cdx.json", "purlwatch.tar"),
     ],
 )
 def test_resolve_e2e_json_schema(tmp_path: Path, sbom: str, tar: str):
@@ -253,6 +256,7 @@ GOLDEN = ROOT / "tests" / "golden"
         ("node-app", "cdx"),
         ("rust-cli", "cdx"),
         ("multi-dep", "spdx"),
+        ("purlwatch", "cdx"),
     ],
 )
 def test_replay_matches_golden(

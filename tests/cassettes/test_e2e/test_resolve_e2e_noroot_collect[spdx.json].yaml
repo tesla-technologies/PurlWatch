@@ -108,8 +108,6 @@ interactions:
         has open, known unfixed vulnerabilities.","url":"https://github.com/ossf/scorecard/blob/f6ed084d17c9236477efd66e5b258b9d4cc7b389/docs/checks.md#vulnerabilities"},"name":"Vulnerabilities","reason":"2
         existing vulnerabilities detected","score":8}],"date":"2025-08-11","repo":{"commit":"027ae85e8fadcc51824605c2df21e35f6256147d","name":"github.com/apache/jena"},"score":6.4,"scorecard":{"commit":"f6ed084d17c9236477efd66e5b258b9d4cc7b389","version":"v5.2.1-40-gf6ed084d"}},"id":201480,"last_synced_at":"2025-08-16T22:54:57.212Z","repository_id":6206129,"updated_at":"2025-08-16T22:54:57.212Z"},"size":478270,"source_name":null,"stargazers_count":1434,"status":null,"subscribers_count":68,"tags_count":97,"tags_url":"https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/apache%2Fjena/tags","template":false,"template_full_name":null,"topics":["apache","jena","rdf","sparql"],"updated_at":"2026-09-08T16:59:18.000Z","uuid":"7437073"},"repo_metadata_updated_at":"2026-09-09T08:56:03.951Z","repository_url":"https://gitbox.apache.org/repos/asf/jena.git","status":null,"updated_at":"2026-09-09T08:56:03.951Z","usage_url":"https://repos.ecosyste.ms/usage/maven/org.apache.jena:apache-jena","version_numbers_url":"https://packages.ecosyste.ms/api/v1/registries/repo1.maven.org/packages/org.apache.jena:apache-jena/version_numbers","versions_count":58,"versions_url":"https://packages.ecosyste.ms/api/v1/registries/repo1.maven.org/packages/org.apache.jena:apache-jena/versions"}]'
     headers:
-      age:
-      - '1709'
       alt-svc:
       - h3=":443"; ma=86400
       apisix-cache-status:
@@ -118,9 +116,9 @@ interactions:
       - public, max-age=86400, stale-while-revalidate=3600, stale-if-error=86400,
         s-maxage=3600
       cf-cache-status:
-      - HIT
+      - REVALIDATED
       cf-ray:
-      - a54a8cbede590144-MAD
+      - a54b97b60bac8549-MAD
       connection:
       - keep-alive
       content-length:
@@ -135,7 +133,7 @@ interactions:
       current-page:
       - '1'
       date:
-      - Tue, 03 Nov 2026 10:03:33 GMT
+      - Tue, 03 Nov 2026 13:05:56 GMT
       etag:
       - W/"0d44cc773827876ffd3ac396984aa35f"
       last-modified:
@@ -148,7 +146,7 @@ interactions:
       page-items:
       - '100'
       report-to:
-      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=1GtjS%2BpZj2llMMYiWAWBHVlv9K7jKrhAraviNV43C%2FrUc4PcBGtIgKLMcTAJ2Rko%2FIrVo%2F8LMn8Brnt%2BVgtSF0V51w3O2Amswbti%2FSGYcibhRQ%2FK8MkAV50NegiVMfDRQVy7zfE6Dg%3D%3D"}]}'
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=%2BBE0CucllAwbFS5V%2B7t1WaqwNJuZlRa8dGPEyhfIPSBjotiP0tb2T52AoBj8nJh2kQtscZxywkyTZ6OmGA%2F1LPyIDS6Vd%2Fxbspuq2z2dxNjIg1kzGpfWnHh0jyChgRYRx5ezWwbEvQ%3D%3D"}]}'
       server:
       - cloudflare
       speculation-rules:
