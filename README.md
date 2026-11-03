@@ -45,11 +45,11 @@ The project builds on Package URL, CycloneDX, SPDX, in-toto, Sigstore, OSV, Vuln
 The prototype receives a SBOM and for every component prints it's repository URL, the confidence level explained and version history.
 
 ### Installation and Set up
-Once the project it's downloaded, follow these steps from the root directory to set up your local environment:
+Once the project is downloaded, follow these steps from the root directory to set up your local environment:
 
 1. Create the virtual environment and install all project dependencies using `uv sync --all-packages`.
 
-2. Copy the example environment file to create your local .env using `cp .example.env .env`. Once .env file it's created, open it and set the following variables:
+2. Copy the example environment file to create your local .env using `cp .example.env .env`. Once .env file is created, open it and set the following variables:
     * **PURLWATCH_HASH_KEY (Required)**: A unique secret string used to anonymize public account handles via hashing (as specified in docs/11-privacy-and-licensing.md). This value must never be hardcoded or committed to source control.
 
     * **PURLWATCH_CACHE_DIR (Optional)**: Defines a custom cache path. If left unspecified, purlwatch defaults to using your home directory (~/.cache/purlwatch).
@@ -86,7 +86,7 @@ error: No environment file found at: .env
 #### Missing `PURLWATCH_HASH_KEY`
 
 ```console
-Error: Environment variable PURLWATCH_HASH_KEY it's empty or not found.
+Error: Environment variable PURLWATCH_HASH_KEY is empty or not found.
 ```
 **Solution**: Ensure `PURLWATCH_HASH_KEY` is defined in your `.env` file. Fill it with any valid string inside quotes and save the changes.
 
