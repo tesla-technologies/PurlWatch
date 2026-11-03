@@ -1,0 +1,27 @@
+# tests: e2e · email_scan · schema_validation
+**Version:** 1.0 · **Date:** 2026-11-03 · **Status:** implemented;
+
+Per-package unit tests live under each `packages/<name>/tests/`.
+
+Run from the repo root:
+```
+uv run pytest tests     # Run all three tests: e2e, email_scan and schema_validation
+
+uv run pytest tests/<specific_test>.py      # Run a specific test
+```
+
+## e2e tests
+These tests run the full **replay** and **collect** flows for the `purlwatch resolve` command. 
+
+**Replay** flows require an SBOM and a compatible snapshot (a `.tar` file with the matching packages and resolution). The tests use the SBOMs from the `examples/` directory and the snapshots from `tests/fixtures/`. If the collector logic or the snapshot format changes, SBOM resolution will change, making existing snapshots incompatible.
+
+**Collect** flows perform network requests, so the test suite uses the `pytest-recording` library to avoid hitting external registries on every run. The library records cassettes containing each HTTP request and its corresponding response, which are then replayed offline during test execution. Whenever the collector logic changes, outgoing requests change as well, rendering existing cassettes incompatible.
+
+To avoid recording fixtures manually, use the `scripts/record_fixtures.py` script to generate snapshots and cassettes. The script can be run in two ways:
+
+#### Record all examples fixtures
+From the repo root:
+```
+uv run --env-file .env scripts/record_fixtures.py
+```
+Running the script without any additional argument will record cassettes and snapshots to every SBOM file in the `examples/` directory.
