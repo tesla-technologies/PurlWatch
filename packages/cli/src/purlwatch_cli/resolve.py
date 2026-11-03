@@ -97,6 +97,7 @@ def resolve_component(
 ) -> list[tuple[mapping.Map, list[tuple[str, Any]], bool]]:
     map_list: list[tuple[mapping.Map, list[tuple[str, Any]], bool]] = []
     history_list: list[tuple[str, Any]] = []
+    pkg_mapped: set[str] = set()
 
     for component in nodes.values():
         history_list = []
@@ -105,9 +106,14 @@ def resolve_component(
         if (
             component.route == resolve.Route.NO_PURL
             or not component.purl
+            or not component.package
             or component.is_root
         ):
             continue
+
+        if component.package in pkg_mapped:
+            continue
+        pkg_mapped.add(component.package)
 
         if component.route == resolve.Route.REPOSITORY_ONLY:
             raw_repo = external_dict.get(component.ref)
