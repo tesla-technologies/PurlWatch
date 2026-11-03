@@ -6792,7 +6792,7 @@
    "crates.io",
    "packages.ecosyste.ms"
   ],
-  "snapshot_digest":"sha256:32c29dbb2e24e11e734132ee97a293c6bed61475cb5028db7e90cd2e82543e43",
+  "snapshot_digest":"sha256:671e5120c9d25ecc0b18f02f7364f81d2ab5e8a8459ae13fc1676ad492ef2a21",
   "start_time":"2026-01-01T12:00:00+00:00",
   "tool_version":"0.1.0"
  }

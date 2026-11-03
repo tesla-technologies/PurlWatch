@@ -247,17 +247,23 @@ GOLDEN = ROOT / "tests" / "golden"
 
 
 @pytest.mark.parametrize(
-    "name", ["node-cli.cdx", "node-app.cdx", "rust-cli.cdx", "multi-dep.spdx"]
+    ("name", "sbom_type"),
+    [
+        ("node-cli", "cdx"),
+        ("node-app", "cdx"),
+        ("rust-cli", "cdx"),
+        ("multi-dep", "spdx"),
+    ],
 )
 def test_replay_matches_golden(
-    name: str, monkeypatch: pytest.MonkeyPatch, capsys
+    name: str, sbom_type: str, monkeypatch: pytest.MonkeyPatch, capsys
 ) -> None:
     monkeypatch.setenv("PURLWATCH_HASH_KEY", "test-key-in-ci")
     code = run_resolve(
         [
             "resolve",
             "--sbom",
-            f"examples/{name}.json",
+            f"examples/{name}.{sbom_type}.json",
             "--offline",
             f"tests/fixtures/{name}.tar",
             "--json",
