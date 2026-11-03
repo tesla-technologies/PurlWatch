@@ -114,7 +114,7 @@ class SnapshotWriter:
         complete: bool = True,
     ) -> tuple[Path, str, dict[str, Any]]:
         if self._closed:
-            raise RuntimeError("Writer was close previously")
+            raise core_exc.InputError("Writer was close previously")
 
         self._closed = True
 
@@ -190,6 +190,8 @@ class SnapshotReader:
             archive = tarfile.open(tar, "r")  # noqa: SIM115
         except (KeyError, FileNotFoundError) as err:
             raise ReaderFileNotFoundError(f"File was not found for tar {tar}") from err
+        except tarfile.ReadError as err:
+            raise core_exc.InputError(f"File {tar} is not a valid tar") from err
 
         try:
             manifest_file = archive.extractfile("manifest.json")
@@ -237,7 +239,7 @@ class SnapshotReader:
         body = body_file.read()
 
         if hashlib.sha256(body).hexdigest() != entry["sha256"]:
-            raise ValueError(f"Digest mismatch for: {key}")
+            raise core_exc.InputError(f"Digest mismatch for: {key}")
 
         return body, entry
 

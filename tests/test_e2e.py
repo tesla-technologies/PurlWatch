@@ -21,9 +21,11 @@ from purlwatch_cli.resolve import main, run_resolve
 @pytest.mark.parametrize(
     ("sbom", "tar"),
     [
-        ("node-web-app.cdx.json", "node-web-app.tar"),
+        ("node-app.cdx.json", "node-app.tar"),
         ("node-cli.cdx.json", "node-cli.tar"),
         ("rust-cli.cdx.json", "rust-cli.tar"),
+        ("multi-dep.spdx.json", "multi-dep.tar"),
+        ("purlwatch.cdx.json", "purlwatch.tar"),
     ],
 )
 def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
@@ -51,13 +53,47 @@ def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
     assert "Traceback" not in result.stderr
 
 
+@pytest.mark.parametrize(
+    ("sbom", "tar"),
+    [
+        ("nested.cdx.json", "node-cli.tar"),
+        ("no-purl.cdx.json", "node-cli.tar"),
+    ],
+)
+def test_resolve_e2e_noroot_replay(tmp_path: Path, sbom: str, tar: str):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom_path = ROOT / "packages" / "core" / "tests" / "fixtures" / "sbom" / sbom
+    tar_path = ROOT / "tests" / "fixtures" / tar
+
+    custom_cache = tmp_path / "cache"
+    env = os.environ.copy()
+    env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
+    env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
+
+    cmd = ["purlwatch", "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
+
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
+    )
+
+    assert result.returncode == 0, (
+        f"El comando falló con código {result.returncode}.\n"
+        f"STDERR:\n{result.stderr}\n"
+        f"STDOUT:\n{result.stdout}"
+    )
+
+    assert "Traceback" not in result.stderr
+
+
 @pytest.mark.vcr(record_mode="none")
 @pytest.mark.parametrize(
     "sbom",
     [
-        "node-web-app.cdx.json",
+        "node-app.cdx.json",
         "node-cli.cdx.json",
         "rust-cli.cdx.json",
+        "multi-dep.spdx.json",
+        "purlwatch.cdx.json",
     ],
 )
 def test_resolve_e2e_collect(
@@ -65,6 +101,34 @@ def test_resolve_e2e_collect(
 ):
     ROOT = Path(__file__).resolve().parent.parent
     sbom_path = ROOT / "examples" / sbom
+
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    test_args = ["purlwatch", "resolve", "--sbom", str(sbom_path)]
+    monkeypatch.setattr(sys, "argv", test_args)
+
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+
+    assert exc_info.value.code == 0
+
+
+@pytest.mark.vcr(record_mode="none")
+@pytest.mark.parametrize(
+    "sbom",
+    [
+        "spdx.json",
+        "nested.cdx.json",
+        "no-purl.cdx.json",
+    ],
+)
+def test_resolve_e2e_noroot_collect(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, sbom: str
+):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom_path = ROOT / "packages" / "core" / "tests" / "fixtures" / "sbom" / sbom
 
     custom_cache = tmp_path / "cache"
     monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
@@ -132,9 +196,11 @@ def schema_path(schema: str, path: Path) -> dict[str, Any]:
 @pytest.mark.parametrize(
     ("sbom", "tar"),
     [
-        ("node-web-app.cdx.json", "node-web-app.tar"),
+        ("node-app.cdx.json", "node-app.tar"),
         ("node-cli.cdx.json", "node-cli.tar"),
         ("rust-cli.cdx.json", "rust-cli.tar"),
+        ("multi-dep.spdx.json", "multi-dep.tar"),
+        ("purlwatch.cdx.json", "purlwatch.tar"),
     ],
 )
 def test_resolve_e2e_json_schema(tmp_path: Path, sbom: str, tar: str):
@@ -183,16 +249,25 @@ HISTORY_SCHEMA = schema_path("publisher-history.schema.json", SCHEMAS_DIR)
 GOLDEN = ROOT / "tests" / "golden"
 
 
-@pytest.mark.parametrize("name", ["node-cli", "node-web-app", "rust-cli"])
+@pytest.mark.parametrize(
+    ("name", "sbom_type"),
+    [
+        ("node-cli", "cdx"),
+        ("node-app", "cdx"),
+        ("rust-cli", "cdx"),
+        ("multi-dep", "spdx"),
+        ("purlwatch", "cdx"),
+    ],
+)
 def test_replay_matches_golden(
-    name: str, monkeypatch: pytest.MonkeyPatch, capsys
+    name: str, sbom_type: str, monkeypatch: pytest.MonkeyPatch, capsys
 ) -> None:
     monkeypatch.setenv("PURLWATCH_HASH_KEY", "test-key-in-ci")
     code = run_resolve(
         [
             "resolve",
             "--sbom",
-            f"examples/{name}.cdx.json",
+            f"examples/{name}.{sbom_type}.json",
             "--offline",
             f"tests/fixtures/{name}.tar",
             "--json",

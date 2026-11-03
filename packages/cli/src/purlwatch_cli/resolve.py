@@ -12,6 +12,8 @@ from packageurl import PackageURL
 from purlwatch_collectors import client, crates, npm, sources
 from purlwatch_core import hashing, history, mapping, parser, resolve, snapshot
 
+RELEASE_V = "0.1.0"
+
 
 def main() -> None:
     sys.exit(run_resolve(sys.argv[1:]))
@@ -42,7 +44,7 @@ def format_output_human(
         print(f"Sources: {', '.join(mapp.sources)}")
         print(f"Forge: {mapp.forge.value}")
 
-        if "sbom" in mapp.sources:
+        if m[2]:
             print("Note: Repository only path")
 
         if not his:
@@ -55,7 +57,7 @@ def format_output_human(
             man_hid_list = [hashing.short_hid(hid) for hid in v[1].maintainers_hids]
 
             print(
-                f"Version: {v[0]} | Date: {v[1].published_at} | Publisher hid: {pub_hid} | Publisher kind: {v[1].publisher_kind.value} | Maintainers hids: {', '.join(man_hid_list)}"
+                f"Version: {v[0]} | Date: {v[1].published_at} | Publisher hid: {pub_hid if pub_hid else ''} | Publisher kind: {v[1].publisher_kind.value} | Maintainers hids: {', '.join(man_hid_list)}"
             )
 
 
@@ -94,16 +96,26 @@ def format_output_json(
 
 def resolve_component(
     nodes: dict[str, resolve.Node], external_dict: dict[str, str], src: sources.Source
-) -> list[tuple[mapping.Map, list[tuple[str, Any]]]]:
-    map_list = []
+) -> list[tuple[mapping.Map, list[tuple[str, Any]], bool]]:
+    map_list: list[tuple[mapping.Map, list[tuple[str, Any]], bool]] = []
     history_list: list[tuple[str, Any]] = []
+    pkg_mapped: set[str] = set()
 
     for component in nodes.values():
         history_list = []
         candidates: list[tuple[str, str]] = []
 
-        if component.route == resolve.Route.NO_PURL or not component.purl:
+        if (
+            component.route == resolve.Route.NO_PURL
+            or not component.purl
+            or not component.package
+            or component.is_root
+        ):
             continue
+
+        if component.package in pkg_mapped:
+            continue
+        pkg_mapped.add(component.package)
 
         if component.route == resolve.Route.REPOSITORY_ONLY:
             raw_repo = external_dict.get(component.ref)
@@ -114,8 +126,10 @@ def resolve_component(
 
             map_fields = mapping.extract_map_fields(candidates)
 
-            map_item = mapping.map_to_repo(component.purl, map_fields, "0.1.0", None)
-            map_list.append((map_item, history_list))
+            map_item = mapping.map_to_repo(
+                component.package, map_fields, RELEASE_V, None
+            )
+            map_list.append((map_item, history_list, True))
             continue
 
         fact: npm.Fact | crates.Fact | None = None
@@ -155,7 +169,7 @@ def resolve_component(
                     row_purl,
                     history_fields,
                     fact.owners_current_only,
-                    "0.1.0",
+                    RELEASE_V,
                     fact.observed_at,
                 )
                 history_list.append((key, history_item))
@@ -169,17 +183,17 @@ def resolve_component(
 
         map_fields = mapping.extract_map_fields(candidates)
         map_item = mapping.map_to_repo(
-            component.package, map_fields, "0.1.0", observed_at
+            component.package, map_fields, RELEASE_V, observed_at
         )
-        map_list.append((map_item, history_list))
+        map_list.append((map_item, history_list, False))
 
     return map_list
 
 
 def build_parser() -> argparse.ArgumentParser:
-    resolve_parser = argparse.ArgumentParser(exit_on_error=False)
+    resolve_parser = argparse.ArgumentParser()
     subparsers = resolve_parser.add_subparsers(dest="command", required=True)
-    resolve_c = subparsers.add_parser("resolve", exit_on_error=False)
+    resolve_c = subparsers.add_parser("resolve")
     resolve_c.add_argument(
         "--sbom", required=True, type=Path, help="Specifies the SBOM to read."
     )
@@ -228,17 +242,22 @@ def run_resolve(argv: list[str] | None = None) -> int:
                     ).hexdigest()
         else:
             httpx_client = create_http_client()
-            with snapshot.SnapshotWriter() as writer:
-                live_src = sources.LiveSource(writer, httpx_client)
-                map_list = resolve_component(
-                    resolved_sbom.nodes, external_dict, live_src
-                )
-                with args.sbom.open("rb") as file:
-                    sbom_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
+            try:
+                with snapshot.SnapshotWriter() as writer:
+                    live_src = sources.LiveSource(writer, httpx_client)
+                    map_list = resolve_component(
+                        resolved_sbom.nodes, external_dict, live_src
+                    )
+                    with args.sbom.open("rb") as file:
+                        sbom_digest = hashlib.file_digest(
+                            file, hashlib.sha256
+                        ).hexdigest()
 
-                tar_path, snapshot_digest, manifest = writer.close_document(
-                    None, sbom_digest, None
-                )
+                    tar_path, snapshot_digest, manifest = writer.close_document(
+                        None, sbom_digest, None
+                    )
+            finally:
+                httpx_client.close()
 
         if args.json:
             format_output_json(map_list, manifest, snapshot_digest)
@@ -252,7 +271,7 @@ def run_resolve(argv: list[str] | None = None) -> int:
 
         return 0
     except core_exc.PurlwatchError as err:
-        print(f"purlwatch: {err}:{err.exit_code}", file=sys.stderr)
+        print(f"purlwatch: {err}", file=sys.stderr)
         return err.exit_code
 
 

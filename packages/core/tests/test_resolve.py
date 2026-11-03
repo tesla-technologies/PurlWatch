@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 from typing import cast
 
 from purlwatch_core import parser, resolve
@@ -37,6 +38,34 @@ def make_sbom(
         root_comp=root_obj, comp_list=comp_objects, dependencies=dep_objects
     )
     return cast(parser.ParsedSBOM, dummy)
+
+
+def test_chain_root_a_b() -> None:
+    sbom = make_sbom(
+        root="root",
+        components=[
+            ("root", "pkg:cargo/root-app@0.1.0"),
+            ("A", "pkg:npm/a@1.0.0"),
+            ("B", "pkg:npm/b@1.0.0"),
+        ],
+        deps=[("root", "A"), ("A", "B")],
+    )
+
+    resolved = resolve.resolve(sbom)
+
+    assert resolved.nodes["root"].depth == 0
+    assert resolved.nodes["root"].is_root is True
+
+    assert resolved.nodes["A"].depth == 1
+    assert resolved.nodes["A"].is_root is False
+    assert resolved.nodes["A"].via == "root"
+
+    assert resolved.nodes["B"].depth == 2
+    assert resolved.nodes["B"].is_root is False
+    assert resolved.nodes["B"].via == "A"
+
+    via_map = {ref: node.via for ref, node in resolved.nodes.items() if node.via}
+    assert resolve.path_to("B", via_map) == ["root", "A", "B"]
 
 
 def test_chain_resolution() -> None:
@@ -169,3 +198,66 @@ def test_root_node_flags() -> None:
     assert resolved.nodes["A"].depth == 0
     assert resolved.nodes["A"].via is None
     assert resolved.nodes["B"].is_root is False
+
+
+TEST_DIR = Path(__file__).parent
+
+
+def test_spdx_noroot_sbom() -> None:
+    parsed_sbom = parser.parse_sbom(Path(f"{TEST_DIR}/fixtures/sbom/spdx.json"))
+    resolved_sbom = resolve.resolve(parsed_sbom)
+
+    resolved_expected = resolve.Resolved(
+        root=None,
+        nodes={
+            "SPDXRef-Package": resolve.Node(
+                ref="SPDXRef-Package",
+                purl=None,
+                package=None,
+                route=resolve.Route.NO_PURL,
+                is_root=False,
+                depth=None,
+                via=None,
+                declared_repo=None,
+            ),
+            "SPDXRef-fromDoap-1": resolve.Node(
+                ref="SPDXRef-fromDoap-1",
+                purl=None,
+                package=None,
+                route=resolve.Route.NO_PURL,
+                is_root=False,
+                depth=None,
+                via=None,
+                declared_repo=None,
+            ),
+            "SPDXRef-fromDoap-0": resolve.Node(
+                ref="SPDXRef-fromDoap-0",
+                purl="pkg:maven/org.apache.jena/apache-jena@3.12.0",
+                package="pkg:maven/org.apache.jena/apache-jena",
+                route=resolve.Route.UNSUPPORTED,
+                is_root=False,
+                depth=None,
+                via=None,
+                declared_repo=None,
+            ),
+            "SPDXRef-Saxon": resolve.Node(
+                ref="SPDXRef-Saxon",
+                purl=None,
+                package=None,
+                route=resolve.Route.NO_PURL,
+                is_root=False,
+                depth=None,
+                via=None,
+                declared_repo=None,
+            ),
+        },
+        edges={
+            "SPDXRef-Package": frozenset({"SPDXRef-Saxon"}),
+            "SPDXRef-fromDoap-1": frozenset(),
+            "SPDXRef-fromDoap-0": frozenset(),
+            "SPDXRef-Saxon": frozenset(),
+        },
+    )
+
+    assert resolved_sbom is not None
+    assert resolved_sbom == resolved_expected

@@ -7,10 +7,6 @@ import purlwatch_core.exceptions as core_exc
 from purlwatch_core.snapshot import SnapshotWriter
 
 
-class PackageNotFound(Exception):
-    """Raises when package it's not found"""
-
-
 class ResponseException(core_exc.NetworkError):
     """Raises when an exception occurs on the petition"""
 

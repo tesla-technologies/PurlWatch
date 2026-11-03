@@ -1,6 +1,6 @@
 # PurlWatch
 
-Purlwatch is an open data set and a free software tool that surface early-warning signals of supply-chain risk from the metadata that package registries and code forges already publish. It is a pre-grant prototype as of October 2026 and nothing in it is released yet. The name is a placeholder that collides with an existing PyPI package and will change before 9 October 2026.
+Purlwatch is an open data set and a free software tool that surface early-warning signals of supply-chain risk from the metadata that package registries and code forges already publish. It is a pre-grant prototype as of October-November 2026.
 
 ## Why it exists
 
@@ -10,9 +10,9 @@ This project computes such conditions with deterministic, published rules and pu
 
 The design, the scope and the validation protocol are described in the documentation under `docs/`, starting at `docs/00-index.md`. The project is being proposed to NLnet's CodeSupply fund, whose deadline is 3 November 2026.
 
-## What the prototype must do
+## What the prototype does
 
-Before 9 October 2026 the repository has to show one thing working end to end: a command that takes an SBOM and prints, for every component, its Package URL, the repository it resolves to with a confidence level, and the publisher of each version as the registry exposes it. For npm that is the publishing account per version from the packument; for crates.io it is the `published_by` field per version together with the current owners. The prototype has no signals and no attestations. Its purpose is to prove the collectors and the package graph with a green continuous-integration run. The plan is in `docs/15-prototype-plan.md`.
+The repository shows one thing working end to end: a command that takes an SBOM and prints, for every component, its Package URL, the repository it resolves to with a confidence level, and the publisher of each version as the registry exposes it. For npm that is the publishing account per version from the packument; for crates.io it is the `published_by` field per version together with the current owners. The prototype has no signals and no attestations. Its purpose is to prove the collectors and the package graph with a green continuous-integration run. The plan is in `docs/15-prototype-plan.md`.
 
 ## How the repository is organised
 
@@ -20,7 +20,9 @@ The code is one Python workspace with several packages that share a version. `pa
 
 ## Maintainers
 
-The maintainers are the engineers of Tesla Technologies named in the signed-off commit history; their public profiles will be listed here once the first tag exists. Until `SECURITY.md` carries a contact address, reach them through the issue tracker.
+The maintainers are the engineers of Tesla Technologies named in the signed-off commit history:
+
+* Esteban Liñares Barral - [https://github.com/estebanlinares-teslatechnologies](https://github.com/estebanlinares-teslatechnologies)
 
 ## Licences
 
@@ -43,11 +45,11 @@ The project builds on Package URL, CycloneDX, SPDX, in-toto, Sigstore, OSV, Vuln
 The prototype receives a SBOM and for every component prints it's repository URL, the confidence level explained and version history.
 
 ### Installation and Set up
-Once the project it's downloaded, follow these steps from the root directory to set up your local environment:
+Once the project is downloaded, follow these steps from the root directory to set up your local environment:
 
 1. Create the virtual environment and install all project dependencies using `uv sync --all-packages`.
 
-2. Copy the example environment file to create your local .env using `cp .example.env .env`. Once .env file it's created, open it and set the following variables:
+2. Copy the example environment file to create your local .env using `cp .example.env .env`. Once .env file is created, open it and set the following variables:
     * **PURLWATCH_HASH_KEY (Required)**: A unique secret string used to anonymize public account handles via hashing (as specified in docs/11-privacy-and-licensing.md). This value must never be hardcoded or committed to source control.
 
     * **PURLWATCH_CACHE_DIR (Optional)**: Defines a custom cache path. If left unspecified, purlwatch defaults to using your home directory (~/.cache/purlwatch).
@@ -59,22 +61,22 @@ Positioned at root run:
 
 The expected output:
 ```console
-$ uv run --env-file .env purlwatch resolve --sbom examples node-cli.cdx.json --offline tests/fixtures/node-cli.tar
+$ uv run --env-file .env purlwatch resolve --sbom examples/node-cli.cdx.json --offline tests/fixtures/node-cli.tar
 ================================================================================
-Purl: pkg:npm/cli
-Repository: ssh://github.com/node-js-libs/cli
-Confidence: low
-Sources agreeing: 1
+Purl: pkg:npm/commander
+Repository: https://github.com/tj/commander.js
+Confidence: high
+Sources agreeing: 2
 Sources: ecosystems, registry
 Forge: github
 
 Versions:
-Version: 0.1.0 | Date: 2011-01-01T07:20:54.661Z | Publisher hid: None | Publisher kind: unknown | Maintainers hids:
-Version: 0.1.1 | Date: 2011-01-02T13:27:25.447Z | Publisher hid: None | Publisher kind: unknown | Maintainers hids:
+Version: 0.0.1 | Date: 2011-08-14T22:17:52.365Z | Publisher hid: | Publisher kind: unknown | Maintainers hids: h:4b3efe36
+Version: 0.0.3 | Date: 2011-08-15T15:30:08.289Z | Publisher hid: | Publisher kind: unknown | Maintainers hids: h:4b3efe36
 ...
 ```
 
-#### <ins>Common Errors & Solutions
+#### Common Errors & Solutions
 #### Missing `.env` File
 ```console
 error: No environment file found at: .env
@@ -84,7 +86,7 @@ error: No environment file found at: .env
 #### Missing `PURLWATCH_HASH_KEY`
 
 ```console
-Error: Environment variable PURLWATCH_HASH_KEY it's empty or not found.
+Error: Environment variable PURLWATCH_HASH_KEY is empty or not found.
 ```
 **Solution**: Ensure `PURLWATCH_HASH_KEY` is defined in your `.env` file. Fill it with any valid string inside quotes and save the changes.
 
