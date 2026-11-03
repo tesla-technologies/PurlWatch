@@ -57,7 +57,7 @@ def format_output_human(
             man_hid_list = [hashing.short_hid(hid) for hid in v[1].maintainers_hids]
 
             print(
-                f"Version: {v[0]} | Date: {v[1].published_at} | Publisher hid: {pub_hid} | Publisher kind: {v[1].publisher_kind.value} | Maintainers hids: {', '.join(man_hid_list)}"
+                f"Version: {v[0]} | Date: {v[1].published_at} | Publisher hid: {pub_hid if pub_hid else ''} | Publisher kind: {v[1].publisher_kind.value} | Maintainers hids: {', '.join(man_hid_list)}"
             )
 
 
