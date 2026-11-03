@@ -10,7 +10,7 @@ This project computes such conditions with deterministic, published rules and pu
 
 The design, the scope and the validation protocol are described in the documentation under `docs/`, starting at `docs/00-index.md`. The project is being proposed to NLnet's CodeSupply fund, whose deadline is 3 November 2026.
 
-## What the prototype must do
+## What the prototype does
 
 The repository shows one thing working end to end: a command that takes an SBOM and prints, for every component, its Package URL, the repository it resolves to with a confidence level, and the publisher of each version as the registry exposes it. For npm that is the publishing account per version from the packument; for crates.io it is the `published_by` field per version together with the current owners. The prototype has no signals and no attestations. Its purpose is to prove the collectors and the package graph with a green continuous-integration run. The plan is in `docs/15-prototype-plan.md`.
 
