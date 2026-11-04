@@ -270,7 +270,7 @@ def test_replay_matches_golden(
             "--sbom",
             f"examples/{name}.{sbom_type}.json",
             "--offline",
-            f"tests/fixtures/{name}.tar",
+            f"tests/fixtures/snapshots/{name}.tar",
             "--json",
         ]
     )
