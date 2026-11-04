@@ -12,9 +12,6 @@ cli_pkg_dir = ROOT / "packages" / "cli"
 SCHEMAS_DIR = Path(__file__).parent.parent / "schemas"
 SNAPSHOTS_DIR = ROOT / "tests" / "fixtures" / "snapshots"
 
-if str(cli_pkg_dir) not in sys.path:
-    sys.path.insert(0, str(cli_pkg_dir))
-
 import pytest
 from purlwatch_cli.resolve import main, run_resolve
 
@@ -243,6 +240,12 @@ def test_resolve_e2e_json_schema(tmp_path: Path, sbom: str, tar: str):
     history_schema = schema_path("publisher-history.schema.json", SCHEMAS_DIR)
     for h in history_list:
         jsonschema.validate(instance=h, schema=history_schema)
+
+    assert "components" in output
+    components_list = output.get("components")
+    components_schema = schema_path("components.schema.json", SCHEMAS_DIR)
+    for c in components_list:
+        jsonschema.validate(instance=c, schema=components_schema)
 
 
 MAPPING_SCHEMA = schema_path("mapping.schema.json", SCHEMAS_DIR)

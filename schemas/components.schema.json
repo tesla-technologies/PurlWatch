@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "components",
+    "title": "Components Table",
+    "description": "One row per package, without version, per release",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["purl", "depth", "via", "route"],
+    "properties": {
+        "purl": {
+            "description": "The Package URL without version",
+            "type": ["string", "null"],
+            "pattern": "^pkg:[a-z]+/."
+        },
+        "depth": {
+            "description": "The dependendy depth",
+            "type": ["integer", "null"]
+        },
+        "via": {
+            "description": "",
+            "type": ["string", "null"]
+        },
+        "route": {
+            "description": "Possible forges",
+            "type": "string",
+            "enum": ["registry", "repository", "unsupported", "no_purl"]
+        }
+    }
+}
