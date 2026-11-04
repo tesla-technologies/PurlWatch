@@ -15,6 +15,16 @@ def vcr_config() -> dict[str, Any]:
     }
 
 
+def pytest_collection_modifyitems(session, config, items):
+    cli_record_mode = config.getoption("--record-mode", default=None)
+
+    if cli_record_mode:
+        for item in items:
+            vcr_marker = item.get_closest_marker("vcr")
+            if vcr_marker and "record_mode" in vcr_marker.kwargs:
+                del vcr_marker.kwargs["record_mode"]
+
+
 def scrub_response(response: dict[str, Any]) -> dict[str, Any]:
     """Sanitize HTTP responses' body before recording cassettes"""
     try:

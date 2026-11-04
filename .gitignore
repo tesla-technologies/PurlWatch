@@ -20,7 +20,8 @@ snapshots/
 *.tar.gz
 
 # Snapshot exception for replay test
-!tests/fixtures/*.tar
+!tests/fixtures/snapshots
+!tests/fixtures/snapshots/*.tar
 
 # Secrets and keys
 *.key

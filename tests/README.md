@@ -20,8 +20,23 @@ These tests run the full **replay** and **collect** flows for the `purlwatch res
 To avoid recording fixtures manually, use the `scripts/record_fixtures.py` script to generate snapshots and cassettes. The script can be run in two ways:
 
 #### Record all examples fixtures
-From the repo root:
+Depending on the flags used the scripts acts one way or another. There are three posible combinations:
 ```
-uv run --env-file .env scripts/record_fixtures.py
+uv run --env-file .env scripts/record_fixtures.py --all 
+# Records every fixture for the SBOMs in the examples/ directory including snapshots, cassettes and golden files.
+
+uv run --env-file .env scripts/record_fixtures.py --all <fixture flag>
+# Records every fixture specified type for the SBOMs in the examples/ directory.
+
+uv run --env-file .env scripts/record_fixtures.py <fixture flag> <file path>
+# Records the specified fixture for the specified path.
 ```
-Running the script without any additional argument will record cassettes and snapshots to every SBOM file in the `examples/` directory.
+
+| Fixture Flag | What requires without `--all` |
+|------|---------------|
+| `--snapshot` | A SBOM |
+| `--cassette` | The NodeID for the test |
+| `--golden` | A SBOM that presents its snapshot in the `tests/fixtures/snapshots` directory|
+
+> NodeID are build this way: `<test path>::<specific test>[parameter]`.
+> Example: `tests/test_e2e.py::test_resolve_e2e_collect[node-cli.cdx.json]`

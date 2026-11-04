@@ -10,6 +10,7 @@ import jsonschema
 ROOT = Path(__file__).resolve().parent.parent
 cli_pkg_dir = ROOT / "packages" / "cli"
 SCHEMAS_DIR = Path(__file__).parent.parent / "schemas"
+SNAPSHOTS_DIR = ROOT / "tests" / "fixtures" / "snapshots"
 
 if str(cli_pkg_dir) not in sys.path:
     sys.path.insert(0, str(cli_pkg_dir))
@@ -31,7 +32,7 @@ from purlwatch_cli.resolve import main, run_resolve
 def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
     ROOT = Path(__file__).resolve().parent.parent
     sbom_path = ROOT / "examples" / sbom
-    tar_path = ROOT / "tests" / "fixtures" / tar
+    tar_path = SNAPSHOTS_DIR / tar
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
@@ -63,7 +64,7 @@ def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
 def test_resolve_e2e_noroot_replay(tmp_path: Path, sbom: str, tar: str):
     ROOT = Path(__file__).resolve().parent.parent
     sbom_path = ROOT / "packages" / "core" / "tests" / "fixtures" / "sbom" / sbom
-    tar_path = ROOT / "tests" / "fixtures" / tar
+    tar_path = SNAPSHOTS_DIR / tar
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
@@ -206,7 +207,7 @@ def schema_path(schema: str, path: Path) -> dict[str, Any]:
 def test_resolve_e2e_json_schema(tmp_path: Path, sbom: str, tar: str):
     ROOT = Path(__file__).resolve().parent.parent
     sbom_path = ROOT / "examples" / sbom
-    tar_path = ROOT / "tests" / "fixtures" / tar
+    tar_path = SNAPSHOTS_DIR / tar
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
