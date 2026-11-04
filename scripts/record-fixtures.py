@@ -6,6 +6,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+import httpx
 from purlwatch_cli.resolve import create_http_client, resolve_component
 from purlwatch_collectors import sources
 from purlwatch_core import exceptions, parser, resolve, snapshot
@@ -47,17 +48,13 @@ def record_snapshot(item: Path) -> None:
     now = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
     parsed_sbom = parser.parse_sbom(item)
     resolved_sbom = resolve.resolve(parsed_sbom)
-    external_dict: dict[str, str] = {}
-    for comp in parsed_sbom.comp_list:
-        if comp.bom_ref and comp.external_ref:
-            external_dict[comp.bom_ref] = comp.external_ref
 
-    httpx_client = create_http_client()
+    httpx_client = create_http_client(inner=httpx.HTTPTransport())
     with snapshot.SnapshotWriter(
         out_path=SNAPSHOTS_DIR, clock=lambda: now, suffix="record"
     ) as writer:
         live_src = sources.LiveSource(writer, httpx_client)
-        resolve_component(resolved_sbom.nodes, external_dict, live_src)
+        resolve_component(resolved_sbom.nodes, live_src)
         with item.open("rb") as file:
             sbom_digest = hashlib.file_digest(file, hashlib.sha256).hexdigest()
 
