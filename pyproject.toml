@@ -14,7 +14,6 @@ testpaths = [
     "tests",
     "packages/*/tests"
 ]
-addopts = "--record-mode=once"
 
 [tool.uv.workspace]
 members = ["packages/*"]
