@@ -18,7 +18,7 @@ import purlwatch_core.exceptions as core_exc
 
 
 class ReaderFileNotFoundError(core_exc.OfflineMissError):
-    """Raises when a file it's not found by it's key in a Snapshot"""
+    """Raised when a file is not found by its key in a Snapshot"""
 
 
 @dataclass(frozen=True)
