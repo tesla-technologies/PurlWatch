@@ -20,7 +20,7 @@ class FakeSource:
 @pytest.mark.parametrize(
     "declared_repo",
     [
-        "https://github.com/my-org/my-root-repo",
+        ("sbom", "https://github.com/my-org/my-root-repo"),
         None,
     ],
 )
@@ -51,6 +51,8 @@ def test_resolve_component_never_consults_sources_for_root(
 
     assert comp.is_root is True
     if declared_repo:
+        assert declared_repo[0] == "sbom"
+        assert declared_repo[1]
         assert note == "Note: Repository only path"
     else:
         assert note == "Note: Root component has no declared VCS repository"

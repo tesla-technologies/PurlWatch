@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import sys
+import tarfile
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +17,7 @@ SNAPSHOTS_DIR = ROOT / "tests" / "fixtures" / "snapshots"
 import pytest
 from purlwatch_cli import resolve
 from purlwatch_cli.resolve import create_http_client, run_resolve
+from purlwatch_core import snapshot
 
 
 @pytest.mark.parametrize(
@@ -25,15 +27,16 @@ from purlwatch_cli.resolve import create_http_client, run_resolve
         ("no-purl.cdx.json", "node-cli.tar"),
     ],
 )
-def test_resolve_e2e_noroot_replay(tmp_path: Path, sbom: str, tar: str, capsys):
+def test_resolve_e2e_noroot_replay(
+    tmp_path: Path, sbom: str, tar: str, monkeypatch: pytest.MonkeyPatch, capsys
+):
     ROOT = Path(__file__).resolve().parent.parent
     sbom_path = ROOT / "packages" / "core" / "tests" / "fixtures" / "sbom" / sbom
     tar_path = SNAPSHOTS_DIR / tar
 
     custom_cache = tmp_path / "cache"
-    env = os.environ.copy()
-    env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
-    env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
 
     argv = ["resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
 
@@ -121,14 +124,16 @@ def test_resolve_e2e_noroot_collect(
     assert out.strip()
 
 
-def test_resolve_e2e_collect_error(tmp_path: Path, capsys):
+def test_resolve_e2e_collect_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
     bad_sbom = tmp_path / "bad.json"
     bad_sbom.write_text("{ json invalido")
 
     custom_cache = tmp_path / "cache"
-    env = os.environ.copy()
-    env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
-    env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
 
     argv = ["resolve", "--sbom", str(bad_sbom)]
 
@@ -142,14 +147,16 @@ def test_resolve_e2e_collect_error(tmp_path: Path, capsys):
     )
 
 
-def test_resolve_e2e_offline_error(tmp_path: Path, capsys):
+def test_resolve_e2e_offline_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
     ROOT = Path(__file__).resolve().parent.parent
     sbom = ROOT / "examples" / "node-cli.cdx.json"
 
     custom_cache = tmp_path / "cache"
-    env = os.environ.copy()
-    env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
-    env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
 
     argv = [
         "resolve",
@@ -169,6 +176,81 @@ def test_resolve_e2e_offline_error(tmp_path: Path, capsys):
     )
 
 
+def test_resolve_e2e_offline_key_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    sbom = ROOT / "examples" / "node-cli.cdx.json"
+
+    with snapshot.SnapshotWriter() as writer:
+        writer.add_document(
+            collector="npm",
+            collector_v="1.0.0",
+            key="npm:chalk",
+            url="https://registry.npmjs.org/chalk",
+            status=200,
+            headers={},
+            email_removed=False,
+            body=json.dumps(
+                {
+                    "name": "chalk",
+                    "description": "Terminal string styling done right",
+                    "dist-tags": {"latest": "4.1.2"},
+                    "versions": {
+                        "4.1.2": {
+                            "name": "chalk",
+                            "version": "4.1.2",
+                            "repository": {
+                                "type": "git",
+                                "url": "https://github.com/chalk/chalk.git",
+                            },
+                        }
+                    },
+                    "repository": {
+                        "type": "git",
+                        "url": "https://github.com/chalk/chalk.git",
+                    },
+                }
+            ),
+            time="2026-11-05T00:00:00Z",
+        )
+        tar_path, _, _ = writer.close_document(None, None, None)
+
+    extract_dir = tmp_path / "extracted"
+    with tarfile.open(tar_path, "r") as tar:
+        tar.extractall(extract_dir)
+
+    json_file = extract_dir / "index.json"
+    data = json.loads(json_file.read_text(encoding="utf-8"))
+
+    if isinstance(data, list):
+        data.pop()
+    elif "index" in data:
+        data["index"].clear()
+    else:
+        data.popitem()
+
+    json_file.write_text(json.dumps(data), encoding="utf-8")
+
+    with tarfile.open(tar_path, "w") as tar:
+        for item in extract_dir.iterdir():
+            tar.add(item, arcname=item.name)
+
+    argv = [
+        "resolve",
+        "--sbom",
+        str(sbom),
+        "--offline",
+        "examples/fixtures/node.tar",
+    ]
+
+    result = run_resolve(argv)
+    assert result == 3
+
+
 def test_resolve_e2e_replay_subprocess(tmp_path: Path):
     ROOT = Path(__file__).resolve().parent.parent
     sbom_path = ROOT / "examples" / "node-cli.cdx.json"
@@ -182,7 +264,7 @@ def test_resolve_e2e_replay_subprocess(tmp_path: Path):
     env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
     env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
 
-    cmd = ["purlwatch", "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
+    cmd = [str(bin), "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
 
     result = subprocess.run(
         cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
@@ -206,6 +288,7 @@ def schema_path(schema: str, path: Path) -> dict[str, Any]:
 
 MAPPING_SCHEMA = schema_path("mapping.schema.json", SCHEMAS_DIR)
 HISTORY_SCHEMA = schema_path("publisher-history.schema.json", SCHEMAS_DIR)
+COMPONENTS_SCHEMA = schema_path("components.schema.json", SCHEMAS_DIR)
 GOLDEN = ROOT / "tests" / "golden"
 
 
@@ -242,6 +325,8 @@ def test_replay_matches_golden(
         jsonschema.validate(row, MAPPING_SCHEMA)
     for row in doc["publisher_history"]:
         jsonschema.validate(row, HISTORY_SCHEMA)
+    for row in doc["components"]:
+        jsonschema.validate(row, COMPONENTS_SCHEMA)
 
     expected = (GOLDEN / f"{name}.json").read_text(encoding="utf-8")
     if os.getenv("UPDATE_GOLDEN"):
@@ -258,8 +343,12 @@ def test_replay_matches_golden(
     ],
 )
 def test_resolve_e2e_online_errors(
-    scenario: str, exit_code: int, monkeypatch: pytest.MonkeyPatch
+    scenario: str, exit_code: int, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
     current_time = 1000.0
 
     def fake_sleep(seconds: float) -> None:

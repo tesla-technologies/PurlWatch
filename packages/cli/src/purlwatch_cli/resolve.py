@@ -45,7 +45,10 @@ def format_output_human(
         print("=" * 80)
         label = "Bom-Ref" if comp.route == resolve.Route.NO_PURL else "Purl"
         print(f"{label}: {mapp.purl}")
-        if mapp.sources:
+        if comp.route not in (
+            resolve.Route.NO_PURL,
+            resolve.Route.UNSUPPORTED,
+        ) and not (comp.is_root and comp.declared_repo is None):
             print(f"Repository: {mapp.repository}")
             print(f"Confidence: {mapp.confidence.value}")
             print(f"Sources agreeing: {mapp.sources_agreeing}")
@@ -54,7 +57,9 @@ def format_output_human(
 
         print("\nResolved components:")
         print(f"Purl: {comp.purl}")
-        print(f"Depth: {comp.depth}")
+        print(
+            f"Depth: {comp.depth}{'. [WARN] Unreachable component' if comp.depth is None else ''}"
+        )
         print(f"Via: {comp.via}")
         print(f"Route: {comp.route.value}")
 
@@ -89,7 +94,10 @@ def format_output_json(
         his = m[1]
         comp = m[2]
 
-        if mapp.sources:
+        if comp.route not in (
+            resolve.Route.NO_PURL,
+            resolve.Route.UNSUPPORTED,
+        ) and not (comp.is_root and comp.declared_repo is None):
             mapping_list.append(asdict(mapp))
 
         components_list.append(

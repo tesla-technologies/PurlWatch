@@ -66,6 +66,12 @@
       "name": "aui",
       "version": "9.4.0",
       "purl": "pkg:bitbucket/atlassian/aui@9.4.0"
+    },
+    {
+      "type": "library",
+      "name": "standalone-tool",
+      "version": "1.0.0",
+      "purl": "pkg:generic/standalone-tool@1.0.0"
     }
   ],
   "dependencies": [

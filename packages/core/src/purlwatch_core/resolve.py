@@ -50,7 +50,13 @@ def get_purl_without_version(purl: str | None) -> str | None:
 
     parsed_purl = PackageURL.from_string(purl)
 
-    return str(parsed_purl._replace(version=None))
+    clean_purl = PackageURL(
+        type=parsed_purl.type,
+        namespace=parsed_purl.namespace,
+        name=parsed_purl.name,
+    )
+
+    return str(clean_purl)
 
 
 def get_node_route(purl: str | None) -> Route:
