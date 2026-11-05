@@ -1,5 +1,6 @@
 import json
 import re
+from importlib.metadata import version
 from typing import Any, cast
 
 import httpx
@@ -86,7 +87,7 @@ def collect(
 
         writer.add_document(
             collector,
-            "0.1.0",
+            version("purlwatch_collectors"),
             key,
             url,
             response.status_code,
@@ -102,7 +103,7 @@ def collect(
             doc_time = writer.clock().isoformat()
             writer.add_document(
                 collector,
-                "0.1.0",
+                version("purlwatch_collectors"),
                 key,
                 url,
                 404,

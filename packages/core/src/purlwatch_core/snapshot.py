@@ -196,14 +196,14 @@ class SnapshotReader:
         try:
             manifest_file = archive.extractfile("manifest.json")
             if not manifest_file:
-                raise ReaderFileNotFoundError(
+                raise core_exc.InputError(
                     f"File manifest.json was not found for tar {tar}"
                 )
             self.manifest = json.load(manifest_file)
 
             index_file = archive.extractfile("index.json")
             if not index_file:
-                raise ReaderFileNotFoundError(
+                raise core_exc.InputError(
                     f"File index.json was not found for tar {tar}"
                 )
             index_list = json.load(index_file)
@@ -213,7 +213,7 @@ class SnapshotReader:
             self.tar: tarfile.TarFile = archive
         except (KeyError, FileNotFoundError):
             archive.close()
-            raise ReaderFileNotFoundError(f"File was not found for tar {tar}")
+            raise core_exc.InputError(f"File was not found for tar {tar}")
 
     def __enter__(self) -> Self:
         return self
@@ -234,7 +234,7 @@ class SnapshotReader:
 
         body_file = self.tar.extractfile(entry["path"])
         if body_file is None:
-            raise ReaderFileNotFoundError(f"File missing in archive for key: {key}")
+            raise core_exc.InputError(f"File missing in archive for key: {key}")
 
         body = body_file.read()
 

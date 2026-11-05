@@ -5,8 +5,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
+from purlwatch_core import exceptions
 from purlwatch_core.snapshot import (
-    ReaderFileNotFoundError,
     SnapshotReader,
     SnapshotWriter,
 )
@@ -165,5 +165,5 @@ def test_incomplete_reader(tmp_path: Path) -> None:
         ti.size = len(data)
         tar.addfile(ti, io.BytesIO(data))
 
-    with pytest.raises(ReaderFileNotFoundError):
+    with pytest.raises(exceptions.InputError):
         SnapshotReader(incomplete_tar)

@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import httpx
 import jsonschema
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -13,7 +14,8 @@ SCHEMAS_DIR = Path(__file__).parent.parent / "schemas"
 SNAPSHOTS_DIR = ROOT / "tests" / "fixtures" / "snapshots"
 
 import pytest
-from purlwatch_cli.resolve import run_resolve
+from purlwatch_cli import resolve
+from purlwatch_cli.resolve import create_http_client, run_resolve
 
 
 @pytest.mark.parametrize(
@@ -245,3 +247,72 @@ def test_replay_matches_golden(
     if os.getenv("UPDATE_GOLDEN"):
         (GOLDEN / f"{name}.json").write_text(out, encoding="utf-8", newline="\n")
     assert out == expected
+
+
+@pytest.mark.parametrize(
+    ("scenario", "exit_code"),
+    [
+        ("503_persistent", 4),
+        ("429_then_200", 0),
+        ("connect_error", 4),
+    ],
+)
+def test_resolve_e2e_online_errors(
+    scenario: str, exit_code: int, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    current_time = 1000.0
+
+    def fake_sleep(seconds: float) -> None:
+        nonlocal current_time
+        current_time += seconds
+
+    def fake_monotonic() -> float:
+        nonlocal current_time
+        current_time += 0.001
+        return current_time
+
+    monkeypatch.setattr("time.sleep", fake_sleep)
+    monkeypatch.setattr("time.monotonic", fake_monotonic)
+
+    attempts = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal attempts
+        attempts += 1
+
+        if scenario == "503_persistent":
+            return httpx.Response(503, request=request)
+
+        if scenario == "connect_error":
+            raise httpx.ConnectError("Network unreachable", request=request)
+
+        if scenario == "429_then_200":
+            if attempts == 1:
+                return httpx.Response(
+                    429,
+                    headers={"Retry-After": "1"},
+                    request=request,
+                )
+            return httpx.Response(
+                200,
+                json={
+                    "name": "mock-pkg",
+                    "repository": {
+                        "type": "git",
+                        "url": "https://github.com/org/repo.git",
+                    },
+                },
+                request=request,
+            )
+
+        raise ValueError(f"Not defined scenario: {scenario}")
+
+    def fake_create_http_client(*args, **kwargs):
+        return create_http_client(inner=httpx.MockTransport(handler))
+
+    monkeypatch.setattr(resolve, "create_http_client", fake_create_http_client)
+
+    argv = ["resolve", "--sbom", str(ROOT / "examples" / "node-cli.cdx.json")]
+    result = run_resolve(argv)
+
+    assert result == exit_code

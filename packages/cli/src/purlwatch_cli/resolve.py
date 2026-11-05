@@ -3,6 +3,7 @@ import hashlib
 import json
 import sys
 from dataclasses import asdict
+from importlib.metadata import version
 from pathlib import Path
 from typing import Any, cast
 
@@ -12,7 +13,7 @@ from packageurl import PackageURL
 from purlwatch_collectors import client, crates, ecosystems, npm, sources
 from purlwatch_core import hashing, history, mapping, parser, resolve, snapshot
 
-RELEASE_V = "0.1.0"
+RELEASE_V = version("purlwatch_collectors")
 
 
 def main() -> None:
@@ -20,11 +21,13 @@ def main() -> None:
 
 
 def create_http_client(
-    inner: httpx.HTTPTransport | httpx.MockTransport,
+    inner: httpx.HTTPTransport | httpx.MockTransport | None = None,
 ) -> httpx.Client:
+    if inner is None:
+        inner = httpx.HTTPTransport()
     return httpx.Client(
         headers={
-            "User-Agent": "purlwatch/0.1.0 (https://github.com/tesla-technologies/purlwatch)"
+            "User-Agent": f"purlwatch/{RELEASE_V} (https://github.com/tesla-technologies/purlwatch)"
         },
         transport=client.PurlwatchTransport(inner=inner, min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),

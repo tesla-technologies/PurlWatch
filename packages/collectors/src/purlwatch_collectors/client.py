@@ -67,3 +67,6 @@ class PurlwatchTransport(httpx.BaseTransport):
                 time.sleep(2**attempt)
 
         return response
+
+    def close(self) -> None:
+        self._inner.close()
