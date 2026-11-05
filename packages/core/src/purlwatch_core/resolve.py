@@ -4,7 +4,7 @@ from enum import Enum
 
 from packageurl import PackageURL
 
-from purlwatch_core.parser import ParsedSBOM
+from purlwatch_core.parser import Component, ParsedSBOM
 
 
 class Route(str, Enum):
@@ -12,6 +12,12 @@ class Route(str, Enum):
     REPOSITORY_ONLY = "repository"
     UNSUPPORTED = "unsupported"
     NO_PURL = "no_purl"
+
+
+class Declared(str, Enum):
+    EXTERNAL = "external"
+    VCS_URL = "vcs_url"
+    PURL = "purl"
 
 
 @dataclass(frozen=True)
@@ -23,7 +29,7 @@ class Node:
     is_root: bool
     depth: int | None
     via: str | None
-    declared_repo: str | None
+    declared_repo: tuple[Declared, str] | None
 
 
 @dataclass(frozen=True)
@@ -61,6 +67,41 @@ def get_node_route(purl: str | None) -> Route:
         return Route.UNSUPPORTED
 
 
+def extract_repo_from_purl(purl_str: str | None) -> tuple[Declared, str] | None:
+    if not purl_str:
+        return None
+
+    purl = PackageURL.from_string(purl_str)
+
+    if purl.qualifiers and "vcs_url" in purl.qualifiers:
+        return (Declared.VCS_URL, purl.qualifiers["vcs_url"])
+
+    if purl.type == "github" and purl.name:
+        if purl.namespace:
+            return (Declared.PURL, f"https://github.com/{purl.namespace}/{purl.name}")
+        return (Declared.PURL, f"https://github.com/{purl.name}")
+
+    if purl.type == "bitbucket" and purl.name:
+        if purl.namespace:
+            return (
+                Declared.PURL,
+                f"https://bitbucket.org/{purl.namespace}/{purl.name}",
+            )
+        return (Declared.PURL, f"https://bitbucket.org/{purl.name}")
+
+    return None
+
+
+def extract_declared_repo(comp: Component) -> tuple[Declared, str] | None:
+    declared = None
+    declared = extract_repo_from_purl(comp.purl)
+
+    if declared is None and comp.external_ref is not None:
+        declared = (Declared.EXTERNAL, comp.external_ref)
+
+    return declared
+
+
 def resolve(sbom: ParsedSBOM) -> Resolved:
     node_dict = {}
     edges = build_edges(sbom)
@@ -72,6 +113,7 @@ def resolve(sbom: ParsedSBOM) -> Resolved:
         root = sbom.root_comp
         depth, via = bfs_from_root(root.bom_ref, edges)
         root_ref = root.bom_ref
+        declared_root = extract_declared_repo(root)
 
         node_dict[root.bom_ref] = Node(
             ref=root.bom_ref,
@@ -81,10 +123,11 @@ def resolve(sbom: ParsedSBOM) -> Resolved:
             is_root=True,
             depth=depth[root.bom_ref],
             via=None,
-            declared_repo=root.external_ref,
+            declared_repo=declared_root,
         )
 
     for comp in sbom.comp_list:
+        declared = extract_declared_repo(comp)
         node = Node(
             ref=comp.bom_ref,
             purl=comp.purl,
@@ -93,7 +136,7 @@ def resolve(sbom: ParsedSBOM) -> Resolved:
             is_root=(comp.bom_ref == root_ref),
             depth=depth.get(comp.bom_ref),
             via=via.get(comp.bom_ref),
-            declared_repo=comp.external_ref,
+            declared_repo=declared,
         )
 
         node_dict[comp.bom_ref] = node

@@ -1,0 +1,108 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.5.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "bom-ref": "root-app",
+      "type": "application",
+      "name": "enterprise-gateway",
+      "version": "2.4.0",
+      "purl": "pkg:generic/enterprise-gateway@2.4.0",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/my-enterprise/gateway.git"
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "dep-npm",
+      "type": "library",
+      "name": "lodash",
+      "version": "4.17.21",
+      "purl": "pkg:npm/lodash@4.17.21"
+    },
+    {
+      "bom-ref": "dep-cargo",
+      "type": "library",
+      "name": "serde",
+      "version": "1.0.197",
+      "purl": "pkg:cargo/serde@1.0.197"
+    },
+    {
+      "bom-ref": "dep-vcs-url",
+      "type": "library",
+      "name": "custom-auth-helper",
+      "version": "1.2.0",
+      "purl": "pkg:generic/custom-auth-helper@1.2.0?vcs_url=https://github.com/security-team/auth-helper"
+    },
+    {
+      "bom-ref": "dep-external-ref",
+      "type": "library",
+      "name": "legacy-db-connector",
+      "version": "0.9.4",
+      "purl": "pkg:generic/legacy-db-connector@0.9.4",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://gitlab.com/internal-corp/legacy-db-connector.git"
+        }
+      ]
+    },
+    {
+      "bom-ref": "dep-purl-github",
+      "type": "library",
+      "name": "toolkit",
+      "version": "0.4.0",
+      "purl": "pkg:github/actions/toolkit@0.4.0"
+    },
+    {
+      "bom-ref": "dep-purl-bitbucket",
+      "type": "library",
+      "name": "aui",
+      "version": "9.4.0",
+      "purl": "pkg:bitbucket/atlassian/aui@9.4.0"
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "root-app",
+      "dependsOn": [
+        "dep-npm",
+        "dep-cargo",
+        "dep-vcs-url",
+        "dep-external-ref",
+        "dep-purl-github",
+        "dep-purl-bitbucket"
+      ]
+    },
+    {
+      "ref": "dep-npm",
+      "dependsOn": []
+    },
+    {
+      "ref": "dep-cargo",
+      "dependsOn": []
+    },
+    {
+      "ref": "dep-vcs-url",
+      "dependsOn": []
+    },
+    {
+      "ref": "dep-external-ref",
+      "dependsOn": []
+    },
+    {
+      "ref": "dep-purl-github",
+      "dependsOn": []
+    },
+    {
+      "ref": "dep-purl-bitbucket",
+      "dependsOn": []
+    }
+  ]
+}

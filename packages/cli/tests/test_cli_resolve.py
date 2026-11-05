@@ -24,7 +24,9 @@ class FakeSource:
         None,
     ],
 )
-def test_resolve_component_never_consults_sources_for_root(declared_repo: str) -> None:
+def test_resolve_component_never_consults_sources_for_root(
+    declared_repo: tuple[resolve.Declared, str] | None,
+) -> None:
     fake_source = FakeSource()
 
     root_node = resolve.Node(

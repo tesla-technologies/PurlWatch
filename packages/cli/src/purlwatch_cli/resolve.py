@@ -153,9 +153,13 @@ def resolve_component(
         ):
             raw_repo = component.declared_repo
             if raw_repo:
-                repo_url = mapping.normalize_url(raw_repo)
+                repo_from = raw_repo[0]
+                repo_url = mapping.normalize_url(raw_repo[1])
                 if repo_url:
-                    candidates.append(("sbom", repo_url))
+                    if repo_from == resolve.Declared.EXTERNAL:
+                        candidates.append(("sbom", repo_url))
+                    if repo_from in (resolve.Declared.VCS_URL, resolve.Declared.PURL):
+                        candidates.append(("purl", repo_url))
 
             note = "Note: Repository only path"
         elif component.is_root or component.route == resolve.Route.UNSUPPORTED:
