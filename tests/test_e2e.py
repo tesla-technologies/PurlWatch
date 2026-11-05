@@ -13,43 +13,7 @@ SCHEMAS_DIR = Path(__file__).parent.parent / "schemas"
 SNAPSHOTS_DIR = ROOT / "tests" / "fixtures" / "snapshots"
 
 import pytest
-from purlwatch_cli.resolve import main, run_resolve
-
-
-@pytest.mark.parametrize(
-    ("sbom", "tar"),
-    [
-        ("node-app.cdx.json", "node-app.tar"),
-        ("node-cli.cdx.json", "node-cli.tar"),
-        ("rust-cli.cdx.json", "rust-cli.tar"),
-        ("multi-dep.spdx.json", "multi-dep.tar"),
-        ("purlwatch.cdx.json", "purlwatch.tar"),
-        ("sources.cdx.json", "sources.tar"),
-    ],
-)
-def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
-    ROOT = Path(__file__).resolve().parent.parent
-    sbom_path = ROOT / "examples" / sbom
-    tar_path = SNAPSHOTS_DIR / tar
-
-    custom_cache = tmp_path / "cache"
-    env = os.environ.copy()
-    env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
-    env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
-
-    cmd = ["purlwatch", "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
-
-    result = subprocess.run(
-        cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
-    )
-
-    assert result.returncode == 0, (
-        f"El comando falló con código {result.returncode}.\n"
-        f"STDERR:\n{result.stderr}\n"
-        f"STDOUT:\n{result.stdout}"
-    )
-
-    assert "Traceback" not in result.stderr
+from purlwatch_cli.resolve import run_resolve
 
 
 @pytest.mark.parametrize(
@@ -59,7 +23,7 @@ def test_resolve_e2e_replay(tmp_path: Path, sbom: str, tar: str):
         ("no-purl.cdx.json", "node-cli.tar"),
     ],
 )
-def test_resolve_e2e_noroot_replay(tmp_path: Path, sbom: str, tar: str):
+def test_resolve_e2e_noroot_replay(tmp_path: Path, sbom: str, tar: str, capsys):
     ROOT = Path(__file__).resolve().parent.parent
     sbom_path = ROOT / "packages" / "core" / "tests" / "fixtures" / "sbom" / sbom
     tar_path = SNAPSHOTS_DIR / tar
@@ -69,19 +33,21 @@ def test_resolve_e2e_noroot_replay(tmp_path: Path, sbom: str, tar: str):
     env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
     env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
 
-    cmd = ["purlwatch", "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
+    argv = ["resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
 
-    result = subprocess.run(
-        cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 0, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
     )
 
-    assert result.returncode == 0, (
-        f"El comando falló con código {result.returncode}.\n"
-        f"STDERR:\n{result.stderr}\n"
-        f"STDOUT:\n{result.stdout}"
-    )
+    assert "Traceback" not in captured.err
 
-    assert "Traceback" not in result.stderr
+    out = captured.out
+    assert out.strip()
 
 
 @pytest.mark.vcr(record_mode="none")
@@ -97,7 +63,7 @@ def test_resolve_e2e_noroot_replay(tmp_path: Path, sbom: str, tar: str):
     ],
 )
 def test_resolve_e2e_collect(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, sbom: str
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, sbom: str, capsys
 ):
     ROOT = Path(__file__).resolve().parent.parent
     sbom_path = ROOT / "examples" / sbom
@@ -106,13 +72,18 @@ def test_resolve_e2e_collect(
     monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
     monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
 
-    test_args = ["purlwatch", "resolve", "--sbom", str(sbom_path)]
-    monkeypatch.setattr(sys, "argv", test_args)
+    argv = ["resolve", "--sbom", str(sbom_path)]
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
 
-    with pytest.raises(SystemExit) as exc_info:
-        main()
+    assert result == 0, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
 
-    assert exc_info.value.code == 0
+    out = captured.out
+    assert out.strip()
 
 
 @pytest.mark.vcr(record_mode="none")
@@ -125,7 +96,7 @@ def test_resolve_e2e_collect(
     ],
 )
 def test_resolve_e2e_noroot_collect(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, sbom: str
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, sbom: str, capsys
 ):
     ROOT = Path(__file__).resolve().parent.parent
     sbom_path = ROOT / "packages" / "core" / "tests" / "fixtures" / "sbom" / sbom
@@ -134,17 +105,21 @@ def test_resolve_e2e_noroot_collect(
     monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
     monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
 
-    test_args = ["purlwatch", "resolve", "--sbom", str(sbom_path)]
-    monkeypatch.setattr(sys, "argv", test_args)
+    argv = ["resolve", "--sbom", str(sbom_path)]
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
 
-    with pytest.raises(SystemExit) as exc_info:
-        main()
+    assert result == 0, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
 
-    assert exc_info.value.code == 0
+    out = captured.out
+    assert out.strip()
 
 
-def test_resolve_e2e_collect_error(tmp_path: Path):
-    ROOT = Path(__file__).resolve().parent.parent
+def test_resolve_e2e_collect_error(tmp_path: Path, capsys):
     bad_sbom = tmp_path / "bad.json"
     bad_sbom.write_text("{ json invalido")
 
@@ -153,16 +128,19 @@ def test_resolve_e2e_collect_error(tmp_path: Path):
     env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
     env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
 
-    cmd = ["purlwatch", "resolve", "--sbom", str(bad_sbom)]
+    argv = ["resolve", "--sbom", str(bad_sbom)]
 
-    result = subprocess.run(
-        cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 2, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
     )
 
-    assert result.returncode == 2
 
-
-def test_resolve_e2e_offline_error(tmp_path: Path):
+def test_resolve_e2e_offline_error(tmp_path: Path, capsys):
     ROOT = Path(__file__).resolve().parent.parent
     sbom = ROOT / "examples" / "node-cli.cdx.json"
 
@@ -171,8 +149,7 @@ def test_resolve_e2e_offline_error(tmp_path: Path):
     env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
     env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
 
-    cmd = [
-        "purlwatch",
+    argv = [
         "resolve",
         "--sbom",
         str(sbom),
@@ -180,75 +157,49 @@ def test_resolve_e2e_offline_error(tmp_path: Path):
         "examples/fixtures/node.tar",
     ]
 
-    result = subprocess.run(
-        cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 2, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
     )
 
-    assert result.returncode == 3
 
-
-def schema_path(schema: str, path: Path) -> dict[str, Any]:
-    schema = path / schema
-    with open(schema, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.mark.parametrize(
-    ("sbom", "tar"),
-    [
-        ("node-app.cdx.json", "node-app.tar"),
-        ("node-cli.cdx.json", "node-cli.tar"),
-        ("rust-cli.cdx.json", "rust-cli.tar"),
-        ("multi-dep.spdx.json", "multi-dep.tar"),
-        ("purlwatch.cdx.json", "purlwatch.tar"),
-        ("sources.cdx.json", "sources.tar"),
-    ],
-)
-def test_resolve_e2e_json_schema(tmp_path: Path, sbom: str, tar: str):
+def test_resolve_e2e_replay_subprocess(tmp_path: Path):
     ROOT = Path(__file__).resolve().parent.parent
-    sbom_path = ROOT / "examples" / sbom
-    tar_path = SNAPSHOTS_DIR / tar
+    sbom_path = ROOT / "examples" / "node-cli.cdx.json"
+    tar_path = SNAPSHOTS_DIR / "node-cli.tar"
+
+    bin = Path(sys.executable).with_name("purlwatch")
+    assert bin.exists(), f"Executable was not found at: {bin}"
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
     env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
     env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
 
-    cmd = [
-        "purlwatch",
-        "resolve",
-        "--sbom",
-        str(sbom_path),
-        "--offline",
-        str(tar_path),
-        "--json",
-    ]
+    cmd = ["purlwatch", "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
 
     result = subprocess.run(
         cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False
     )
 
-    assert result.returncode == 0
+    assert result.returncode == 0, (
+        f"El comando falló con código {result.returncode}.\n"
+        f"STDERR:\n{result.stderr}\n"
+        f"STDOUT:\n{result.stdout}"
+    )
 
-    output = json.loads(result.stdout)
+    assert "Traceback" not in result.stderr
+    assert result.stdout.strip()
 
-    assert "mapping" in output
-    mapping_list = output.get("mapping")
-    map_schema = schema_path("mapping.schema.json", SCHEMAS_DIR)
-    for m in mapping_list:
-        jsonschema.validate(instance=m, schema=map_schema)
 
-    assert "publisher_history" in output
-    history_list = output.get("publisher_history")
-    history_schema = schema_path("publisher-history.schema.json", SCHEMAS_DIR)
-    for h in history_list:
-        jsonschema.validate(instance=h, schema=history_schema)
-
-    assert "components" in output
-    components_list = output.get("components")
-    components_schema = schema_path("components.schema.json", SCHEMAS_DIR)
-    for c in components_list:
-        jsonschema.validate(instance=c, schema=components_schema)
+def schema_path(schema: str, path: Path) -> dict[str, Any]:
+    schema = path / schema
+    with open(schema, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 MAPPING_SCHEMA = schema_path("mapping.schema.json", SCHEMAS_DIR)

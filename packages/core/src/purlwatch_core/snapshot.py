@@ -189,7 +189,7 @@ class SnapshotReader:
         try:
             archive = tarfile.open(tar, "r")  # noqa: SIM115
         except (KeyError, FileNotFoundError) as err:
-            raise ReaderFileNotFoundError(f"File was not found for tar {tar}") from err
+            raise core_exc.InputError(f"File was not found for tar {tar}") from err
         except tarfile.ReadError as err:
             raise core_exc.InputError(f"File {tar} is not a valid tar") from err
 
