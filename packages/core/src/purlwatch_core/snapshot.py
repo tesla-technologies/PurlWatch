@@ -211,7 +211,7 @@ class SnapshotReader:
             self._index = {entry["path"]: entry for entry in index_list}
 
             self.tar: tarfile.TarFile = archive
-        except (KeyError, FileNotFoundError):
+        except (KeyError, FileNotFoundError, json.JSONDecodeError):
             archive.close()
             raise core_exc.InputError(f"File was not found for tar {tar}")
 
@@ -232,10 +232,15 @@ class SnapshotReader:
 
         entry = self._index[key]
 
-        body_file = self.tar.extractfile(entry["path"])
+        try:
+            body_file = self.tar.extractfile(entry["path"])
+        except KeyError as err:
+            raise core_exc.InputError(
+                f"File missing in archive for key '{key}': {entry.get('path')}"
+            ) from err
+
         if body_file is None:
             raise core_exc.InputError(f"File missing in archive for key: {key}")
-
         body = body_file.read()
 
         if hashlib.sha256(body).hexdigest() != entry["sha256"]:
