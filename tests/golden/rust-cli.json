@@ -31,6 +31,16 @@
  ],
  "mapping":[
   {
+   "confidence":"none",
+   "forge":"unknown",
+   "observed_at":null,
+   "purl":"pkg:cargo/mini-rust-cli",
+   "release":"0.1.0",
+   "repository":null,
+   "sources":[],
+   "sources_agreeing":0
+  },
+  {
    "confidence":"high",
    "forge":"github",
    "observed_at":"2026-01-01T12:00:00+00:00",

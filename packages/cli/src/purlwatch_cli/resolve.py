@@ -165,9 +165,9 @@ def resolve_component(
             component.is_root and component.declared_repo
         ):
             raw_repo = component.declared_repo
-            if raw_repo:
-                repo_from = raw_repo[0]
-                repo_url = mapping.normalize_url(raw_repo[1])
+            for repo in raw_repo:
+                repo_from = repo[0]
+                repo_url = mapping.normalize_url(repo[1])
                 if repo_url:
                     if repo_from == resolve.Declared.EXTERNAL:
                         candidates.append(("sbom", repo_url))

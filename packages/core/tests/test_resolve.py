@@ -210,7 +210,7 @@ def test_spdx_noroot_sbom() -> None:
                 is_root=False,
                 depth=None,
                 via=None,
-                declared_repo=None,
+                declared_repo=[],
             ),
             "SPDXRef-fromDoap-1": resolve.Node(
                 ref="SPDXRef-fromDoap-1",
@@ -220,7 +220,7 @@ def test_spdx_noroot_sbom() -> None:
                 is_root=False,
                 depth=None,
                 via=None,
-                declared_repo=None,
+                declared_repo=[],
             ),
             "SPDXRef-fromDoap-0": resolve.Node(
                 ref="SPDXRef-fromDoap-0",
@@ -230,7 +230,7 @@ def test_spdx_noroot_sbom() -> None:
                 is_root=False,
                 depth=None,
                 via=None,
-                declared_repo=None,
+                declared_repo=[],
             ),
             "SPDXRef-Saxon": resolve.Node(
                 ref="SPDXRef-Saxon",
@@ -240,7 +240,7 @@ def test_spdx_noroot_sbom() -> None:
                 is_root=False,
                 depth=None,
                 via=None,
-                declared_repo=None,
+                declared_repo=[],
             ),
         },
         edges={

@@ -29,7 +29,7 @@ class Node:
     is_root: bool
     depth: int | None
     via: str | None
-    declared_repo: tuple[Declared, str] | None
+    declared_repo: list[tuple[Declared, str]]
 
 
 @dataclass(frozen=True)
@@ -73,39 +73,45 @@ def get_node_route(purl: str | None) -> Route:
         return Route.UNSUPPORTED
 
 
-def extract_repo_from_purl(purl_str: str | None) -> tuple[Declared, str] | None:
+def extract_repo_from_purl(purl_str: str | None) -> list[tuple[Declared, str]]:
     if not purl_str:
-        return None
+        return []
 
     purl = PackageURL.from_string(purl_str)
-
-    if purl.qualifiers and "vcs_url" in purl.qualifiers:
-        return (Declared.VCS_URL, purl.qualifiers["vcs_url"])
+    declared_list = []
 
     if purl.type == "github" and purl.name:
         if purl.namespace:
-            return (Declared.PURL, f"https://github.com/{purl.namespace}/{purl.name}")
-        return (Declared.PURL, f"https://github.com/{purl.name}")
+            declared_list.append(
+                (Declared.PURL, f"https://github.com/{purl.namespace}/{purl.name}")
+            )
+        else:
+            declared_list.append((Declared.PURL, f"https://github.com/{purl.name}"))
 
     if purl.type == "bitbucket" and purl.name:
         if purl.namespace:
-            return (
-                Declared.PURL,
-                f"https://bitbucket.org/{purl.namespace}/{purl.name}",
+            declared_list.append(
+                (Declared.PURL, f"https://bitbucket.org/{purl.namespace}/{purl.name}"),
             )
-        return (Declared.PURL, f"https://bitbucket.org/{purl.name}")
+        else:
+            declared_list.append((Declared.PURL, f"https://bitbucket.org/{purl.name}"))
 
-    return None
+    vcs_url = purl.qualifiers.get("vcs_url") if purl.qualifiers else None
+    if vcs_url and (not declared_list or declared_list[0][1] == vcs_url):
+        declared_list.append((Declared.VCS_URL, vcs_url))
+
+    return declared_list
 
 
-def extract_declared_repo(comp: Component) -> tuple[Declared, str] | None:
-    declared = None
-    declared = extract_repo_from_purl(comp.purl)
+def extract_declared_repo(comp: Component) -> list[tuple[Declared, str]]:
+    declared_list = extract_repo_from_purl(comp.purl)
 
-    if declared is None and comp.external_ref is not None:
-        declared = (Declared.EXTERNAL, comp.external_ref)
+    if comp.external_ref is not None and (
+        not declared_list or declared_list[0][1] == comp.external_ref
+    ):
+        declared_list.append((Declared.EXTERNAL, comp.external_ref))
 
-    return declared
+    return declared_list
 
 
 def resolve(sbom: ParsedSBOM) -> Resolved:

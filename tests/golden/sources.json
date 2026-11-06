@@ -36,6 +36,13 @@
    "via":"root-app"
   },
   {
+   "depth":null,
+   "purl":"pkg:github/owner/repo@1.0.0?vcs_url=https://github.com/owner/repo",
+   "ref":"pkg:github/owner/repo@1.0.0?vcs_url=https://github.com/owner/repo",
+   "route":"repository",
+   "via":null
+  },
+  {
    "depth":1,
    "purl":"pkg:cargo/serde@1.0.197",
    "ref":"dep-cargo",
@@ -118,6 +125,19 @@
     "registry"
    ],
    "sources_agreeing":2
+  },
+  {
+   "confidence":"high",
+   "forge":"github",
+   "observed_at":null,
+   "purl":"pkg:github/owner/repo",
+   "release":"0.1.0",
+   "repository":"https://github.com/owner/repo",
+   "sources":[
+    "purl",
+    "sbom"
+   ],
+   "sources_agreeing":3
   },
   {
    "confidence":"high",

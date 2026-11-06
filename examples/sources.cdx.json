@@ -72,6 +72,19 @@
       "name": "standalone-tool",
       "version": "1.0.0",
       "purl": "pkg:generic/standalone-tool@1.0.0"
+    },
+    {
+      "bom-ref": "pkg:github/owner/repo@1.0.0?vcs_url=https://github.com/owner/repo",
+      "type": "library",
+      "name": "repo",
+      "version": "1.0.0",
+      "purl": "pkg:github/owner/repo@1.0.0?vcs_url=https://github.com/owner/repo",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/owner/repo"
+        }
+      ]
     }
   ],
   "dependencies": [
