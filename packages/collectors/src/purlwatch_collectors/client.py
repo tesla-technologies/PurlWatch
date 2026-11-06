@@ -1,5 +1,4 @@
 import time
-from typing import Any
 
 import httpx
 
@@ -9,15 +8,14 @@ HOST_DELAYS = {"crates.io": 1, "registry.npmjs.org": 0.5, "packages.ecosyste.ms"
 class PurlwatchTransport(httpx.BaseTransport):
     def __init__(
         self,
-        inner: httpx.HTTPTransport | httpx.MockTransport,
+        inner: httpx.BaseTransport,
         min_host_delay: float = 0.5,
-        **kwargs: Any,
     ) -> None:
         self._cache: dict[str, httpx.Response] = {}
         self._last_request_time: dict[str, float] = {}
         self.min_host_delay = min_host_delay
         self._inner = inner
-        super().__init__(**kwargs)
+        super().__init__()
 
     def handle_request(self, request: httpx.Request) -> httpx.Response:
         url_key = str(request.url)

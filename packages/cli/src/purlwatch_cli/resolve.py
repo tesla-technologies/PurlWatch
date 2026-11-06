@@ -21,13 +21,13 @@ def main() -> None:
 
 
 def create_http_client(
-    inner: httpx.HTTPTransport | httpx.MockTransport | None = None,
+    inner: httpx.BaseTransport | None = None,
 ) -> httpx.Client:
     if inner is None:
         inner = httpx.HTTPTransport()
     return httpx.Client(
         headers={
-            "User-Agent": f"purlwatch/{RELEASE_V} (https://github.com/tesla-technologies/purlwatch)"
+            "User-Agent": f"purlwatch/{version('purlwatch_cli')} (https://github.com/tesla-technologies/purlwatch)"
         },
         transport=client.PurlwatchTransport(inner=inner, min_host_delay=0.5),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
