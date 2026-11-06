@@ -16,7 +16,7 @@ SNAPSHOTS_DIR = ROOT / "tests" / "fixtures" / "snapshots"
 
 import pytest
 from purlwatch_cli import resolve
-from purlwatch_cli.resolve import create_http_client, run_resolve
+from purlwatch_cli.resolve import run_resolve
 from purlwatch_core import snapshot
 
 
@@ -440,24 +440,58 @@ def test_replay_matches_golden(
 
 
 @pytest.mark.parametrize(
-    ("scenario", "exit_code"),
+    ("scenario", "exit_code", "expected_attempts", "expected_sleeps"),
     [
-        ("503_persistent", 4),
-        ("429_then_200", 0),
-        ("connect_error", 4),
+        ("503_persistent", 4, 4, [1.0, 2.0, 4.0]),
+        ("429_then_200", 0, 4, [1.0, 1.0]),
+        ("connect_error", 4, 4, None),
     ],
 )
 def test_resolve_e2e_online_errors(
-    scenario: str, exit_code: int, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    scenario: str,
+    exit_code: int,
+    expected_attempts: int,
+    expected_sleeps: list[float] | None,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     custom_cache = tmp_path / "cache"
     monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
     monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
 
+    sbom_path = tmp_path / "test.cdx.json"
+    sbom_path.write_text(
+        json.dumps(
+            {
+                "$schema": "http://cyclonedx.org/schema/bom-1.5.json",
+                "bomFormat": "CycloneDX",
+                "specVersion": "1.5",
+                "metadata": {
+                    "component": {
+                        "name": "app",
+                        "type": "application",
+                        "version": "1.0",
+                    }
+                },
+                "components": [
+                    {
+                        "name": "mock-pkg",
+                        "type": "library",
+                        "version": "1.0.0",
+                        "purl": "pkg:npm/mock-pkg@1.0.0",
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
     current_time = 1000.0
+    sleep_calls: list[float] = []
 
     def fake_sleep(seconds: float) -> None:
         nonlocal current_time
+        sleep_calls.append(float(seconds))
         current_time += seconds
 
     def fake_monotonic() -> float:
@@ -475,13 +509,17 @@ def test_resolve_e2e_online_errors(
         attempts += 1
 
         if scenario == "503_persistent":
-            return httpx.Response(503, request=request)
+            return httpx.Response(
+                503,
+                headers={"Retry-After": "1"},
+                request=request,
+            )
 
         if scenario == "connect_error":
             raise httpx.ConnectError("Network unreachable", request=request)
 
         if scenario == "429_then_200":
-            if attempts == 1:
+            if attempts < 3:
                 return httpx.Response(
                     429,
                     headers={"Retry-After": "1"},
@@ -501,12 +539,19 @@ def test_resolve_e2e_online_errors(
 
         raise ValueError(f"Not defined scenario: {scenario}")
 
+    real_create_http_client = resolve.create_http_client
+
     def fake_create_http_client(*args, **kwargs):
-        return create_http_client(inner=httpx.MockTransport(handler))
+        kwargs["inner"] = httpx.MockTransport(handler)
+        return real_create_http_client(*args, **kwargs)
 
     monkeypatch.setattr(resolve, "create_http_client", fake_create_http_client)
 
-    argv = ["resolve", "--sbom", str(ROOT / "examples" / "node-cli.cdx.json")]
+    argv = ["resolve", "--sbom", str(sbom_path)]
     result = run_resolve(argv)
 
     assert result == exit_code
+    assert attempts == expected_attempts
+
+    if expected_sleeps is not None:
+        assert sleep_calls == expected_sleeps
