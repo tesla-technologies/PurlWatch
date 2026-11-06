@@ -13,7 +13,7 @@ uv run pytest tests/<specific_test>.py      # Run a specific test
 ## e2e tests
 These tests run the full **replay** and **collect** flows for the `purlwatch resolve` command. 
 
-**Replay** flows require an SBOM and a compatible snapshot (a `.tar` file with the matching packages and resolution). The tests use the SBOMs from the `examples/` directory and the snapshots from `tests/fixtures/`. If the collector logic or the snapshot format changes, SBOM resolution will change, making existing snapshots incompatible.
+**Replay** flows require an SBOM and a compatible snapshot (a `.tar` file with the matching packages and resolution). The tests use the SBOMs from the `examples/` directory and the snapshots from `tests/fixtures/snapshots`. If the collector logic or the snapshot format changes, SBOM resolution will change, making existing snapshots incompatible.
 
 **Collect** flows perform network requests, so the test suite uses the `pytest-recording` library to avoid hitting external registries on every run. The library records cassettes containing each HTTP request and its corresponding response, which are then replayed offline during test execution. Whenever the collector logic changes, outgoing requests change as well, rendering existing cassettes incompatible.
 
