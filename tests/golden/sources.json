@@ -3,42 +3,56 @@
   {
    "depth":0,
    "purl":"pkg:generic/enterprise-gateway@2.4.0",
+   "ref":"root-app",
    "route":"repository",
    "via":null
   },
   {
    "depth":1,
    "purl":"pkg:bitbucket/atlassian/aui@9.4.0",
+   "ref":"dep-purl-bitbucket",
    "route":"repository",
    "via":"root-app"
   },
   {
    "depth":1,
    "purl":"pkg:generic/custom-auth-helper@1.2.0?vcs_url=https://github.com/security-team/auth-helper",
+   "ref":"dep-vcs-url",
    "route":"repository",
    "via":"root-app"
   },
   {
    "depth":1,
    "purl":"pkg:generic/legacy-db-connector@0.9.4",
+   "ref":"dep-external-ref",
    "route":"repository",
    "via":"root-app"
   },
   {
    "depth":1,
    "purl":"pkg:npm/lodash@4.17.21",
+   "ref":"dep-npm",
    "route":"registry",
    "via":"root-app"
   },
   {
    "depth":1,
    "purl":"pkg:cargo/serde@1.0.197",
+   "ref":"dep-cargo",
    "route":"registry",
    "via":"root-app"
   },
   {
+   "depth":null,
+   "purl":"pkg:generic/standalone-tool@1.0.0",
+   "ref":"standalone-tool_ref",
+   "route":"repository",
+   "via":null
+  },
+  {
    "depth":1,
    "purl":"pkg:github/actions/toolkit@0.4.0",
+   "ref":"dep-purl-github",
    "route":"repository",
    "via":"root-app"
   }
@@ -72,7 +86,7 @@
    "confidence":"medium",
    "forge":"github",
    "observed_at":null,
-   "purl":"pkg:generic/custom-auth-helper?vcs_url=https://github.com/security-team/auth-helper",
+   "purl":"pkg:generic/custom-auth-helper",
    "release":"0.1.0",
    "repository":"https://github.com/security-team/auth-helper",
    "sources":[
@@ -117,6 +131,16 @@
     "registry"
    ],
    "sources_agreeing":2
+  },
+  {
+   "confidence":"none",
+   "forge":"unknown",
+   "observed_at":null,
+   "purl":"pkg:generic/standalone-tool",
+   "release":"0.1.0",
+   "repository":null,
+   "sources":[],
+   "sources_agreeing":0
   },
   {
    "confidence":"medium",

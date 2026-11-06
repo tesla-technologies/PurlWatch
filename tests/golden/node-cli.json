@@ -3,12 +3,14 @@
   {
    "depth":0,
    "purl":"pkg:npm/cli@1.0.0",
+   "ref":"cli@1.0.0",
    "route":"registry",
    "via":null
   },
   {
    "depth":1,
    "purl":"pkg:npm/commander@15.0.0",
+   "ref":"cli@1.0.0|commander@15.0.0",
    "route":"registry",
    "via":"cli@1.0.0"
   }

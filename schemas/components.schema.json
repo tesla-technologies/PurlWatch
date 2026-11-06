@@ -5,15 +5,19 @@
     "description": "One row per package, without version, per release",
     "type": "object",
     "additionalProperties": false,
-    "required": ["purl", "depth", "via", "route"],
+    "required": ["ref", "purl", "depth", "via", "route"],
     "properties": {
+        "ref": {
+            "description": "The Package reference",
+            "type": ["string"]
+        },
         "purl": {
             "description": "The Package URL without version",
             "type": ["string", "null"],
             "pattern": "^pkg:[a-z]+/."
         },
         "depth": {
-            "description": "The dependendy depth",
+            "description": "The dependency depth",
             "type": ["integer", "null"]
         },
         "via": {
@@ -21,7 +25,7 @@
             "type": ["string", "null"]
         },
         "route": {
-            "description": "Possible forges",
+            "description": "Route the Package followed to be resolved",
             "type": "string",
             "enum": ["registry", "repository", "unsupported", "no_purl"]
         }
