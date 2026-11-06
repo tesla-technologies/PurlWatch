@@ -154,7 +154,6 @@ def test_resolve_e2e_offline_error(
     sbom = ROOT / "examples" / "node-cli.cdx.json"
 
     custom_cache = tmp_path / "cache"
-    custom_cache = tmp_path / "cache"
     monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
     monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
 
@@ -176,8 +175,108 @@ def test_resolve_e2e_offline_error(
     )
 
 
+def test_resolve_e2e_missing_hash_key(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom = ROOT / "examples" / "node-cli.cdx.json"
+
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    argv = [
+        "resolve",
+        "--sbom",
+        str(sbom),
+        "--offline",
+        "examples/fixtures/snapshots/node-cli.tar",
+    ]
+
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 2, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
+
+
+def test_resolve_e2e_wrong_version(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom = (
+        ROOT
+        / "packages"
+        / "core"
+        / "tests"
+        / "fixtures"
+        / "sbom"
+        / "wrong-version.cdx.json"
+    )
+
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    argv = ["resolve", "--sbom", str(sbom)]
+
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 2, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
+
+
+def test_resolve_e2e_unreadable_purl(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom = ROOT / "tests" / "fixtures" / "unreadable-sbom.json"
+
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    argv = ["resolve", "--sbom", str(sbom)]
+
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 2, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
+
+
+def test_resolve_e2e_no_sbom(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom = ROOT / "tests" / "fixtures" / "no_sbom.json"
+
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    argv = ["resolve", "--sbom", str(sbom)]
+
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 2, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
+
+
 def test_resolve_e2e_offline_key_missing(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
 ):
     custom_cache = tmp_path / "cache"
     monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
@@ -244,11 +343,17 @@ def test_resolve_e2e_offline_key_missing(
         "--sbom",
         str(sbom),
         "--offline",
-        "examples/fixtures/node.tar",
+        str(tar_path),
     ]
 
     result = run_resolve(argv)
-    assert result == 3
+    captured = capsys.readouterr()
+
+    assert result == 3, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
 
 
 def test_resolve_e2e_replay_subprocess(tmp_path: Path):
