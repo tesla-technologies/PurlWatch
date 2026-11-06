@@ -20,6 +20,22 @@ from purlwatch_cli.resolve import run_resolve
 from purlwatch_core import snapshot
 
 
+@pytest.fixture
+def time_patcher(monkeypatch: pytest.MonkeyPatch):
+    virtual_time = 1000.0
+
+    def fake_sleep(seconds: float) -> None:
+        nonlocal virtual_time
+        virtual_time += max(0.0, float(seconds))
+
+    def fake_monotonic() -> float:
+        nonlocal virtual_time
+        return virtual_time
+
+    monkeypatch.setattr("time.sleep", fake_sleep)
+    monkeypatch.setattr("time.monotonic", fake_monotonic)
+
+
 @pytest.mark.parametrize(
     ("sbom", "tar"),
     [
@@ -55,6 +71,7 @@ def test_resolve_e2e_noroot_replay(
     assert out.strip()
 
 
+@pytest.mark.usefixtures("time_patcher")
 @pytest.mark.vcr(record_mode="none")
 @pytest.mark.parametrize(
     "sbom",
@@ -91,6 +108,7 @@ def test_resolve_e2e_collect(
     assert out.strip()
 
 
+@pytest.mark.usefixtures("time_patcher")
 @pytest.mark.vcr(record_mode="none")
 @pytest.mark.parametrize(
     "sbom",
