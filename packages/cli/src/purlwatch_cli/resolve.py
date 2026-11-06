@@ -35,9 +35,7 @@ def create_http_client(
     )
 
 
-def format_output_human(
-    map_list: list[Any],
-) -> None:
+def format_output_human(map_list: list[Any], nodes: dict[str, resolve.Node]) -> None:
     for m in map_list:
         mapp = m[0]
         his = m[1]
@@ -55,14 +53,6 @@ def format_output_human(
             print(f"Sources: {', '.join(mapp.sources)}")
             print(f"Forge: {mapp.forge.value}")
 
-        print("\nResolved components:")
-        print(f"Purl: {comp.purl}")
-        print(
-            f"Depth: {comp.depth}{'. [WARN] Unreachable component' if comp.depth is None else ''}"
-        )
-        print(f"Via: {comp.via}")
-        print(f"Route: {comp.route.value}")
-
         if m[3]:
             print(m[3])
 
@@ -79,9 +69,18 @@ def format_output_human(
                 f"Version: {v[0]} | Date: {v[1].published_at} | Publisher hid: {pub_hid if pub_hid else ''} | Publisher kind: {v[1].publisher_kind.value} | Maintainers hids: {', '.join(man_hid_list)}"
             )
 
+    print("\nComponents:")
+    for node in nodes.values():
+        print(
+            f"Purl: {node.purl} | Depth: {node.depth}{'. [WARN] Unreachable component' if node.depth is None else ''} | Via: {node.via} | Route: {node.route.value}"
+        )
+
 
 def format_output_json(
-    map_list: list[Any], manifest: dict[str, Any], snapshot_digest: str
+    map_list: list[Any],
+    manifest: dict[str, Any],
+    snapshot_digest: str,
+    nodes: dict[str, resolve.Node],
 ) -> None:
     manifest["snapshot_digest"] = f"sha256:{snapshot_digest}"
 
@@ -100,16 +99,18 @@ def format_output_json(
         ) and not (comp.is_root and comp.declared_repo is None):
             mapping_list.append(asdict(mapp))
 
-        components_list.append(
-            {
-                "purl": comp.purl,
-                "depth": comp.depth,
-                "via": comp.via,
-                "route": comp.route,
-            }
-        )
         for v in his:
             history_list.append(asdict(v[1]))
+
+    for node in nodes.values():
+        components_list.append(
+            {
+                "purl": node.purl,
+                "depth": node.depth,
+                "via": node.via,
+                "route": node.route.value,
+            }
+        )
 
     final_obj = {
         "run": manifest,
@@ -299,9 +300,9 @@ def run_resolve(argv: list[str] | None = None) -> int:
                 httpx_client.close()
 
         if args.json:
-            format_output_json(map_list, manifest, snapshot_digest)
+            format_output_json(map_list, manifest, snapshot_digest, resolved_sbom.nodes)
         else:
-            format_output_human(map_list)
+            format_output_human(map_list, resolved_sbom.nodes)
 
         if tar_path:
             print(
