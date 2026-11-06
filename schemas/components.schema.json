@@ -2,7 +2,7 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "components",
     "title": "Components Table",
-    "description": "One row per package, without version, per release",
+    "description": "One row per resolved node",
     "type": "object",
     "additionalProperties": false,
     "required": ["ref", "purl", "depth", "via", "route"],
@@ -12,7 +12,7 @@
             "type": ["string"]
         },
         "purl": {
-            "description": "The Package URL without version",
+            "description": "The Package URL",
             "type": ["string", "null"],
             "pattern": "^pkg:[a-z]+/."
         },
@@ -21,7 +21,7 @@
             "type": ["integer", "null"]
         },
         "via": {
-            "description": "",
+            "description": "Provenance chain leading to a transitive dependency",
             "type": ["string", "null"]
         },
         "route": {
