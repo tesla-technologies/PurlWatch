@@ -18,7 +18,7 @@ import purlwatch_core.exceptions as core_exc
 
 
 class ReaderFileNotFoundError(core_exc.OfflineMissError):
-    """Raises when a file it's not found by it's key in a Snapshot"""
+    """Raised when a file is not found by its key in a Snapshot"""
 
 
 @dataclass(frozen=True)
@@ -189,21 +189,21 @@ class SnapshotReader:
         try:
             archive = tarfile.open(tar, "r")  # noqa: SIM115
         except (KeyError, FileNotFoundError) as err:
-            raise ReaderFileNotFoundError(f"File was not found for tar {tar}") from err
+            raise core_exc.InputError(f"File was not found for tar {tar}") from err
         except tarfile.ReadError as err:
             raise core_exc.InputError(f"File {tar} is not a valid tar") from err
 
         try:
             manifest_file = archive.extractfile("manifest.json")
             if not manifest_file:
-                raise ReaderFileNotFoundError(
+                raise core_exc.InputError(
                     f"File manifest.json was not found for tar {tar}"
                 )
             self.manifest = json.load(manifest_file)
 
             index_file = archive.extractfile("index.json")
             if not index_file:
-                raise ReaderFileNotFoundError(
+                raise core_exc.InputError(
                     f"File index.json was not found for tar {tar}"
                 )
             index_list = json.load(index_file)
@@ -211,9 +211,9 @@ class SnapshotReader:
             self._index = {entry["path"]: entry for entry in index_list}
 
             self.tar: tarfile.TarFile = archive
-        except (KeyError, FileNotFoundError):
+        except (KeyError, FileNotFoundError, json.JSONDecodeError):
             archive.close()
-            raise ReaderFileNotFoundError(f"File was not found for tar {tar}")
+            raise core_exc.InputError(f"File was not found for tar {tar}")
 
     def __enter__(self) -> Self:
         return self
@@ -232,10 +232,15 @@ class SnapshotReader:
 
         entry = self._index[key]
 
-        body_file = self.tar.extractfile(entry["path"])
-        if body_file is None:
-            raise ReaderFileNotFoundError(f"File missing in archive for key: {key}")
+        try:
+            body_file = self.tar.extractfile(entry["path"])
+        except KeyError as err:
+            raise core_exc.InputError(
+                f"File missing in archive for key '{key}': {entry.get('path')}"
+            ) from err
 
+        if body_file is None:
+            raise core_exc.InputError(f"File missing in archive for key: {key}")
         body = body_file.read()
 
         if hashlib.sha256(body).hexdigest() != entry["sha256"]:

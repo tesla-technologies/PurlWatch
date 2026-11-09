@@ -1,17 +1,21 @@
 import time
-from typing import Any
 
 import httpx
 
 HOST_DELAYS = {"crates.io": 1, "registry.npmjs.org": 0.5, "packages.ecosyste.ms": 0.5}
 
 
-class PurlwatchTransport(httpx.HTTPTransport):
-    def __init__(self, min_host_delay: float = 0.5, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
+class PurlwatchTransport(httpx.BaseTransport):
+    def __init__(
+        self,
+        inner: httpx.BaseTransport,
+        min_host_delay: float = 0.5,
+    ) -> None:
         self._cache: dict[str, httpx.Response] = {}
         self._last_request_time: dict[str, float] = {}
         self.min_host_delay = min_host_delay
+        self._inner = inner
+        super().__init__()
 
     def handle_request(self, request: httpx.Request) -> httpx.Response:
         url_key = str(request.url)
@@ -29,7 +33,7 @@ class PurlwatchTransport(httpx.HTTPTransport):
 
             try:
                 self._last_request_time[host] = time.monotonic()
-                response = super().handle_request(request)
+                response = self._inner.handle_request(request)
 
                 if response.status_code in {429, 500, 502, 503, 504} and attempt < 3:
                     delay = float(2**attempt)
@@ -61,3 +65,6 @@ class PurlwatchTransport(httpx.HTTPTransport):
                 time.sleep(2**attempt)
 
         return response
+
+    def close(self) -> None:
+        self._inner.close()

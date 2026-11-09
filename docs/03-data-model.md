@@ -84,6 +84,17 @@ One row per package version.
 
 The known limits of the sources are recorded in the rows themselves. On npm the `_npmUser` field is absent before 2014 and reads "GitHub Actions" with a `trustedPublisher` block under trusted publishing. On crates.io `published_by` is null before 2017 and under trusted publishing, and owner removals cannot be reconstructed from the daily dump, which is why owners are flagged as current only.
 
+## The components table
+
+One row per resolved node.
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| purl | string or null | |
+| depth | integer or null | The dependency depth |
+| via | string or null | Provenance chain leading to a transitive dependency |
+| route | enum | registry, repository, unsupported, no_purl |
+
 ## The signals table
 
 One row per package version, signal and release.

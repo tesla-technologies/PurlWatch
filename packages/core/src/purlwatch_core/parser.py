@@ -39,15 +39,15 @@ class ParsedSBOM:
 
 
 class UnsupportedFormatError(core_exc.InputError):
-    """Raised when file format or version it's not supported."""
+    """Raised when file format or version is not supported."""
 
 
 class InvalidStructureError(core_exc.InputError):
-    """Raised when file structure it's not the expected one"""
+    """Raised when file structure is not the expected one"""
 
 
 class SbomNotFoundError(core_exc.InputError):
-    """Raised when sbom it's not added"""
+    """Raised when sbom is not added"""
 
 
 def parse_sbom(sbom: Path) -> ParsedSBOM:
@@ -67,9 +67,9 @@ def parse_sbom(sbom: Path) -> ParsedSBOM:
             else:
                 raise UnsupportedFormatError("SBOM format or version is not supported")
     except (CycloneDxException, KeyError) as err:
-        raise InvalidStructureError(f"File structure it's not valid: {err}")
+        raise InvalidStructureError(f"File structure is not valid: {err}")
     except json.JSONDecodeError as err:
-        raise InvalidStructureError(f"File it's not a valid JSON: {err}")
+        raise InvalidStructureError(f"File is not a valid JSON: {err}")
 
 
 def cyclone_parser(sbom: Path) -> ParsedSBOM:

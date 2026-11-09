@@ -1,0 +1,33 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "components",
+    "title": "Components Table",
+    "description": "One row per resolved node",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["ref", "purl", "depth", "via", "route"],
+    "properties": {
+        "ref": {
+            "description": "The Package reference",
+            "type": ["string"]
+        },
+        "purl": {
+            "description": "The Package URL",
+            "type": ["string", "null"],
+            "pattern": "^pkg:[a-z]+/."
+        },
+        "depth": {
+            "description": "The dependency depth",
+            "type": ["integer", "null"]
+        },
+        "via": {
+            "description": "Provenance chain leading to a transitive dependency",
+            "type": ["string", "null"]
+        },
+        "route": {
+            "description": "Route the Package followed to be resolved",
+            "type": "string",
+            "enum": ["registry", "repository", "unsupported", "no_purl"]
+        }
+    }
+}

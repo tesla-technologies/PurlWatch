@@ -4,7 +4,7 @@ from enum import Enum
 
 from packageurl import PackageURL
 
-from purlwatch_core.parser import ParsedSBOM
+from purlwatch_core.parser import Component, ParsedSBOM
 
 
 class Route(str, Enum):
@@ -12,6 +12,12 @@ class Route(str, Enum):
     REPOSITORY_ONLY = "repository"
     UNSUPPORTED = "unsupported"
     NO_PURL = "no_purl"
+
+
+class Declared(str, Enum):
+    EXTERNAL = "external"
+    VCS_URL = "vcs_url"
+    PURL = "purl"
 
 
 @dataclass(frozen=True)
@@ -23,7 +29,7 @@ class Node:
     is_root: bool
     depth: int | None
     via: str | None
-    declared_repo: str | None
+    declared_repo: list[tuple[Declared, str]]
 
 
 @dataclass(frozen=True)
@@ -44,7 +50,13 @@ def get_purl_without_version(purl: str | None) -> str | None:
 
     parsed_purl = PackageURL.from_string(purl)
 
-    return str(parsed_purl._replace(version=None))
+    clean_purl = PackageURL(
+        type=parsed_purl.type,
+        namespace=parsed_purl.namespace,
+        name=parsed_purl.name,
+    )
+
+    return str(clean_purl)
 
 
 def get_node_route(purl: str | None) -> Route:
@@ -61,6 +73,47 @@ def get_node_route(purl: str | None) -> Route:
         return Route.UNSUPPORTED
 
 
+def extract_repo_from_purl(purl_str: str | None) -> list[tuple[Declared, str]]:
+    if not purl_str:
+        return []
+
+    purl = PackageURL.from_string(purl_str)
+    declared_list = []
+
+    if purl.type == "github" and purl.name:
+        if purl.namespace:
+            declared_list.append(
+                (Declared.PURL, f"https://github.com/{purl.namespace}/{purl.name}")
+            )
+        else:
+            declared_list.append((Declared.PURL, f"https://github.com/{purl.name}"))
+
+    if purl.type == "bitbucket" and purl.name:
+        if purl.namespace:
+            declared_list.append(
+                (Declared.PURL, f"https://bitbucket.org/{purl.namespace}/{purl.name}"),
+            )
+        else:
+            declared_list.append((Declared.PURL, f"https://bitbucket.org/{purl.name}"))
+
+    vcs_url = purl.qualifiers.get("vcs_url") if purl.qualifiers else None
+    if vcs_url and (not declared_list or declared_list[0][1] == vcs_url):
+        declared_list.append((Declared.VCS_URL, vcs_url))
+
+    return declared_list
+
+
+def extract_declared_repo(comp: Component) -> list[tuple[Declared, str]]:
+    declared_list = extract_repo_from_purl(comp.purl)
+
+    if comp.external_ref is not None and (
+        not declared_list or declared_list[0][1] == comp.external_ref
+    ):
+        declared_list.append((Declared.EXTERNAL, comp.external_ref))
+
+    return declared_list
+
+
 def resolve(sbom: ParsedSBOM) -> Resolved:
     node_dict = {}
     edges = build_edges(sbom)
@@ -72,6 +125,7 @@ def resolve(sbom: ParsedSBOM) -> Resolved:
         root = sbom.root_comp
         depth, via = bfs_from_root(root.bom_ref, edges)
         root_ref = root.bom_ref
+        declared_root = extract_declared_repo(root)
 
         node_dict[root.bom_ref] = Node(
             ref=root.bom_ref,
@@ -81,10 +135,11 @@ def resolve(sbom: ParsedSBOM) -> Resolved:
             is_root=True,
             depth=depth[root.bom_ref],
             via=None,
-            declared_repo=root.external_ref,
+            declared_repo=declared_root,
         )
 
     for comp in sbom.comp_list:
+        declared = extract_declared_repo(comp)
         node = Node(
             ref=comp.bom_ref,
             purl=comp.purl,
@@ -93,7 +148,7 @@ def resolve(sbom: ParsedSBOM) -> Resolved:
             is_root=(comp.bom_ref == root_ref),
             depth=depth.get(comp.bom_ref),
             via=via.get(comp.bom_ref),
-            declared_repo=comp.external_ref,
+            declared_repo=declared,
         )
 
         node_dict[comp.bom_ref] = node

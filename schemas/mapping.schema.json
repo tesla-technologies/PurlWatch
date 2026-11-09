@@ -36,7 +36,7 @@
             "description": "Which sources were consulted",
             "type": "array",
             "items": {
-                "enum": ["registry", "ecosystems", "depsdev", "provenance", "sbom"]
+                "enum": ["registry", "ecosystems", "depsdev", "provenance", "sbom", "purl"]
             }
         },
         "observed_at": {

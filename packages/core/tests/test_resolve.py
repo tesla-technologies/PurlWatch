@@ -26,12 +26,12 @@ class DummySBOM:
 
 
 def make_sbom(
-    root: str,
+    root: tuple[str, str | None],
     components: list[tuple[str, str | None]],
     deps: list[tuple[str, str]],
 ) -> parser.ParsedSBOM:
     comp_objects = [DummyComponent(bom_ref=ref, purl=purl) for ref, purl in components]
-    root_obj = next(c for c in comp_objects if c.bom_ref == root)
+    root_obj = DummyComponent(bom_ref=root[0], purl=root[1])
     dep_objects = [DummyDependency(source=src, target=tgt) for src, tgt in deps]
 
     dummy = DummySBOM(
@@ -42,9 +42,8 @@ def make_sbom(
 
 def test_chain_root_a_b() -> None:
     sbom = make_sbom(
-        root="root",
+        root=("root", "pkg:cargo/root-app@0.1.0"),
         components=[
-            ("root", "pkg:cargo/root-app@0.1.0"),
             ("A", "pkg:npm/a@1.0.0"),
             ("B", "pkg:npm/b@1.0.0"),
         ],
@@ -70,9 +69,8 @@ def test_chain_root_a_b() -> None:
 
 def test_chain_resolution() -> None:
     sbom = make_sbom(
-        root="A",
+        root=("A", "pkg:npm/a@1.0.0"),
         components=[
-            ("A", "pkg:npm/a@1.0.0"),
             ("B", "pkg:npm/b@1.0.0"),
             ("C", "pkg:npm/c@1.0.0"),
         ],
@@ -92,9 +90,8 @@ def test_chain_resolution() -> None:
 
 def test_diamond_resolution() -> None:
     sbom = make_sbom(
-        root="A",
+        root=("A", "pkg:npm/a@1.0.0"),
         components=[
-            ("A", "pkg:npm/a@1.0.0"),
             ("B", "pkg:npm/b@1.0.0"),
             ("C", "pkg:npm/c@1.0.0"),
             ("D", "pkg:npm/d@1.0.0"),
@@ -111,9 +108,8 @@ def test_diamond_resolution() -> None:
 
 def test_cycle_resolution() -> None:
     sbom = make_sbom(
-        root="A",
+        root=("A", "pkg:npm/a@1.0.0"),
         components=[
-            ("A", "pkg:npm/a@1.0.0"),
             ("B", "pkg:npm/b@1.0.0"),
             ("C", "pkg:npm/c@1.0.0"),
         ],
@@ -130,9 +126,8 @@ def test_cycle_resolution() -> None:
 
 def test_no_purl_middle_resolution() -> None:
     sbom = make_sbom(
-        root="A",
+        root=("A", "pkg:npm/a@1.0.0"),
         components=[
-            ("A", "pkg:npm/a@1.0.0"),
             ("X", None),
             ("B", "pkg:npm/b@1.0.0"),
         ],
@@ -148,9 +143,8 @@ def test_no_purl_middle_resolution() -> None:
 
 def test_unreachable_node_resolution() -> None:
     sbom = make_sbom(
-        root="A",
+        root=("A", "pkg:npm/a@1.0.0"),
         components=[
-            ("A", "pkg:npm/a@1.0.0"),
             ("B", "pkg:npm/b@1.0.0"),
             ("Z", "pkg:npm/z@1.0.0"),
         ],
@@ -166,9 +160,8 @@ def test_unreachable_node_resolution() -> None:
 
 def test_dual_version_deduplication_key() -> None:
     sbom = make_sbom(
-        root="A",
+        root=("A", "pkg:npm/a@1.0.0"),
         components=[
-            ("A", "pkg:npm/a@1.0.0"),
             ("lodash-v1", "pkg:npm/lodash@4.17.20"),
             ("lodash-v2", "pkg:npm/lodash@4.17.21"),
         ],
@@ -184,9 +177,8 @@ def test_dual_version_deduplication_key() -> None:
 
 def test_root_node_flags() -> None:
     sbom = make_sbom(
-        root="A",
+        root=("A", "pkg:npm/express@4.18.2"),
         components=[
-            ("A", "pkg:npm/express@4.18.2"),
             ("B", "pkg:npm/debug@4.3.4"),
         ],
         deps=[("A", "B")],
@@ -218,7 +210,7 @@ def test_spdx_noroot_sbom() -> None:
                 is_root=False,
                 depth=None,
                 via=None,
-                declared_repo=None,
+                declared_repo=[],
             ),
             "SPDXRef-fromDoap-1": resolve.Node(
                 ref="SPDXRef-fromDoap-1",
@@ -228,7 +220,7 @@ def test_spdx_noroot_sbom() -> None:
                 is_root=False,
                 depth=None,
                 via=None,
-                declared_repo=None,
+                declared_repo=[],
             ),
             "SPDXRef-fromDoap-0": resolve.Node(
                 ref="SPDXRef-fromDoap-0",
@@ -238,7 +230,7 @@ def test_spdx_noroot_sbom() -> None:
                 is_root=False,
                 depth=None,
                 via=None,
-                declared_repo=None,
+                declared_repo=[],
             ),
             "SPDXRef-Saxon": resolve.Node(
                 ref="SPDXRef-Saxon",
@@ -248,7 +240,7 @@ def test_spdx_noroot_sbom() -> None:
                 is_root=False,
                 depth=None,
                 via=None,
-                declared_repo=None,
+                declared_repo=[],
             ),
         },
         edges={
