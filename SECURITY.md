@@ -1,6 +1,6 @@
 # Security policy
 
-Please report security problems privately to the address that will be published here before the first release, encrypting with the OpenPGP key that will be published alongside it if you can. Do not open public issues for security problems, and do not test against third-party infrastructure such as registries, forges or ecosyste.ms on our behalf.
+Please report security problems privately to the address listed in the **Contact address** section below, encrypting with the OpenPGP key that will be published alongside it if you can. Do not open public issues for security problems, and do not test against third-party infrastructure such as registries, forges or ecosyste.ms on our behalf.
 
 We acknowledge reports within five working days and aim to publish a fix or a mitigation within ninety days, in coordination with the reporter, whom we credit unless they prefer otherwise.
 

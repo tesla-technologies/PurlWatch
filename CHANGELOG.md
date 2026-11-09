@@ -35,6 +35,6 @@ Changed name from AuraTrace to PurlWatch, which is available on PyPI, npm, crate
 
 * Resource management & cleanup: Ensured HTTP client instances are closed via context managers, eliminated Publisher hid: None display output, removed unused PackageNotFound exception, and centralized hardcoded version strings.
 
-* Project deliverables & fixtures: Restored the missing repository SBOM (purlwatch.cdx.json), reconciled fixture naming between documentation and examples (node-web-app.cdx.json), finalized test coverage for scripts/record_fixtures.py, and refreshed golden JSON test files.
+* Project deliverables & fixtures: Restored the missing repository SBOM (purlwatch.cdx.json), reconciled fixture naming between documentation and examples (node-app.cdx.json), removed unfinished scripts/record_fixtures.py, and refreshed golden JSON test files.
 
 * Documentation alignment: Updated README.md to describe existing features in the present tense, documented active maintainers, fixed CLI example snippets and heading tags, and added contact information to SECURITY.md.
