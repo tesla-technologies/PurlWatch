@@ -37,10 +37,15 @@ def create_http_client(
 
 
 def format_output_human(map_list: list[Any], nodes: dict[str, resolve.Node]) -> None:
+    has_root = False
     for m in map_list:
         mapp = m[0]
         his = m[1]
         comp = m[2]
+
+        if comp.is_root:
+            has_root = True
+
         print("=" * 80)
         label = "Bom-Ref" if comp.route == resolve.Route.NO_PURL else "Purl"
         print(f"{label}: {mapp.purl}")
@@ -71,9 +76,13 @@ def format_output_human(map_list: list[Any], nodes: dict[str, resolve.Node]) -> 
             )
 
     print("\nComponents:")
+    if not has_root:
+        print(
+            "[WARN] Evaluated SBOM has no root component, depth cannot be calculated\n"
+        )
     for node in nodes.values():
         print(
-            f"Ref: {node.ref} | Purl: {node.purl} | Depth: {node.depth}{'. [WARN] Unreachable component' if node.depth is None else ''} | Via: {node.via} | Route: {node.route.value}"
+            f"Ref: {node.ref} | Purl: {node.purl} | Depth: {node.depth}{'. [WARN] Unreachable component' if (node.depth is None and has_root) else ''} | Via: {node.via} | Route: {node.route.value}"
         )
 
 

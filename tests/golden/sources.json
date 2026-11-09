@@ -36,11 +36,11 @@
    "via":"root-app"
   },
   {
-   "depth":null,
+   "depth":1,
    "purl":"pkg:github/owner/repo@1.0.0?vcs_url=https://github.com/owner/repo",
    "ref":"pkg:github/owner/repo@1.0.0?vcs_url=https://github.com/owner/repo",
    "route":"repository",
-   "via":null
+   "via":"root-app"
   },
   {
    "depth":1,
@@ -50,11 +50,11 @@
    "via":"root-app"
   },
   {
-   "depth":null,
+   "depth":1,
    "purl":"pkg:generic/standalone-tool@1.0.0",
-   "ref":"standalone-tool_ref",
+   "ref":"standalone-tool",
    "route":"repository",
-   "via":null
+   "via":"root-app"
   },
   {
    "depth":1,
