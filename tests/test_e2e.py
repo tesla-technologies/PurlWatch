@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -17,7 +18,6 @@ SNAPSHOTS_DIR = ROOT / "tests" / "fixtures" / "snapshots"
 import pytest
 from purlwatch_cli import resolve
 from purlwatch_cli.resolve import run_resolve
-from purlwatch_core import snapshot
 
 
 @pytest.fixture
@@ -162,6 +162,7 @@ def test_resolve_e2e_collect_error(
         f"STDERR:\n{captured.err}\n"
         f"STDOUT:\n{captured.out}"
     )
+    assert "purlwatch: File is not a valid JSON" in captured.err.strip()
 
 
 def test_resolve_e2e_offline_error(
@@ -190,6 +191,7 @@ def test_resolve_e2e_offline_error(
         f"STDERR:\n{captured.err}\n"
         f"STDOUT:\n{captured.out}"
     )
+    assert "purlwatch: File was not found for tar" in captured.err.strip()
 
 
 def test_resolve_e2e_missing_hash_key(
@@ -207,7 +209,7 @@ def test_resolve_e2e_missing_hash_key(
         "--sbom",
         str(sbom),
         "--offline",
-        "examples/fixtures/snapshots/node-cli.tar",
+        "tests/fixtures/snapshots/node-cli.tar",
     ]
 
     result = run_resolve(argv)
@@ -217,6 +219,10 @@ def test_resolve_e2e_missing_hash_key(
         f"Command failed with exit code: {result}.\n"
         f"STDERR:\n{captured.err}\n"
         f"STDOUT:\n{captured.out}"
+    )
+    assert (
+        captured.err.strip()
+        == "purlwatch: Environment variable PURLWATCH_HASH_KEY is empty or not found."
     )
 
 
@@ -248,6 +254,7 @@ def test_resolve_e2e_wrong_version(
         f"STDERR:\n{captured.err}\n"
         f"STDOUT:\n{captured.out}"
     )
+    assert "purlwatch: SBOM format or version is not supported" in captured.err.strip()
 
 
 def test_resolve_e2e_unreadable_purl(
@@ -269,6 +276,10 @@ def test_resolve_e2e_unreadable_purl(
         f"Command failed with exit code: {result}.\n"
         f"STDERR:\n{captured.err}\n"
         f"STDOUT:\n{captured.out}"
+    )
+    assert (
+        "purlwatch: File structure is not valid: PURL string supplied does not parse"
+        in captured.err.strip()
     )
 
 
@@ -300,40 +311,7 @@ def test_resolve_e2e_offline_key_missing(
     monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
 
     sbom = ROOT / "examples" / "node-cli.cdx.json"
-
-    with snapshot.SnapshotWriter() as writer:
-        writer.add_document(
-            collector="npm",
-            collector_v="1.0.0",
-            key="npm:chalk",
-            url="https://registry.npmjs.org/chalk",
-            status=200,
-            headers={},
-            email_removed=False,
-            body=json.dumps(
-                {
-                    "name": "chalk",
-                    "description": "Terminal string styling done right",
-                    "dist-tags": {"latest": "4.1.2"},
-                    "versions": {
-                        "4.1.2": {
-                            "name": "chalk",
-                            "version": "4.1.2",
-                            "repository": {
-                                "type": "git",
-                                "url": "https://github.com/chalk/chalk.git",
-                            },
-                        }
-                    },
-                    "repository": {
-                        "type": "git",
-                        "url": "https://github.com/chalk/chalk.git",
-                    },
-                }
-            ),
-            time="2026-11-05T00:00:00Z",
-        )
-        tar_path, _, _ = writer.close_document(None, None, None)
+    tar_path = ROOT / "tests" / "fixtures" / "snapshots" / "node-cli.tar"
 
     extract_dir = tmp_path / "extracted"
     with tarfile.open(tar_path, "r") as tar:
@@ -342,16 +320,12 @@ def test_resolve_e2e_offline_key_missing(
     json_file = extract_dir / "index.json"
     data = json.loads(json_file.read_text(encoding="utf-8"))
 
-    if isinstance(data, list):
-        data.pop()
-    elif "index" in data:
-        data["index"].clear()
-    else:
-        data.popitem()
+    data = [doc for doc in data if "commander" not in doc.get("path", "")]
 
     json_file.write_text(json.dumps(data), encoding="utf-8")
 
-    with tarfile.open(tar_path, "w") as tar:
+    corrupt_tar = tmp_path / "corrupt_node_cli.tar"
+    with tarfile.open(corrupt_tar, "w") as tar:
         for item in extract_dir.iterdir():
             tar.add(item, arcname=item.name)
 
@@ -360,7 +334,7 @@ def test_resolve_e2e_offline_key_missing(
         "--sbom",
         str(sbom),
         "--offline",
-        str(tar_path),
+        str(corrupt_tar),
     ]
 
     result = run_resolve(argv)
@@ -378,15 +352,18 @@ def test_resolve_e2e_replay_subprocess(tmp_path: Path):
     sbom_path = ROOT / "examples" / "node-cli.cdx.json"
     tar_path = SNAPSHOTS_DIR / "node-cli.tar"
 
-    bin = Path(sys.executable).with_name("purlwatch")
-    assert bin.exists(), f"Executable was not found at: {bin}"
+    scripts_dir = str(Path(sys.executable).parent)
+    bin_path = shutil.which("purlwatch", path=scripts_dir)
+    assert bin_path is not None, (
+        f"Executable 'purlwatch' was not found in: {scripts_dir}"
+    )
 
     custom_cache = tmp_path / "cache"
     env = os.environ.copy()
     env["PURLWATCH_HASH_KEY"] = "replay-secret-test-key"
     env["PURLWATCH_CACHE_DIR"] = str(custom_cache)
 
-    cmd = [str(bin), "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
+    cmd = [bin_path, "resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
 
     result = subprocess.run(
         cmd, capture_output=True, text=True, env=env, cwd=ROOT, check=False

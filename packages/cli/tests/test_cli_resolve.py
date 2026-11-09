@@ -20,7 +20,7 @@ class FakeSource:
 @pytest.mark.parametrize(
     "declared_repo",
     [
-        [("sbom", "https://github.com/my-org/my-root-repo")],
+        [(resolve.Declared.EXTERNAL, "https://github.com/my-org/my-root-repo")],
         [],
     ],
 )
@@ -50,9 +50,9 @@ def test_resolve_component_never_consults_sources_for_root(
     _, _, comp, note = results[0]
 
     assert comp.is_root is True
-    if declared_repo:
-        for declared in declared_repo:
-            assert declared[0] == "sbom"
+    if comp.declared_repo:
+        for declared in comp.declared_repo:
+            assert declared[0] == resolve.Declared.EXTERNAL
             assert declared[1]
             assert note == "Note: Repository only path"
     else:
