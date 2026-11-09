@@ -46,7 +46,7 @@ def format_output_human(map_list: list[Any], nodes: dict[str, resolve.Node]) -> 
         if comp.route not in (
             resolve.Route.NO_PURL,
             resolve.Route.UNSUPPORTED,
-        ) and not (comp.is_root and comp.declared_repo is None):
+        ) and not (comp.is_root and not comp.declared_repo):
             print(f"Repository: {mapp.repository}")
             print(f"Confidence: {mapp.confidence.value}")
             print(f"Sources agreeing: {mapp.sources_agreeing}")
@@ -96,7 +96,7 @@ def format_output_json(
         if comp.route not in (
             resolve.Route.NO_PURL,
             resolve.Route.UNSUPPORTED,
-        ) and not (comp.is_root and comp.declared_repo is None):
+        ) and not (comp.is_root and not comp.declared_repo):
             mapping_list.append(asdict(mapp))
 
         for v in his:
@@ -161,6 +161,8 @@ def resolve_component(
         ):
             map_pkg = component.ref
             note = "Note: Component has no Package URL; not evaluated"
+        elif component.is_root and not component.declared_repo:
+            note = "Note: Root component has no declared VCS repository"
         elif component.route == resolve.Route.REPOSITORY_ONLY or (
             component.is_root and component.declared_repo
         ):
@@ -175,12 +177,8 @@ def resolve_component(
                         candidates.append(("purl", repo_url))
 
             note = "Note: Repository only path"
-        elif component.is_root or component.route == resolve.Route.UNSUPPORTED:
-            note = (
-                "Note: Unsupported pkg format, not evaluated"
-                if component.route == resolve.Route.UNSUPPORTED
-                else "Note: Root component has no declared VCS repository"
-            )
+        elif component.route == resolve.Route.UNSUPPORTED:
+            note = "Note: Unsupported pkg format, not evaluated"
         else:
             if component.route == resolve.Route.REGISTRY:
                 purl = PackageURL.from_string(component.purl)
