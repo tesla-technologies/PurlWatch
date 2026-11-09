@@ -149,7 +149,6 @@ def test_resolve_e2e_collect_error(
     bad_sbom.write_text("{ json invalido")
 
     custom_cache = tmp_path / "cache"
-    custom_cache = tmp_path / "cache"
     monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
     monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
 
