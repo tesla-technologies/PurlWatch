@@ -1,6 +1,7 @@
 import argparse
 import hashlib
 import json
+import os
 import sys
 from dataclasses import asdict
 from importlib.metadata import version
@@ -300,16 +301,23 @@ def run_resolve(argv: list[str] | None = None) -> int:
                     )
             finally:
                 httpx_client.close()
-
-        if args.json:
-            format_output_json(map_list, manifest, snapshot_digest, resolved_sbom.nodes)
-        else:
-            format_output_human(map_list, resolved_sbom.nodes)
-
-        if tar_path:
-            print(
-                f"\nSnapshot: {tar_path} (digest: {snapshot_digest})", file=sys.stderr
-            )
+        try:
+            if args.json:
+                format_output_json(
+                    map_list, manifest, snapshot_digest, resolved_sbom.nodes
+                )
+            else:
+                format_output_human(map_list, resolved_sbom.nodes)
+        except BrokenPipeError:
+            devnull = os.open(os.devnull, os.O_WRONLY)
+            os.dup2(devnull, sys.stdout.fileno())
+            return 0
+        finally:
+            if tar_path:
+                print(
+                    f"\nSnapshot: {tar_path} (digest: {snapshot_digest})",
+                    file=sys.stderr,
+                )
 
         return 0
     except core_exc.PurlwatchError as err:

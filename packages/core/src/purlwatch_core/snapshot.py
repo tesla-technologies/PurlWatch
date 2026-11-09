@@ -211,9 +211,12 @@ class SnapshotReader:
             self._index = {entry["path"]: entry for entry in index_list}
 
             self.tar: tarfile.TarFile = archive
-        except (KeyError, FileNotFoundError, json.JSONDecodeError):
+        except (KeyError, FileNotFoundError):
             archive.close()
             raise core_exc.InputError(f"File was not found for tar {tar}")
+        except json.JSONDecodeError:
+            archive.close()
+            raise core_exc.InputError(f"Snapshot is corrupt: {tar}")
 
     def __enter__(self) -> Self:
         return self

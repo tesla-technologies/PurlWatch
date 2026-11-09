@@ -70,6 +70,14 @@ def parse_sbom(sbom: Path) -> ParsedSBOM:
         raise InvalidStructureError(f"File structure is not valid: {err}")
     except json.JSONDecodeError as err:
         raise InvalidStructureError(f"File is not a valid JSON: {err}")
+    except IsADirectoryError as err:
+        raise SbomNotFoundError(
+            f"Expected an SBOM file, but received a directory: {err}"
+        )
+    except UnicodeDecodeError as err:
+        raise UnsupportedFormatError(
+            f"Failed to read SBOM as UTF-8: the file appears to be binary or uses an unsupported encoding: {err}"
+        )
 
 
 def cyclone_parser(sbom: Path) -> ParsedSBOM:

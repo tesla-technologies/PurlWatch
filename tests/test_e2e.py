@@ -6,6 +6,7 @@ import sys
 import tarfile
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 import httpx
 import jsonschema
@@ -257,6 +258,92 @@ def test_resolve_e2e_wrong_version(
     assert "purlwatch: SBOM format or version is not supported" in captured.err.strip()
 
 
+def test_resolve_e2e_brokenpipe(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom = ROOT / "examples" / "node-app.cdx.json"
+    tar_path = SNAPSHOTS_DIR / "node-app.tar"
+
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    argv = ["resolve", "--sbom", str(sbom), "--offline", str(tar_path)]
+
+    writes_count = 0
+
+    def fake_write(text: str) -> int:
+        nonlocal writes_count
+        writes_count += 1
+        if writes_count > 10:
+            raise BrokenPipeError
+        return len(text)
+
+    with (
+        patch("sys.stdout.write", side_effect=fake_write),
+        patch.object(sys.stdout, "fileno", return_value=1),
+        patch("os.dup2"),
+    ):
+        result = run_resolve(argv)
+        assert result == 0
+
+
+def test_resolve_e2e_bad_encoding_sbom(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom = ROOT / "examples" / "node-cli.cdx.json"
+    original = sbom.read_text(encoding="utf-8")
+    binary_sbom = tmp_path / "sbom.cdx.bin"
+    binary_sbom.write_bytes(original.encode("utf-16"))
+
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    argv = ["resolve", "--sbom", str(binary_sbom)]
+
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 2, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
+    assert (
+        "purlwatch: Failed to read SBOM as UTF-8: the file appears to be binary or uses an unsupported encoding"
+        in captured.err.strip()
+    )
+
+
+def test_resolve_e2e_sbom_is_dir(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom = ROOT / "packages" / "core" / "tests" / "fixtures" / "sbom"
+
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    argv = ["resolve", "--sbom", str(sbom)]
+
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 2, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
+    assert (
+        "purlwatch: Expected an SBOM file, but received a directory:"
+        in captured.err.strip()
+    )
+
+
 def test_resolve_e2e_unreadable_purl(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
 ):
@@ -345,6 +432,47 @@ def test_resolve_e2e_offline_key_missing(
         f"STDERR:\n{captured.err}\n"
         f"STDOUT:\n{captured.out}"
     )
+
+
+def test_resolve_e2e_wrong_index_json(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    sbom = ROOT / "examples" / "node-cli.cdx.json"
+    tar_path = ROOT / "tests" / "fixtures" / "snapshots" / "node-cli.tar"
+
+    extract_dir = tmp_path / "extracted"
+    with tarfile.open(tar_path, "r") as tar:
+        tar.extractall(extract_dir)
+
+    json_file = extract_dir / "index.json"
+    json_file.write_text("{", encoding="utf-8")
+
+    corrupt_tar = tmp_path / "corrupt_node_cli.tar"
+    with tarfile.open(corrupt_tar, "w") as tar:
+        for item in extract_dir.iterdir():
+            tar.add(item, arcname=item.name)
+
+    argv = [
+        "resolve",
+        "--sbom",
+        str(sbom),
+        "--offline",
+        str(corrupt_tar),
+    ]
+
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 2, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
+    assert "Snapshot is corrupt" in captured.err.strip()
 
 
 def test_resolve_e2e_replay_subprocess(tmp_path: Path):
