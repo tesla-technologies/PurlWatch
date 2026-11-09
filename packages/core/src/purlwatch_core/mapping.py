@@ -119,9 +119,7 @@ def extract_map_fields(candidates: list[tuple[str, str]] | None) -> dict[str, An
     forge = Forge.UNKNOWN
     confidence = Confidence.NONE
     sources_agreeing = 0
-    sources = (
-        list(dict.fromkeys([source for source, _ in candidates])) if candidates else []
-    )
+    sources = [source for source, _ in candidates] if candidates else []
 
     if not candidates:
         return {

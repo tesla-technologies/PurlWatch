@@ -4,6 +4,7 @@ from enum import Enum
 
 from packageurl import PackageURL
 
+from purlwatch_core.mapping import normalize_url
 from purlwatch_core.parser import Component, ParsedSBOM
 
 
@@ -96,7 +97,8 @@ def extract_repo_from_purl(purl_str: str | None) -> list[tuple[Declared, str]]:
         else:
             declared_list.append((Declared.PURL, f"https://bitbucket.org/{purl.name}"))
 
-    vcs_url = purl.qualifiers.get("vcs_url") if purl.qualifiers else None
+    raw_vcs = purl.qualifiers.get("vcs_url") if purl.qualifiers else None
+    vcs_url = normalize_url(raw_vcs) if raw_vcs is not None else None
     if vcs_url and (not declared_list or declared_list[0][1] == vcs_url):
         declared_list.append((Declared.VCS_URL, vcs_url))
 
@@ -105,11 +107,10 @@ def extract_repo_from_purl(purl_str: str | None) -> list[tuple[Declared, str]]:
 
 def extract_declared_repo(comp: Component) -> list[tuple[Declared, str]]:
     declared_list = extract_repo_from_purl(comp.purl)
-
-    if comp.external_ref is not None and (
-        not declared_list or declared_list[0][1] == comp.external_ref
-    ):
-        declared_list.append((Declared.EXTERNAL, comp.external_ref))
+    if comp.external_ref:
+        external_url = normalize_url(comp.external_ref)
+        if external_url and (not declared_list or declared_list[0][1] == external_url):
+            declared_list.append((Declared.EXTERNAL, external_url))
 
     return declared_list
 
