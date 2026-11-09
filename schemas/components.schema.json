@@ -5,16 +5,25 @@
     "description": "One row per resolved node",
     "type": "object",
     "additionalProperties": false,
-    "required": ["ref", "purl", "depth", "via", "route"],
+    "required": ["ref", "purl", "package", "depth", "via", "route"],
     "properties": {
         "ref": {
             "description": "The Package reference",
             "type": ["string"]
         },
         "purl": {
-            "description": "The Package URL",
+            "description": "The Package URL with version",
             "type": ["string", "null"],
             "pattern": "^pkg:[a-z]+/."
+        },
+        "package": {
+            "description": "The Package URL without version",
+            "type": ["string", "null"],
+            "pattern": "^pkg:[a-z]+/."
+        },
+        "is_root": {
+            "description": "True when the componet is the root",
+            "type": "boolean"
         },
         "depth": {
             "description": "The dependency depth",

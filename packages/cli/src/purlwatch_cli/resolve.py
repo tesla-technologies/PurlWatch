@@ -82,7 +82,7 @@ def format_output_human(map_list: list[Any], nodes: dict[str, resolve.Node]) -> 
         )
     for node in nodes.values():
         print(
-            f"Ref: {node.ref} | Purl: {node.purl} | Depth: {node.depth}{'. [WARN] Unreachable component' if (node.depth is None and has_root) else ''} | Via: {node.via} | Route: {node.route.value}"
+            f"{'ROOT:' if node.is_root else ''}Ref: {node.ref} | Purl: {node.purl} | Package: {node.package} | Depth: {node.depth}{'. [WARN] Unreachable component' if (node.depth is None and has_root) else ''} | Via: {node.via} | Route: {node.route.value}"
         )
 
 
@@ -117,6 +117,8 @@ def format_output_json(
             {
                 "ref": node.ref,
                 "purl": node.purl,
+                "package": node.package,
+                "is_root": node.is_root,
                 "depth": node.depth,
                 "via": node.via,
                 "route": node.route.value,

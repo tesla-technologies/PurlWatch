@@ -2,6 +2,8 @@
  "components":[
   {
    "depth":0,
+   "is_root":true,
+   "package":"pkg:npm/web",
    "purl":"pkg:npm/web@1.0.0",
    "ref":"web@1.0.0",
    "route":"registry",
@@ -9,6 +11,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/accepts",
    "purl":"pkg:npm/accepts@2.0.0",
    "ref":"web@1.0.0|accepts@2.0.0",
    "route":"registry",
@@ -16,6 +20,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/content-type",
    "purl":"pkg:npm/content-type@2.1.0",
    "ref":"web@1.0.0|body-parser@2.3.0|content-type@2.1.0",
    "route":"registry",
@@ -23,6 +29,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/body-parser",
    "purl":"pkg:npm/body-parser@2.3.0",
    "ref":"web@1.0.0|body-parser@2.3.0",
    "route":"registry",
@@ -30,6 +38,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/bytes",
    "purl":"pkg:npm/bytes@3.1.2",
    "ref":"web@1.0.0|bytes@3.1.2",
    "route":"registry",
@@ -37,6 +47,8 @@
   },
   {
    "depth":6,
+   "is_root":false,
+   "package":"pkg:npm/call-bind-apply-helpers",
    "purl":"pkg:npm/call-bind-apply-helpers@1.0.2",
    "ref":"web@1.0.0|call-bind-apply-helpers@1.0.2",
    "route":"registry",
@@ -44,6 +56,8 @@
   },
   {
    "depth":5,
+   "is_root":false,
+   "package":"pkg:npm/call-bound",
    "purl":"pkg:npm/call-bound@1.0.4",
    "ref":"web@1.0.0|call-bound@1.0.4",
    "route":"registry",
@@ -51,6 +65,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/content-disposition",
    "purl":"pkg:npm/content-disposition@1.1.0",
    "ref":"web@1.0.0|content-disposition@1.1.0",
    "route":"registry",
@@ -58,6 +74,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/content-type",
    "purl":"pkg:npm/content-type@1.0.5",
    "ref":"web@1.0.0|content-type@1.0.5",
    "route":"registry",
@@ -65,6 +83,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/cookie",
    "purl":"pkg:npm/cookie@0.7.2",
    "ref":"web@1.0.0|cookie@0.7.2",
    "route":"registry",
@@ -72,6 +92,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/cookie-signature",
    "purl":"pkg:npm/cookie-signature@1.2.2",
    "ref":"web@1.0.0|cookie-signature@1.2.2",
    "route":"registry",
@@ -79,6 +101,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/debug",
    "purl":"pkg:npm/debug@4.4.3",
    "ref":"web@1.0.0|debug@4.4.3",
    "route":"registry",
@@ -86,6 +110,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/depd",
    "purl":"pkg:npm/depd@2.0.0",
    "ref":"web@1.0.0|depd@2.0.0",
    "route":"registry",
@@ -93,6 +119,8 @@
   },
   {
    "depth":7,
+   "is_root":false,
+   "package":"pkg:npm/dunder-proto",
    "purl":"pkg:npm/dunder-proto@1.0.1",
    "ref":"web@1.0.0|dunder-proto@1.0.1",
    "route":"registry",
@@ -100,6 +128,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/ee-first",
    "purl":"pkg:npm/ee-first@1.1.1",
    "ref":"web@1.0.0|ee-first@1.1.1",
    "route":"registry",
@@ -107,6 +137,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/encodeurl",
    "purl":"pkg:npm/encodeurl@2.0.0",
    "ref":"web@1.0.0|encodeurl@2.0.0",
    "route":"registry",
@@ -114,6 +146,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/es-define-property",
    "purl":"pkg:npm/es-define-property@1.0.1",
    "ref":"web@1.0.0|es-define-property@1.0.1",
    "route":"registry",
@@ -121,6 +155,8 @@
   },
   {
    "depth":4,
+   "is_root":false,
+   "package":"pkg:npm/es-errors",
    "purl":"pkg:npm/es-errors@1.3.0",
    "ref":"web@1.0.0|es-errors@1.3.0",
    "route":"registry",
@@ -128,6 +164,8 @@
   },
   {
    "depth":6,
+   "is_root":false,
+   "package":"pkg:npm/es-object-atoms",
    "purl":"pkg:npm/es-object-atoms@1.1.2",
    "ref":"web@1.0.0|es-object-atoms@1.1.2",
    "route":"registry",
@@ -135,6 +173,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/escape-html",
    "purl":"pkg:npm/escape-html@1.0.3",
    "ref":"web@1.0.0|escape-html@1.0.3",
    "route":"registry",
@@ -142,6 +182,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/etag",
    "purl":"pkg:npm/etag@1.8.1",
    "ref":"web@1.0.0|etag@1.8.1",
    "route":"registry",
@@ -149,6 +191,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:npm/express",
    "purl":"pkg:npm/express@5.2.1",
    "ref":"web@1.0.0|express@5.2.1",
    "route":"registry",
@@ -156,6 +200,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/finalhandler",
    "purl":"pkg:npm/finalhandler@2.1.1",
    "ref":"web@1.0.0|finalhandler@2.1.1",
    "route":"registry",
@@ -163,6 +209,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/forwarded",
    "purl":"pkg:npm/forwarded@0.2.0",
    "ref":"web@1.0.0|forwarded@0.2.0",
    "route":"registry",
@@ -170,6 +218,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/fresh",
    "purl":"pkg:npm/fresh@2.0.0",
    "ref":"web@1.0.0|fresh@2.0.0",
    "route":"registry",
@@ -177,6 +227,8 @@
   },
   {
    "depth":6,
+   "is_root":false,
+   "package":"pkg:npm/function-bind",
    "purl":"pkg:npm/function-bind@1.1.2",
    "ref":"web@1.0.0|function-bind@1.1.2",
    "route":"registry",
@@ -184,6 +236,8 @@
   },
   {
    "depth":5,
+   "is_root":false,
+   "package":"pkg:npm/get-intrinsic",
    "purl":"pkg:npm/get-intrinsic@1.3.0",
    "ref":"web@1.0.0|get-intrinsic@1.3.0",
    "route":"registry",
@@ -191,6 +245,8 @@
   },
   {
    "depth":6,
+   "is_root":false,
+   "package":"pkg:npm/get-proto",
    "purl":"pkg:npm/get-proto@1.0.1",
    "ref":"web@1.0.0|get-proto@1.0.1",
    "route":"registry",
@@ -198,6 +254,8 @@
   },
   {
    "depth":6,
+   "is_root":false,
+   "package":"pkg:npm/gopd",
    "purl":"pkg:npm/gopd@1.2.0",
    "ref":"web@1.0.0|gopd@1.2.0",
    "route":"registry",
@@ -205,6 +263,8 @@
   },
   {
    "depth":6,
+   "is_root":false,
+   "package":"pkg:npm/has-symbols",
    "purl":"pkg:npm/has-symbols@1.1.0",
    "ref":"web@1.0.0|has-symbols@1.1.0",
    "route":"registry",
@@ -212,6 +272,8 @@
   },
   {
    "depth":6,
+   "is_root":false,
+   "package":"pkg:npm/hasown",
    "purl":"pkg:npm/hasown@2.0.4",
    "ref":"web@1.0.0|hasown@2.0.4",
    "route":"registry",
@@ -219,6 +281,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/http-errors",
    "purl":"pkg:npm/http-errors@2.0.1",
    "ref":"web@1.0.0|http-errors@2.0.1",
    "route":"registry",
@@ -226,6 +290,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/iconv-lite",
    "purl":"pkg:npm/iconv-lite@0.7.3",
    "ref":"web@1.0.0|iconv-lite@0.7.3",
    "route":"registry",
@@ -233,6 +299,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/inherits",
    "purl":"pkg:npm/inherits@2.0.4",
    "ref":"web@1.0.0|inherits@2.0.4",
    "route":"registry",
@@ -240,6 +308,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/ipaddr.js",
    "purl":"pkg:npm/ipaddr.js@1.9.1",
    "ref":"web@1.0.0|ipaddr.js@1.9.1",
    "route":"registry",
@@ -247,6 +317,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/is-promise",
    "purl":"pkg:npm/is-promise@4.0.0",
    "ref":"web@1.0.0|is-promise@4.0.0",
    "route":"registry",
@@ -254,6 +326,8 @@
   },
   {
    "depth":6,
+   "is_root":false,
+   "package":"pkg:npm/math-intrinsics",
    "purl":"pkg:npm/math-intrinsics@1.1.0",
    "ref":"web@1.0.0|math-intrinsics@1.1.0",
    "route":"registry",
@@ -261,6 +335,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/media-typer",
    "purl":"pkg:npm/media-typer@1.1.1",
    "ref":"web@1.0.0|media-typer@1.1.1",
    "route":"registry",
@@ -268,6 +344,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/merge-descriptors",
    "purl":"pkg:npm/merge-descriptors@2.0.0",
    "ref":"web@1.0.0|merge-descriptors@2.0.0",
    "route":"registry",
@@ -275,6 +353,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/mime-db",
    "purl":"pkg:npm/mime-db@1.54.0",
    "ref":"web@1.0.0|mime-db@1.54.0",
    "route":"registry",
@@ -282,6 +362,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/mime-types",
    "purl":"pkg:npm/mime-types@3.0.2",
    "ref":"web@1.0.0|mime-types@3.0.2",
    "route":"registry",
@@ -289,6 +371,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/ms",
    "purl":"pkg:npm/ms@2.1.3",
    "ref":"web@1.0.0|ms@2.1.3",
    "route":"registry",
@@ -296,6 +380,8 @@
   },
   {
    "depth":4,
+   "is_root":false,
+   "package":"pkg:npm/content-type",
    "purl":"pkg:npm/content-type@2.1.0",
    "ref":"web@1.0.0|negotiator@1.1.0|content-type@2.1.0",
    "route":"registry",
@@ -303,6 +389,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/negotiator",
    "purl":"pkg:npm/negotiator@1.1.0",
    "ref":"web@1.0.0|negotiator@1.1.0",
    "route":"registry",
@@ -310,6 +398,8 @@
   },
   {
    "depth":4,
+   "is_root":false,
+   "package":"pkg:npm/object-inspect",
    "purl":"pkg:npm/object-inspect@1.13.4",
    "ref":"web@1.0.0|object-inspect@1.13.4",
    "route":"registry",
@@ -317,6 +407,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/on-finished",
    "purl":"pkg:npm/on-finished@2.4.1",
    "ref":"web@1.0.0|on-finished@2.4.1",
    "route":"registry",
@@ -324,6 +416,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/once",
    "purl":"pkg:npm/once@1.4.0",
    "ref":"web@1.0.0|once@1.4.0",
    "route":"registry",
@@ -331,6 +425,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/parseurl",
    "purl":"pkg:npm/parseurl@1.3.3",
    "ref":"web@1.0.0|parseurl@1.3.3",
    "route":"registry",
@@ -338,6 +434,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/path-to-regexp",
    "purl":"pkg:npm/path-to-regexp@8.4.2",
    "ref":"web@1.0.0|path-to-regexp@8.4.2",
    "route":"registry",
@@ -345,6 +443,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/proxy-addr",
    "purl":"pkg:npm/proxy-addr@2.0.8",
    "ref":"web@1.0.0|proxy-addr@2.0.8",
    "route":"registry",
@@ -352,6 +452,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/qs",
    "purl":"pkg:npm/qs@6.16.0",
    "ref":"web@1.0.0|qs@6.16.0",
    "route":"registry",
@@ -359,6 +461,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/range-parser",
    "purl":"pkg:npm/range-parser@1.3.0",
    "ref":"web@1.0.0|range-parser@1.3.0",
    "route":"registry",
@@ -366,6 +470,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/raw-body",
    "purl":"pkg:npm/raw-body@3.0.2",
    "ref":"web@1.0.0|raw-body@3.0.2",
    "route":"registry",
@@ -373,6 +479,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/router",
    "purl":"pkg:npm/router@2.2.0",
    "ref":"web@1.0.0|router@2.2.0",
    "route":"registry",
@@ -380,6 +488,8 @@
   },
   {
    "depth":4,
+   "is_root":false,
+   "package":"pkg:npm/safer-buffer",
    "purl":"pkg:npm/safer-buffer@2.1.2",
    "ref":"web@1.0.0|safer-buffer@2.1.2",
    "route":"registry",
@@ -387,6 +497,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/send",
    "purl":"pkg:npm/send@1.2.1",
    "ref":"web@1.0.0|send@1.2.1",
    "route":"registry",
@@ -394,6 +506,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/serve-static",
    "purl":"pkg:npm/serve-static@2.2.1",
    "ref":"web@1.0.0|serve-static@2.2.1",
    "route":"registry",
@@ -401,6 +515,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/setprototypeof",
    "purl":"pkg:npm/setprototypeof@1.2.0",
    "ref":"web@1.0.0|setprototypeof@1.2.0",
    "route":"registry",
@@ -408,6 +524,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/side-channel",
    "purl":"pkg:npm/side-channel@1.1.1",
    "ref":"web@1.0.0|side-channel@1.1.1",
    "route":"registry",
@@ -415,6 +533,8 @@
   },
   {
    "depth":4,
+   "is_root":false,
+   "package":"pkg:npm/side-channel-list",
    "purl":"pkg:npm/side-channel-list@1.0.1",
    "ref":"web@1.0.0|side-channel-list@1.0.1",
    "route":"registry",
@@ -422,6 +542,8 @@
   },
   {
    "depth":4,
+   "is_root":false,
+   "package":"pkg:npm/side-channel-map",
    "purl":"pkg:npm/side-channel-map@1.0.1",
    "ref":"web@1.0.0|side-channel-map@1.0.1",
    "route":"registry",
@@ -429,6 +551,8 @@
   },
   {
    "depth":4,
+   "is_root":false,
+   "package":"pkg:npm/side-channel-weakmap",
    "purl":"pkg:npm/side-channel-weakmap@1.0.2",
    "ref":"web@1.0.0|side-channel-weakmap@1.0.2",
    "route":"registry",
@@ -436,6 +560,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/statuses",
    "purl":"pkg:npm/statuses@2.0.2",
    "ref":"web@1.0.0|statuses@2.0.2",
    "route":"registry",
@@ -443,6 +569,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/toidentifier",
    "purl":"pkg:npm/toidentifier@1.0.1",
    "ref":"web@1.0.0|toidentifier@1.0.1",
    "route":"registry",
@@ -450,6 +578,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/content-type",
    "purl":"pkg:npm/content-type@2.1.0",
    "ref":"web@1.0.0|type-is@2.1.0|content-type@2.1.0",
    "route":"registry",
@@ -457,6 +587,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/type-is",
    "purl":"pkg:npm/type-is@2.1.0",
    "ref":"web@1.0.0|type-is@2.1.0",
    "route":"registry",
@@ -464,6 +596,8 @@
   },
   {
    "depth":4,
+   "is_root":false,
+   "package":"pkg:npm/unpipe",
    "purl":"pkg:npm/unpipe@1.0.0",
    "ref":"web@1.0.0|unpipe@1.0.0",
    "route":"registry",
@@ -471,6 +605,8 @@
   },
   {
    "depth":2,
+   "is_root":false,
+   "package":"pkg:npm/vary",
    "purl":"pkg:npm/vary@1.1.2",
    "ref":"web@1.0.0|vary@1.1.2",
    "route":"registry",
@@ -478,6 +614,8 @@
   },
   {
    "depth":3,
+   "is_root":false,
+   "package":"pkg:npm/wrappy",
    "purl":"pkg:npm/wrappy@1.0.2",
    "ref":"web@1.0.0|wrappy@1.0.2",
    "route":"registry",

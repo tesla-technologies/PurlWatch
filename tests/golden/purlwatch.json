@@ -2,6 +2,8 @@
  "components":[
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/arrow",
    "purl":"pkg:pypi/arrow@1.4.0",
    "ref":"arrow==1.4.0",
    "route":"unsupported",
@@ -9,6 +11,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/attrs",
    "purl":"pkg:pypi/attrs@26.1.0",
    "ref":"attrs==26.1.0",
    "route":"unsupported",
@@ -16,6 +20,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/boolean.py",
    "purl":"pkg:pypi/boolean.py@5.0",
    "ref":"boolean.py==5.0",
    "route":"unsupported",
@@ -23,6 +29,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/chardet",
    "purl":"pkg:pypi/chardet@7.6.0",
    "ref":"chardet==7.6.0",
    "route":"unsupported",
@@ -30,6 +38,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/cyclonedx-bom",
    "purl":"pkg:pypi/cyclonedx-bom@7.5.0",
    "ref":"cyclonedx-bom==7.5.0",
    "route":"unsupported",
@@ -37,6 +47,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/cyclonedx-python-lib",
    "purl":"pkg:pypi/cyclonedx-python-lib@11.12.0",
    "ref":"cyclonedx-python-lib==11.12.0",
    "route":"unsupported",
@@ -44,6 +56,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/defusedxml",
    "purl":"pkg:pypi/defusedxml@0.7.1",
    "ref":"defusedxml==0.7.1",
    "route":"unsupported",
@@ -51,6 +65,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/fqdn",
    "purl":"pkg:pypi/fqdn@1.6.0",
    "ref":"fqdn==1.6.0",
    "route":"unsupported",
@@ -58,6 +74,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/idna",
    "purl":"pkg:pypi/idna@3.20",
    "ref":"idna==3.20",
    "route":"unsupported",
@@ -65,6 +83,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/isoduration",
    "purl":"pkg:pypi/isoduration@20.11.0",
    "ref":"isoduration==20.11.0",
    "route":"unsupported",
@@ -72,6 +92,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/jsonpointer",
    "purl":"pkg:pypi/jsonpointer@3.1.1",
    "ref":"jsonpointer==3.1.1",
    "route":"unsupported",
@@ -79,6 +101,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/jsonschema",
    "purl":"pkg:pypi/jsonschema@4.26.0",
    "ref":"jsonschema==4.26.0",
    "route":"unsupported",
@@ -86,6 +110,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/jsonschema-specifications",
    "purl":"pkg:pypi/jsonschema-specifications@2025.9.1",
    "ref":"jsonschema-specifications==2025.9.1",
    "route":"unsupported",
@@ -93,6 +119,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/lark",
    "purl":"pkg:pypi/lark@1.3.1",
    "ref":"lark==1.3.1",
    "route":"unsupported",
@@ -100,6 +128,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/license-expression",
    "purl":"pkg:pypi/license-expression@30.4.4",
    "ref":"license-expression==30.4.4",
    "route":"unsupported",
@@ -107,6 +137,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/lxml",
    "purl":"pkg:pypi/lxml@6.1.3",
    "ref":"lxml==6.1.3",
    "route":"unsupported",
@@ -114,6 +146,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/packageurl-python",
    "purl":"pkg:pypi/packageurl-python@0.17.6",
    "ref":"packageurl-python==0.17.6",
    "route":"unsupported",
@@ -121,6 +155,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/packaging",
    "purl":"pkg:pypi/packaging@26.3",
    "ref":"packaging==26.3",
    "route":"unsupported",
@@ -128,6 +164,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/pip-requirements-parser",
    "purl":"pkg:pypi/pip-requirements-parser@32.0.1",
    "ref":"pip-requirements-parser==32.0.1",
    "route":"unsupported",
@@ -135,6 +173,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/py-serializable",
    "purl":"pkg:pypi/py-serializable@2.1.0",
    "ref":"py-serializable==2.1.0",
    "route":"unsupported",
@@ -142,6 +182,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/pyparsing",
    "purl":"pkg:pypi/pyparsing@3.3.3",
    "ref":"pyparsing==3.3.3",
    "route":"unsupported",
@@ -149,6 +191,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/python-dateutil",
    "purl":"pkg:pypi/python-dateutil@2.9.0.post0",
    "ref":"python-dateutil==2.9.0.post0",
    "route":"unsupported",
@@ -156,6 +200,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/referencing",
    "purl":"pkg:pypi/referencing@0.37.0",
    "ref":"referencing==0.37.0",
    "route":"unsupported",
@@ -163,6 +209,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/rfc3339-validator",
    "purl":"pkg:pypi/rfc3339-validator@0.1.4",
    "ref":"rfc3339-validator==0.1.4",
    "route":"unsupported",
@@ -170,6 +218,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/rfc3986-validator",
    "purl":"pkg:pypi/rfc3986-validator@0.1.1",
    "ref":"rfc3986-validator==0.1.1",
    "route":"unsupported",
@@ -177,6 +227,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/rfc3987-syntax",
    "purl":"pkg:pypi/rfc3987-syntax@1.1.0",
    "ref":"rfc3987-syntax==1.1.0",
    "route":"unsupported",
@@ -184,6 +236,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/rpds-py",
    "purl":"pkg:pypi/rpds-py@2026.9.1",
    "ref":"rpds-py==2026.9.1",
    "route":"unsupported",
@@ -191,6 +245,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/six",
    "purl":"pkg:pypi/six@1.17.0",
    "ref":"six==1.17.0",
    "route":"unsupported",
@@ -198,6 +254,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/sortedcontainers",
    "purl":"pkg:pypi/sortedcontainers@2.4.0",
    "ref":"sortedcontainers==2.4.0",
    "route":"unsupported",
@@ -205,6 +263,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/tzdata",
    "purl":"pkg:pypi/tzdata@2026.5",
    "ref":"tzdata==2026.5",
    "route":"unsupported",
@@ -212,6 +272,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/uri-template",
    "purl":"pkg:pypi/uri-template@1.3.0",
    "ref":"uri-template==1.3.0",
    "route":"unsupported",
@@ -219,6 +281,8 @@
   },
   {
    "depth":null,
+   "is_root":false,
+   "package":"pkg:pypi/webcolors",
    "purl":"pkg:pypi/webcolors@25.10.0",
    "ref":"webcolors==25.10.0",
    "route":"unsupported",
