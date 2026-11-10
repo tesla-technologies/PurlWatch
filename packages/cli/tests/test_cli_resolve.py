@@ -47,13 +47,14 @@ def test_resolve_component_never_consults_sources_for_root(
     assert fake_source.calls == []
 
     assert len(results) == 1
-    _, _, comp, note = results[0]
+    map, _, comp, note = results[0]
 
     assert comp.is_root is True
-    if comp.declared_repo:
-        for declared in comp.declared_repo:
-            assert declared[0] == resolve.Declared.EXTERNAL
-            assert declared[1]
-            assert note == "Note: Repository only path"
+    if declared_repo:
+        assert map.repository
+        assert map.sources == ["sbom"]
+        assert note == "Note: Repository only path"
     else:
+        assert map.repository is None
+        assert map.sources == []
         assert note == "Note: Root component has no declared VCS repository"
