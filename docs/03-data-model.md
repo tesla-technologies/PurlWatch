@@ -93,7 +93,7 @@ One row per resolved node.
 | ref | string | The Package reference |
 | purl | string or null | The Package URL with version |
 | package | string or null | The Package URL without version |
-| is_root | boolean | True when the componet is the root |
+| is_root | boolean | True when the component is the root |
 | depth | integer or null | The dependency depth |
 | via | string or null | Provenance chain leading to a transitive dependency |
 | route | enum | registry, repository, unsupported, no_purl |

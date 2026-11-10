@@ -5,7 +5,7 @@
     "description": "One row per resolved node",
     "type": "object",
     "additionalProperties": false,
-    "required": ["ref", "purl", "package", "depth", "via", "route"],
+    "required": ["ref", "purl", "package", "is_root", "depth", "via", "route"],
     "properties": {
         "ref": {
             "description": "The Package reference",
@@ -22,7 +22,7 @@
             "pattern": "^pkg:[a-z]+/."
         },
         "is_root": {
-            "description": "True when the componet is the root",
+            "description": "True when the component is the root",
             "type": "boolean"
         },
         "depth": {

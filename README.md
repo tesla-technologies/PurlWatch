@@ -42,7 +42,7 @@ The project builds on Package URL, CycloneDX, SPDX, in-toto, Sigstore, OSV, Vuln
 
 ## Usage
 ### What the prototype does
-The prototype receives a SBOM and for every component prints it's repository URL, the confidence level explained and version history.
+The prototype receives a SBOM and for every component prints its repository URL, the confidence level explained and version history.
 
 ### Installation and Set up
 Once the project is downloaded, follow these steps from the root directory to set up your local environment:
@@ -57,11 +57,11 @@ Once the project is downloaded, follow these steps from the root directory to se
 ### Fast offline test
 Positioned at root run:
 
-`uv run --env-file .env purlwatch resolve --sbom examples/node-cli.cdx.json --offline tests/fixtures/node-cli.tar`
+`uv run --env-file .env purlwatch resolve --sbom examples/node-cli.cdx.json --offline tests/fixtures/snapshots/node-cli.tar`
 
 The expected output:
 ```console
-$ uv run --env-file .env purlwatch resolve --sbom examples/node-cli.cdx.json --offline tests/fixtures/node-cli.tar
+$ uv run --env-file .env purlwatch resolve --sbom examples/node-cli.cdx.json --offline tests/fixtures/snapshots/node-cli.tar
 ================================================================================
 Purl: pkg:npm/commander
 Repository: https://github.com/tj/commander.js
