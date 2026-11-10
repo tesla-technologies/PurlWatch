@@ -217,8 +217,10 @@ def parse_purl(purl: PackageURL | str | None) -> str | None:
         purl_str = PackageURL.to_string(purl_obj)
 
         if "\ufffd" in repr(purl_obj) or PackageURL.validate_string(purl_str):
-            raise core_exc.InputError(f"PURL ilegible o malformada: {purl}")
+            raise core_exc.InputError(f"PURL string supplied does not parse: {purl}")
 
         return purl_str
     except Exception as exc:
-        raise core_exc.InputError(f"PURL ilegible o malformada: {purl}") from exc
+        raise core_exc.InputError(
+            f"PURL string supplied does not parse: {purl}"
+        ) from exc
