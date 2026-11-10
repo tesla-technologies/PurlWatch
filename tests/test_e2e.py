@@ -388,6 +388,7 @@ def test_resolve_e2e_no_sbom(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, ca
         f"STDERR:\n{captured.err}\n"
         f"STDOUT:\n{captured.out}"
     )
+    assert "SBOM file not found" in captured.err.strip()
 
 
 def test_resolve_e2e_offline_key_missing(
