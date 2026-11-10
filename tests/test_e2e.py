@@ -72,6 +72,42 @@ def test_resolve_e2e_noroot_replay(
     assert out.strip()
 
 
+def test_resolve_e2e_noroot_message(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom_path = (
+        ROOT / "packages" / "core" / "tests" / "fixtures" / "sbom" / "nested.cdx.json"
+    )
+    tar_path = SNAPSHOTS_DIR / "node-cli.tar"
+
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    argv = ["resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
+
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 0, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
+
+    assert "Traceback" not in captured.err
+
+    out = captured.out
+    assert (
+        out.count(
+            "[WARN] Evaluated SBOM has no root component, depth cannot be calculated\n"
+        )
+        == 1
+    )
+    assert out.count("[WARN] Unreachable component") == 0
+
+
 @pytest.mark.usefixtures("time_patcher")
 @pytest.mark.vcr(record_mode="none")
 @pytest.mark.parametrize(
@@ -364,10 +400,7 @@ def test_resolve_e2e_unreadable_purl(
         f"STDERR:\n{captured.err}\n"
         f"STDOUT:\n{captured.out}"
     )
-    assert (
-        "purlwatch: File structure is not valid: PURL string supplied does not parse"
-        in captured.err.strip()
-    )
+    assert "purlwatch: PURL string supplied does not parse" in captured.err.strip()
 
 
 def test_resolve_e2e_no_sbom(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys):

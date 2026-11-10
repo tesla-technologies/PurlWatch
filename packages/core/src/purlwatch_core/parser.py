@@ -212,9 +212,13 @@ def parse_purl(purl: PackageURL | str | None) -> str | None:
     if not purl:
         return None
 
-    if isinstance(purl, str):
-        purl_obj = PackageURL.from_string(purl)
-    else:
-        purl_obj = purl
+    try:
+        purl_obj = PackageURL.from_string(purl) if isinstance(purl, str) else purl
+        purl_str = PackageURL.to_string(purl_obj)
 
-    return PackageURL.to_string(purl_obj)
+        if "\ufffd" in repr(purl_obj) or PackageURL.validate_string(purl_str):
+            raise core_exc.InputError(f"PURL ilegible o malformada: {purl}")
+
+        return purl_str
+    except Exception as exc:
+        raise core_exc.InputError(f"PURL ilegible o malformada: {purl}") from exc
