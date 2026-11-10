@@ -145,7 +145,7 @@
    "sources_agreeing":2
   },
   {
-   "confidence":"high",
+   "confidence":"medium",
    "forge":"github",
    "observed_at":null,
    "purl":"pkg:github/owner/repo",
