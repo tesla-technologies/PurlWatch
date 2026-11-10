@@ -46,6 +46,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Install uv
@@ -62,3 +63,19 @@ jobs:
 
       - name: Run tests
         run: uv run pytest --record-mode=none
+
+  check-signoff:
+    name: Lint (Check-signoff)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Run check-signoff
+        run: python scripts/check_signoff.py
