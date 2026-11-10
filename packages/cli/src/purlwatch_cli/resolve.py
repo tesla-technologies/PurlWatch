@@ -49,10 +49,7 @@ def format_output_human(map_list: list[Any], nodes: dict[str, resolve.Node]) -> 
         print("=" * 80)
         label = "Bom-Ref" if comp.route == resolve.Route.NO_PURL else "Purl"
         print(f"{label}: {mapp.purl}")
-        if comp.route not in (
-            resolve.Route.NO_PURL,
-            resolve.Route.UNSUPPORTED,
-        ) and not (comp.is_root and not comp.declared_repo):
+        if has_mapping_row(comp):
             print(f"Repository: {mapp.repository}")
             print(f"Confidence: {mapp.confidence.value}")
             print(f"Sources agreeing: {mapp.sources_agreeing}")
@@ -103,10 +100,7 @@ def format_output_json(
         his = m[1]
         comp = m[2]
 
-        if comp.route not in (
-            resolve.Route.NO_PURL,
-            resolve.Route.UNSUPPORTED,
-        ) and not (comp.is_root and not comp.declared_repo):
+        if has_mapping_row(comp):
             mapping_list.append(asdict(mapp))
 
         for v in his:
@@ -141,6 +135,12 @@ def format_output_json(
             indent=1,
         )
     )
+
+
+def has_mapping_row(comp: resolve.Node) -> bool:
+    if comp.is_root:
+        return bool(comp.declared_repo)
+    return comp.route in (resolve.Route.REGISTRY, resolve.Route.REPOSITORY_ONLY)
 
 
 def resolve_component(
