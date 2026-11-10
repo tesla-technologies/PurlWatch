@@ -17,3 +17,5 @@ The workflow is ordinary. Open an issue before a large change; a small fix can g
 In October 2026 the most useful contributions are the prototype described in `docs/15-prototype-plan.md`, reviews of the signal definitions in `docs/04-signal-catalogue.md` from people who maintain widely used npm or crates.io packages, and pointers to historical registry data such as archived packuments and crates.io dumps for the validation protocol.
 
 Maintainers of the packages that appear in the data set are people, and the project exists to make handovers visible rather than to accuse anyone. If you believe a row of the data set is wrong or unfair, open an issue with the dispute template under `.github/ISSUE_TEMPLATE/`; the process in `docs/10-dataset-publication.md` answers it within fourteen days. The Contributor Covenant in `CODE_OF_CONDUCT.md` applies to every interaction in the project.
+
+GitHub operates as a mirror repository, pull requests opened on GitHub are imported into GitLab, where review and integration take place, and are then synced back to GitHub with the next mirror update.

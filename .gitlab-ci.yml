@@ -44,7 +44,7 @@ test:
     PURLWATCH_HASH_KEY: "test-key-in-ci"
   script:
     - uv sync --all-packages --frozen
-    - uv run pytest --record-mode=none
+    - uv run pytest --record-mode=none --cov=purlwatch_core
 
 check-signoff:
   stage: lint

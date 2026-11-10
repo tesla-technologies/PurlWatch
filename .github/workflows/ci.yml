@@ -61,7 +61,7 @@ jobs:
         run: uv sync --all-packages --frozen
 
       - name: Run tests
-        run: uv run pytest --record-mode=none
+        run: uv run pytest --record-mode=none --cov=purlwatch_core
 
   check-signoff:
     name: Lint (Check-signoff)
@@ -75,4 +75,4 @@ jobs:
           persist-credentials: false
 
       - name: Run check-signoff
-        run: python scripts/check_signoff.py
+        run: python scripts/check_signoff.py "${{ github.event.before }}"
