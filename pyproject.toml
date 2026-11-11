@@ -23,5 +23,5 @@ members = ["packages/*"]
 strict = true
 files = ["packages"]
 
-[tool.coverage]
+[tool.coverage.report]
 fail_under = 80
