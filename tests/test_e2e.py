@@ -108,6 +108,34 @@ def test_resolve_e2e_noroot_message(
     assert out.count("[WARN] Unreachable component") == 0
 
 
+def test_resolve_e2e_purlwatch_has_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys
+):
+    ROOT = Path(__file__).resolve().parent.parent
+    sbom_path = ROOT / "examples" / "purlwatch.cdx.json"
+    tar_path = SNAPSHOTS_DIR / "purlwatch.tar"
+
+    custom_cache = tmp_path / "cache"
+    monkeypatch.setenv("PURLWATCH_HASH_KEY", "replay-secret-test-key")
+    monkeypatch.setenv("PURLWATCH_CACHE_DIR", str(custom_cache))
+
+    argv = ["resolve", "--sbom", str(sbom_path), "--offline", str(tar_path)]
+
+    result = run_resolve(argv)
+    captured = capsys.readouterr()
+
+    assert result == 0, (
+        f"Command failed with exit code: {result}.\n"
+        f"STDERR:\n{captured.err}\n"
+        f"STDOUT:\n{captured.out}"
+    )
+
+    assert (
+        "[WARN] Evaluated SBOM has no root component, depth cannot be calculated"
+        not in captured.out
+    )
+
+
 @pytest.mark.usefixtures("time_patcher")
 @pytest.mark.vcr(record_mode="none")
 @pytest.mark.parametrize(
