@@ -68,6 +68,7 @@
       "purl": "pkg:bitbucket/atlassian/aui@9.4.0"
     },
     {
+      "bom-ref": "standalone-tool",
       "type": "library",
       "name": "standalone-tool",
       "version": "1.0.0",
@@ -96,7 +97,9 @@
         "dep-vcs-url",
         "dep-external-ref",
         "dep-purl-github",
-        "dep-purl-bitbucket"
+        "dep-purl-bitbucket",
+        "pkg:github/owner/repo@1.0.0?vcs_url=https://github.com/owner/repo",
+        "standalone-tool"
       ]
     },
     {

@@ -2,6 +2,8 @@
  "components":[
   {
    "depth":0,
+   "is_root":true,
+   "package":"pkg:npm/cli",
    "purl":"pkg:npm/cli@1.0.0",
    "ref":"cli@1.0.0",
    "route":"registry",
@@ -9,6 +11,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:npm/commander",
    "purl":"pkg:npm/commander@15.0.0",
    "ref":"cli@1.0.0|commander@15.0.0",
    "route":"registry",
@@ -16,16 +20,6 @@
   }
  ],
  "mapping":[
-  {
-   "confidence":"none",
-   "forge":"unknown",
-   "observed_at":null,
-   "purl":"pkg:npm/cli",
-   "release":"0.1.0",
-   "repository":null,
-   "sources":[],
-   "sources_agreeing":0
-  },
   {
    "confidence":"high",
    "forge":"github",

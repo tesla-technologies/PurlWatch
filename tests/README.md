@@ -17,18 +17,18 @@ These tests run the full **replay** and **collect** flows for the `purlwatch res
 
 **Collect** flows perform network requests, so the test suite uses the `pytest-recording` library to avoid hitting external registries on every run. The library records cassettes containing each HTTP request and its corresponding response, which are then replayed offline during test execution. Whenever the collector logic changes, outgoing requests change as well, rendering existing cassettes incompatible.
 
-To avoid recording fixtures manually, use the `scripts/record_fixtures.py` script to generate snapshots and cassettes. The script can be run in two ways:
+To avoid recording fixtures manually, use the `scripts/record-fixtures.py` script to generate snapshots and cassettes. The script can be run in two ways:
 
 #### Record all examples fixtures
 Depending on the flags used the scripts acts one way or another. There are three posible combinations:
 ```
-uv run --env-file .env scripts/record_fixtures.py --all 
+uv run --env-file .env scripts/record-fixtures.py --all 
 # Records every fixture for the SBOMs in the examples/ directory including snapshots, cassettes and golden files.
 
-uv run --env-file .env scripts/record_fixtures.py --all <fixture flag>
+uv run --env-file .env scripts/record-fixtures.py --all <fixture flag>
 # Records every fixture specified type for the SBOMs in the examples/ directory.
 
-uv run --env-file .env scripts/record_fixtures.py <fixture flag> <file path>
+uv run --env-file .env scripts/record-fixtures.py <fixture flag> <file path>
 # Records the specified fixture for the specified path.
 ```
 

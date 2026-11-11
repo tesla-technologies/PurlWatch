@@ -1,6 +1,7 @@
 import argparse
 import hashlib
 import json
+import os
 import sys
 from dataclasses import asdict
 from importlib.metadata import version
@@ -36,17 +37,19 @@ def create_http_client(
 
 
 def format_output_human(map_list: list[Any], nodes: dict[str, resolve.Node]) -> None:
+    has_root = False
     for m in map_list:
         mapp = m[0]
         his = m[1]
         comp = m[2]
+
+        if comp.is_root:
+            has_root = True
+
         print("=" * 80)
         label = "Bom-Ref" if comp.route == resolve.Route.NO_PURL else "Purl"
         print(f"{label}: {mapp.purl}")
-        if comp.route not in (
-            resolve.Route.NO_PURL,
-            resolve.Route.UNSUPPORTED,
-        ) and not (comp.is_root and comp.declared_repo is None):
+        if has_mapping_row(comp):
             print(f"Repository: {mapp.repository}")
             print(f"Confidence: {mapp.confidence.value}")
             print(f"Sources agreeing: {mapp.sources_agreeing}")
@@ -70,9 +73,13 @@ def format_output_human(map_list: list[Any], nodes: dict[str, resolve.Node]) -> 
             )
 
     print("\nComponents:")
+    if not has_root:
+        print(
+            "[WARN] Evaluated SBOM has no root component, depth cannot be calculated\n"
+        )
     for node in nodes.values():
         print(
-            f"Ref: {node.ref} | Purl: {node.purl} | Depth: {node.depth}{'. [WARN] Unreachable component' if node.depth is None else ''} | Via: {node.via} | Route: {node.route.value}"
+            f"{'ROOT:' if node.is_root else ''}Ref: {node.ref} | Purl: {node.purl} | Package: {node.package} | Depth: {node.depth}{'. [WARN] Unreachable component' if (node.depth is None and has_root) else ''} | Via: {node.via} | Route: {node.route.value}"
         )
 
 
@@ -93,10 +100,7 @@ def format_output_json(
         his = m[1]
         comp = m[2]
 
-        if comp.route not in (
-            resolve.Route.NO_PURL,
-            resolve.Route.UNSUPPORTED,
-        ) and not (comp.is_root and comp.declared_repo is None):
+        if has_mapping_row(comp):
             mapping_list.append(asdict(mapp))
 
         for v in his:
@@ -107,6 +111,8 @@ def format_output_json(
             {
                 "ref": node.ref,
                 "purl": node.purl,
+                "package": node.package,
+                "is_root": node.is_root,
                 "depth": node.depth,
                 "via": node.via,
                 "route": node.route.value,
@@ -129,6 +135,12 @@ def format_output_json(
             indent=1,
         )
     )
+
+
+def has_mapping_row(comp: resolve.Node) -> bool:
+    if comp.is_root:
+        return bool(comp.declared_repo)
+    return comp.route in (resolve.Route.REGISTRY, resolve.Route.REPOSITORY_ONLY)
 
 
 def resolve_component(
@@ -161,26 +173,27 @@ def resolve_component(
         ):
             map_pkg = component.ref
             note = "Note: Component has no Package URL; not evaluated"
+        elif component.is_root and not component.declared_repo:
+            note = "Note: Root component has no declared VCS repository"
         elif component.route == resolve.Route.REPOSITORY_ONLY or (
             component.is_root and component.declared_repo
         ):
             raw_repo = component.declared_repo
             for repo in raw_repo:
                 repo_from = repo[0]
-                repo_url = mapping.normalize_url(repo[1])
+                repo_url = repo[1]
                 if repo_url:
                     if repo_from == resolve.Declared.EXTERNAL:
-                        candidates.append(("sbom", repo_url))
+                        candidate = ("sbom", repo_url)
                     if repo_from in (resolve.Declared.VCS_URL, resolve.Declared.PURL):
-                        candidates.append(("purl", repo_url))
+                        candidate = ("purl", repo_url)
+
+                    if candidate not in candidates:
+                        candidates.append(candidate)
 
             note = "Note: Repository only path"
-        elif component.is_root or component.route == resolve.Route.UNSUPPORTED:
-            note = (
-                "Note: Unsupported pkg format, not evaluated"
-                if component.route == resolve.Route.UNSUPPORTED
-                else "Note: Root component has no declared VCS repository"
-            )
+        elif component.route == resolve.Route.UNSUPPORTED:
+            note = "Note: Unsupported pkg format, not evaluated"
         else:
             if component.route == resolve.Route.REGISTRY:
                 purl = PackageURL.from_string(component.purl)
@@ -299,16 +312,23 @@ def run_resolve(argv: list[str] | None = None) -> int:
                     )
             finally:
                 httpx_client.close()
-
-        if args.json:
-            format_output_json(map_list, manifest, snapshot_digest, resolved_sbom.nodes)
-        else:
-            format_output_human(map_list, resolved_sbom.nodes)
-
-        if tar_path:
-            print(
-                f"\nSnapshot: {tar_path} (digest: {snapshot_digest})", file=sys.stderr
-            )
+        try:
+            if args.json:
+                format_output_json(
+                    map_list, manifest, snapshot_digest, resolved_sbom.nodes
+                )
+            else:
+                format_output_human(map_list, resolved_sbom.nodes)
+        except BrokenPipeError:
+            devnull = os.open(os.devnull, os.O_WRONLY)
+            os.dup2(devnull, sys.stdout.fileno())
+            return 0
+        finally:
+            if tar_path:
+                print(
+                    f"\nSnapshot: {tar_path} (digest: {snapshot_digest})",
+                    file=sys.stderr,
+                )
 
         return 0
     except core_exc.PurlwatchError as err:

@@ -42,7 +42,7 @@ Each package has unit tests. Contract tests validate every JSON output against i
 
 ## Continuous integration
 
-One workflow runs on every push and pull request: installation, ruff, mypy, pytest with coverage, schema validation, fixture replay and the sign-off check. A second workflow runs on tags: it builds the distributions, generates the project's own CycloneDX SBOM, runs the tool on it along the repository path and signs the result with actions/attest under the project's predicate type, so that the project attests itself from its first release. The workflow files under `.github/workflows/` are written by the maintainers.
+One workflow runs on every push and pull request: installation, ruff, mypy, pytest with coverage, schema validation, fixture replay and the sign-off check. A second workflow runs on tags: it builds the distributions, generates the project's own CycloneDX SBOM, runs the tool on it along the repository path and signs the result with actions/attest under the project's predicate type, so that the project attests itself from its first release. The workflow files under `.github/workflows/` are written by the maintainers. GitLab CI (`.gitlab-ci.yml`) remains the authoritative pipeline, as development takes place on GitLab.
 
 ## Releases
 

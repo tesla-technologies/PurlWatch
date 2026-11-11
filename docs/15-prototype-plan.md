@@ -1,4 +1,5 @@
 # The prototype, before 9 October 2026
+**Status:** Historic
 
 The prototype exists to give the application public evidence that the team can execute. It is a command that takes an SBOM and prints, for every component, its Package URL, the repository it resolves to with a confidence level, and the publisher history the registries expose. It needs a green continuous-integration run and nothing more.
 

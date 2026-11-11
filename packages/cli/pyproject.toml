@@ -10,6 +10,9 @@ dependencies = [
     "purlwatch-collectors"
 ]
 
+[project.urls]
+Repository = "https://github.com/tesla-technologies/PurlWatch"
+
 [project.scripts]
 purlwatch = "purlwatch_cli.resolve:main"
 

@@ -53,6 +53,10 @@ class SbomNotFoundError(core_exc.InputError):
 def parse_sbom(sbom: Path) -> ParsedSBOM:
     if not sbom.exists():
         raise SbomNotFoundError(f"SBOM file not found {sbom}")
+    if sbom.is_dir():
+        raise SbomNotFoundError(
+            f"Expected an SBOM file, but received a directory: {sbom}"
+        )
 
     try:
         with open(sbom, "r", encoding="utf-8") as s:
@@ -70,6 +74,10 @@ def parse_sbom(sbom: Path) -> ParsedSBOM:
         raise InvalidStructureError(f"File structure is not valid: {err}")
     except json.JSONDecodeError as err:
         raise InvalidStructureError(f"File is not a valid JSON: {err}")
+    except UnicodeDecodeError as err:
+        raise UnsupportedFormatError(
+            f"Failed to read SBOM as UTF-8: the file appears to be binary or uses an unsupported encoding: {err}"
+        )
 
 
 def cyclone_parser(sbom: Path) -> ParsedSBOM:
@@ -204,9 +212,15 @@ def parse_purl(purl: PackageURL | str | None) -> str | None:
     if not purl:
         return None
 
-    if isinstance(purl, str):
-        purl_obj = PackageURL.from_string(purl)
-    else:
-        purl_obj = purl
+    try:
+        purl_obj = PackageURL.from_string(purl) if isinstance(purl, str) else purl
+        purl_str = PackageURL.to_string(purl_obj)
 
-    return PackageURL.to_string(purl_obj)
+        if "\ufffd" in repr(purl_obj) or PackageURL.validate_string(purl_str):
+            raise core_exc.InputError(f"PURL string supplied does not parse: {purl}")
+
+        return purl_str
+    except Exception as exc:
+        raise core_exc.InputError(
+            f"PURL string supplied does not parse: {purl}"
+        ) from exc

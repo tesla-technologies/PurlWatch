@@ -13,9 +13,9 @@
   "components": [
     {
       "type": "library",
-      "name": "malformed-pkg",
+      "name": "pkg:npm/%%%bad",
       "version": "1.0.0",
-      "purl": "invalido://not-a-purl"
+      "purl": "pkg:npm/%%%bad"
     }
   ]
 }

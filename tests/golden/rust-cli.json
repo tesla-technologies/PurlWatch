@@ -2,6 +2,8 @@
  "components":[
   {
    "depth":0,
+   "is_root":true,
+   "package":"pkg:cargo/mini-rust-cli",
    "purl":"pkg:cargo/mini-rust-cli@0.1.0",
    "ref":"pkg:cargo/mini-rust-cli@0.1.0",
    "route":"registry",
@@ -9,6 +11,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":null,
    "purl":null,
    "ref":"internal-crypto-helper-v0.4.1",
    "route":"no_purl",
@@ -16,6 +20,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:cargo/clap",
    "purl":"pkg:cargo/clap@4.5.4",
    "ref":"pkg:cargo/clap@4.5.4",
    "route":"registry",
@@ -23,6 +29,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:generic/xz",
    "purl":"pkg:generic/xz@5.6.1",
    "ref":"xz@5.6.1",
    "route":"repository",
@@ -30,16 +38,6 @@
   }
  ],
  "mapping":[
-  {
-   "confidence":"none",
-   "forge":"unknown",
-   "observed_at":null,
-   "purl":"pkg:cargo/mini-rust-cli",
-   "release":"0.1.0",
-   "repository":null,
-   "sources":[],
-   "sources_agreeing":0
-  },
   {
    "confidence":"high",
    "forge":"github",

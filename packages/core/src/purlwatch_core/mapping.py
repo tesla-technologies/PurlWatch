@@ -119,9 +119,7 @@ def extract_map_fields(candidates: list[tuple[str, str]] | None) -> dict[str, An
     forge = Forge.UNKNOWN
     confidence = Confidence.NONE
     sources_agreeing = 0
-    sources = (
-        list(dict.fromkeys([source for source, _ in candidates])) if candidates else []
-    )
+    sources = [source for source, _ in candidates] if candidates else []
 
     if not candidates:
         return {
@@ -132,41 +130,31 @@ def extract_map_fields(candidates: list[tuple[str, str]] | None) -> dict[str, An
             "sources": sources,
         }
 
-    if len(candidates) == 1:
-        return {
-            "repository": candidates[0][1],
-            "forge": extract_forge(candidates[0][1]),
-            "confidence": Confidence.MEDIUM
-            if candidates[0][0] != "provenance"
-            else Confidence.HIGH,
-            "sources_agreeing": 1,
-            "sources": sources,
-        }
-
     confidence_dict: defaultdict[str, list[str]] = defaultdict(list)
     for src, url in candidates:
         confidence_dict[url].append(src)
 
     for url, source in confidence_dict.items():
-        if (
-            ("provenance" in source)
-            or ("registry" in source and len(source) > 1)
-            or ("purl" in source and len(source) > 1)
-        ):
+        if ("provenance" in source) or ("registry" in source and len(source) > 1):
             confidence = Confidence.HIGH
             repository = url
             sources_agreeing = len(source)
             break
 
     if confidence != Confidence.HIGH:
-        confidence = Confidence.LOW
-        repository = max(
-            confidence_dict,
-            key=lambda url: (
-                len(confidence_dict[url]),
-                "registry" in confidence_dict[url],
-            ),
-        )
+        if len(confidence_dict) > 1:
+            confidence = Confidence.LOW
+            repository = max(
+                confidence_dict,
+                key=lambda url: (
+                    len(confidence_dict[url]),
+                    "registry" in confidence_dict[url],
+                ),
+            )
+        else:
+            confidence = Confidence.MEDIUM
+            repository = next(iter(confidence_dict.keys()))
+
         sources_agreeing = len(confidence_dict[repository])
 
     return {

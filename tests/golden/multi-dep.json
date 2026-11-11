@@ -2,6 +2,8 @@
  "components":[
   {
    "depth":0,
+   "is_root":true,
+   "package":"pkg:deb/debian/libselinux1-dev",
    "purl":"pkg:deb/debian/libselinux1-dev@3.1-3?arch=s390x",
    "ref":"SPDXRef-Package-hello-server-src",
    "route":"repository",
@@ -9,6 +11,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:cargo/hyper",
    "purl":"pkg:cargo/hyper@0.14",
    "ref":"SPDXRef-Package-SPDXRef-Package-cargo-hyper-0.14",
    "route":"registry",
@@ -16,6 +20,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:cargo/tokio",
    "purl":"pkg:cargo/tokio@1.19.2",
    "ref":"SPDXRef-Package-SPDXRef-Package-cargo-tokio-1",
    "route":"registry",
@@ -23,6 +29,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:cargo/pretty_env_logger",
    "purl":"pkg:cargo/pretty_env_logger@0.4.0",
    "ref":"SPDXRef-Package-SPDXRef-Package-cargo-pretty-env-logger-0.4.0",
    "route":"registry",
@@ -30,16 +38,6 @@
   }
  ],
  "mapping":[
-  {
-   "confidence":"none",
-   "forge":"unknown",
-   "observed_at":null,
-   "purl":"pkg:deb/debian/libselinux1-dev",
-   "release":"0.1.0",
-   "repository":null,
-   "sources":[],
-   "sources_agreeing":0
-  },
   {
    "confidence":"high",
    "forge":"github",

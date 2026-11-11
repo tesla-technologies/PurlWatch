@@ -128,6 +128,20 @@ def test_normalized_url(url: str, normalized: str) -> None:
             ],
             "high",
         ),
+        (
+            [
+                ("ecosystems", "https://github.com/nuevo-org/repo"),
+                ("depsdev", "https://github.com/nuevo-org/repo"),
+            ],
+            "medium",
+        ),
+        (
+            [
+                ("sbom", "https://github.com/nuevo-org/repo"),
+                ("purl", "https://github.com/nuevo-org/repo"),
+            ],
+            "medium",
+        ),
     ],
 )
 def test_confidence_from_candidates(

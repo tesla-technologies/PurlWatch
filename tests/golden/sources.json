@@ -2,6 +2,8 @@
  "components":[
   {
    "depth":0,
+   "is_root":true,
+   "package":"pkg:generic/enterprise-gateway",
    "purl":"pkg:generic/enterprise-gateway@2.4.0",
    "ref":"root-app",
    "route":"repository",
@@ -9,6 +11,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:bitbucket/atlassian/aui",
    "purl":"pkg:bitbucket/atlassian/aui@9.4.0",
    "ref":"dep-purl-bitbucket",
    "route":"repository",
@@ -16,6 +20,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:generic/custom-auth-helper",
    "purl":"pkg:generic/custom-auth-helper@1.2.0?vcs_url=https://github.com/security-team/auth-helper",
    "ref":"dep-vcs-url",
    "route":"repository",
@@ -23,6 +29,8 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:generic/legacy-db-connector",
    "purl":"pkg:generic/legacy-db-connector@0.9.4",
    "ref":"dep-external-ref",
    "route":"repository",
@@ -30,34 +38,44 @@
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:npm/lodash",
    "purl":"pkg:npm/lodash@4.17.21",
    "ref":"dep-npm",
    "route":"registry",
    "via":"root-app"
   },
   {
-   "depth":null,
+   "depth":1,
+   "is_root":false,
+   "package":"pkg:github/owner/repo",
    "purl":"pkg:github/owner/repo@1.0.0?vcs_url=https://github.com/owner/repo",
    "ref":"pkg:github/owner/repo@1.0.0?vcs_url=https://github.com/owner/repo",
    "route":"repository",
-   "via":null
+   "via":"root-app"
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:cargo/serde",
    "purl":"pkg:cargo/serde@1.0.197",
    "ref":"dep-cargo",
    "route":"registry",
    "via":"root-app"
   },
   {
-   "depth":null,
+   "depth":1,
+   "is_root":false,
+   "package":"pkg:generic/standalone-tool",
    "purl":"pkg:generic/standalone-tool@1.0.0",
-   "ref":"standalone-tool_ref",
+   "ref":"standalone-tool",
    "route":"repository",
-   "via":null
+   "via":"root-app"
   },
   {
    "depth":1,
+   "is_root":false,
+   "package":"pkg:github/actions/toolkit",
    "purl":"pkg:github/actions/toolkit@0.4.0",
    "ref":"dep-purl-github",
    "route":"repository",
@@ -127,7 +145,7 @@
    "sources_agreeing":2
   },
   {
-   "confidence":"high",
+   "confidence":"medium",
    "forge":"github",
    "observed_at":null,
    "purl":"pkg:github/owner/repo",
@@ -137,7 +155,7 @@
     "purl",
     "sbom"
    ],
-   "sources_agreeing":3
+   "sources_agreeing":2
   },
   {
    "confidence":"high",
