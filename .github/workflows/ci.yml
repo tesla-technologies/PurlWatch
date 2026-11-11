@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'ci/**'
   pull_request:
 
 concurrency:
@@ -61,11 +62,13 @@ jobs:
         run: uv sync --all-packages --frozen
 
       - name: Run tests
-        run: uv run pytest --record-mode=none --cov=purlwatch_core
+        run: uv run pytest --record-mode=none --cov
+
+      - name: Run coverage
+        run: uv run coverage report --include="packages/core/*" --fail-under=80
 
   check-signoff:
     name: Lint (Check-signoff)
-    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -75,4 +78,6 @@ jobs:
           persist-credentials: false
 
       - name: Run check-signoff
-        run: python scripts/check_signoff.py ""${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}""
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python scripts/check_signoff.py "$BASE_SHA"

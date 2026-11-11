@@ -23,5 +23,8 @@ members = ["packages/*"]
 strict = true
 files = ["packages"]
 
+[tool.coverage.run]
+    source_pkgs = ["purlwatch_core", "purlwatch_collectors", "purlwatch_cli"]
+
 [tool.coverage.report]
 fail_under = 80
