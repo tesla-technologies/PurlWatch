@@ -65,7 +65,7 @@ jobs:
 
   check-signoff:
     name: Lint (Check-signoff)
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -75,4 +75,4 @@ jobs:
           persist-credentials: false
 
       - name: Run check-signoff
-        run: python scripts/check_signoff.py "${{ github.event.before }}"
+        run: python scripts/check_signoff.py ""${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}""
