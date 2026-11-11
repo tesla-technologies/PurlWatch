@@ -4,12 +4,29 @@ All notable changes to this project are recorded here. The format follows Keep a
 
 ## Unreleased
 
-Repository skeleton with licence, contributing guide, security policy, code of conduct and development documentation. No code yet.
+## 0.0.4-prototype - 2026-11-11
+### Added
+* Components output: Added a components section to human- and machine-readable outputs, displaying the ref, purl, package, is-root, depth, via, and route for each resolved component.
 
-## 0.0.2-prototype - 2026/11/02
-Changed name from AuraTrace to PurlWatch, which is available on PyPI, npm, crates.io, and GitHub, and is more descriptive.
+* Coverage for collectors/client.py: Added tests for scenarios that should exit with code 4.
 
-## 0.0.3-prototype - 2026/11/03
+* Close method for PurlwatchTransport: Added a close() method to the PurlwatchTransport class.
+
+* Declared repository detection: Added detection of declared repositories via purl for pkg:github, pkg:bitbucket, and vcs_url qualifiers.
+
+### Fixed
+* Test execution in cli/resolve.py: Replaced subprocess calls across tests with direct calls to run_resolve, and added a dedicated subprocess test.
+
+* Root package in output: Fixed root component handling to ensure it is properly listed when expected.
+
+* Tests in core/tests/test_resolve.py: Updated the make_sbom helper to match parse_sbom behavior by excluding the SBOM root package from the component list, updating dependent test parameters accordingly.
+
+* Test in test/test_e2e.py: Added assertion to verify the expected error message on exit code 2.
+
+### Changed
+* Confidence calculation in mapping: Changed the confidence rule so various sources (excluding "provenance" and "registry") with matching urls return medium confidence instead of low confidence.
+
+## 0.0.3-prototype - 2026-11-03
 ### Fixed
 * Root component resolution: Prevented root components (is_root=True) from being queried against registries and misattributed to unrelated public packages.
 
@@ -38,3 +55,6 @@ Changed name from AuraTrace to PurlWatch, which is available on PyPI, npm, crate
 * Project deliverables & fixtures: Restored the missing repository SBOM (purlwatch.cdx.json), reconciled fixture naming between documentation and examples (node-app.cdx.json), removed unfinished scripts/record_fixtures.py, and refreshed golden JSON test files.
 
 * Documentation alignment: Updated README.md to describe existing features in the present tense, documented active maintainers, fixed CLI example snippets and heading tags, and added contact information to SECURITY.md.
+
+## 0.0.2-prototype - 2026-11-02
+Changed name from AuraTrace to PurlWatch, which is available on PyPI, npm, crates.io, and GitHub, and is more descriptive.
